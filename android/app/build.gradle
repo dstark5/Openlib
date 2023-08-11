@@ -34,7 +34,7 @@ if (keystorePropertiesFile.exists()) {
 
 
 android {
-    namespace "com.openlib.app"
+    namespace "com.app.openlib"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
@@ -53,7 +53,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.openlib.app"
+        applicationId "com.app.openlib"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion localProperties.getProperty('flutter.minSdkVersion').toInteger()
@@ -68,6 +68,8 @@ android {
             keyPassword keystoreProperties['keyPassword']
             storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
             storePassword keystoreProperties['storePassword']
+            v1SigningEnabled true
+            v2SigningEnabled true
         }
     }
 
@@ -75,6 +77,7 @@ android {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
+            // replace with "debug" when running on debug version
             signingConfig signingConfigs.release
         }
     }

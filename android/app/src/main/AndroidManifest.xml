@@ -1,10 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-        <uses-permission android:name="android.permission.INTERNET" />
-        <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-        <!-- <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/> -->
-         <!-- <provider android:name="androidx.core.content.FileProvider" android:authorities="${applicationId}.fileProvider" android:exported="false" android:grantUriPermissions="true" tools:replace="android:authorities">
-            <meta-data android:name="android.support.FILE_PROVIDER_PATHS" android:resource="@xml/filepaths" tools:replace="android:resource" />
-        </provider> -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
         android:label="Openlib"
         android:name="${applicationName}"
