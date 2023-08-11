@@ -1,5 +1,6 @@
+<p align="center"><img src="assets/appIcon.png" width="150"></p> 
+<h2 align="center"><b>Openlib</b></h2>
 
-# Openlib
 #### An Open source app to download and read books from shadow library ([Anna’s Archive](https://annas-archive.org/)).
 
 [![made-with-flutter](https://img.shields.io/badge/Made%20with-Flutter-4361ee.svg)](https://flutter.dev/)  [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-e63946.svg)](https://opensource.org/licenses/)
