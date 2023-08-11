@@ -1,5 +1,6 @@
+<p align="center"><img src="assets/icons/appIcon.png" width="150"></p> 
+<h1 align="center"><b>Openlib</b></h1>
 
-# Openlib
 #### An Open source app to download and read books from shadow library ([Anna’s Archive](https://annas-archive.org/)).
 
 [![made-with-flutter](https://img.shields.io/badge/Made%20with-Flutter-4361ee.svg)](https://flutter.dev/)  [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-e63946.svg)](https://opensource.org/licenses/)
@@ -70,6 +71,10 @@ flutter build
 ## Contribution
 Whether you have ideas, design changes or even major code changes, help is always welcome. The app gets better and better with each contribution, no matter how big or small! If you'd like to get involved just fork the app make a pull request.
 
+## Issues
+
+Please report bugs via the [issue tracker](https://github.com/dstark5/Openlib/issues).
+
 ## Donate
 If you like Openlib, you're welcome to send a donation.
 #### [Donate To Anna’s Archive](https://annas-archive.org/donate?tier=1).
@@ -78,8 +83,6 @@ If you like Openlib, you're welcome to send a donation.
 [![GNU GPLv3 Image](https://www.gnu.org/graphics/gplv3-127x51.png)](https://www.gnu.org/licenses/gpl-3.0.en.html)  
 
 Openlib is a free software licensed under GPL v3.0 It is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY.[GNU General Public License](https://www.gnu.org/licenses/gpl.html) as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-
-
 
 ## Disclaimer
 
