@@ -2,9 +2,7 @@
 # Openlib
 #### An Open source app to download and read books from shadow library ([Anna’s Archive](https://annas-archive.org/)).
 
-[![made-with-flutter](https://img.shields.io/badge/Made%20with-Flutter-4361ee.svg)](https://flutter.dev/)
-
-[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-e63946.svg)](https://opensource.org/licenses/)
+[![made-with-flutter](https://img.shields.io/badge/Made%20with-Flutter-4361ee.svg)](https://flutter.dev/)  [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-e63946.svg)](https://opensource.org/licenses/)
 
 
 ## Note
@@ -16,8 +14,14 @@
 
 ## Screenshots
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
-
+[<img src="screenshots/Screenshot_1.png.png" width=160>](screenshots/Screenshot_1.png.png)
+[<img src="screenshots/Screenshot_2.png.png" width=160>](screenshots/Screenshot_2.png.png)
+[<img src="screenshots/Screenshot_3.png.png" width=160>](screenshots/Screenshot_3.png.png)
+[<img src="screenshots/Screenshot_4.png.png" width=160>](screenshots/Screenshot_4.png.png)
+[<img src="screenshots/Screenshot_5.png.png" width=160>](screenshots/Screenshot_5.png.png)
+[<img src="screenshots/Screenshot_6.png.png" width=160>](screenshots/Screenshot_6.png.png)
+[<img src="screenshots/Screenshot_7.png.png" width=160>](screenshots/Screenshot_7.png.png)
+[<img src="screenshots/Screenshot_8.png.png" width=160>](screenshots/Screenshot_8.png.png)
 
 ## Description
 ##### Openlib Is An Open Source App To Download And Read Books From Shadow Library ([Anna’s Archive](https://annas-archive.org/)) . The App Has Built In Reader to Read Books.
