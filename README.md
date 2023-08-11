@@ -14,14 +14,14 @@
 
 ## Screenshots
 
-[<img src="screenshots/Screenshot_1.png.png" width=160>](screenshots/Screenshot_1.png.png)
-[<img src="screenshots/Screenshot_2.png.png" width=160>](screenshots/Screenshot_2.png.png)
-[<img src="screenshots/Screenshot_3.png.png" width=160>](screenshots/Screenshot_3.png.png)
-[<img src="screenshots/Screenshot_4.png.png" width=160>](screenshots/Screenshot_4.png.png)
-[<img src="screenshots/Screenshot_5.png.png" width=160>](screenshots/Screenshot_5.png.png)
-[<img src="screenshots/Screenshot_6.png.png" width=160>](screenshots/Screenshot_6.png.png)
-[<img src="screenshots/Screenshot_7.png.png" width=160>](screenshots/Screenshot_7.png.png)
-[<img src="screenshots/Screenshot_8.png.png" width=160>](screenshots/Screenshot_8.png.png)
+[<img src="screenshots/Screenshot_1.png" width=160>](screenshots/Screenshot_1.png)
+[<img src="screenshots/Screenshot_2.png" width=160>](screenshots/Screenshot_2.png)
+[<img src="screenshots/Screenshot_3.png" width=160>](screenshots/Screenshot_3.png)
+[<img src="screenshots/Screenshot_4.png" width=160>](screenshots/Screenshot_4.png)
+[<img src="screenshots/Screenshot_5.png" width=160>](screenshots/Screenshot_5.png)
+[<img src="screenshots/Screenshot_6.png" width=160>](screenshots/Screenshot_6.png)
+[<img src="screenshots/Screenshot_7.png" width=160>](screenshots/Screenshot_7.png)
+[<img src="screenshots/Screenshot_8.png" width=160>](screenshots/Screenshot_8.png)
 
 ## Description
 ##### Openlib Is An Open Source App To Download And Read Books From Shadow Library ([Anna’s Archive](https://annas-archive.org/)) . The App Has Built In Reader to Read Books.
