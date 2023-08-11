@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/appIcon.png" width="150"></p> 
+<p align="center"><img src="assets/icons/appIcon.png" width="150"></p> 
 <h2 align="center"><b>Openlib</b></h2>
 
 #### An Open source app to download and read books from shadow library ([Anna’s Archive](https://annas-archive.org/)).
