@@ -5,6 +5,12 @@
 
 [![made-with-flutter](https://img.shields.io/badge/Made%20with-Flutter-4361ee.svg)](https://flutter.dev/)  [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-e63946.svg)](https://opensource.org/licenses/) ![version](https://img.shields.io/badge/version-1.0_beta-06d6a0)
 
+[<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png"
+     alt="Get it on IzzyDroid"
+     height="80">](https://android.izzysoft.de/repo/apk/com.app.openlib) [<img src="get_github.png"
+     alt="Download from GitHub"
+     height="90">](https://github.com/dstark5/Openlib/releases)
+
 
 ## Note
 
