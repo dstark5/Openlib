@@ -49,6 +49,7 @@
 - Adding Support For Multiple Downloads
 
 ## Installation and updates
+ -  Download the APK from [ IzzyOnDroid ](https://android.izzysoft.de/repo/apk/com.app.openlib) and install it.
  -  Download the APK from [GitHub Releases](https://github.com/dstark5/Openlib/releases) and install it.
 
 ## Building from Source
