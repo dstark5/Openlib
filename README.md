@@ -5,11 +5,11 @@
 
 [![made-with-flutter](https://img.shields.io/badge/Made%20with-Flutter-4361ee.svg)](https://flutter.dev/)  [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-e63946.svg)](https://opensource.org/licenses/) ![version](https://img.shields.io/badge/version-1.0_beta-06d6a0)
 
-[<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png"
-     alt="Get it on IzzyDroid"
-     height="80">](https://android.izzysoft.de/repo/apk/com.app.openlib) [<img src="github_releases.png"
+ [<img src="github_releases.png"
      alt="Download from GitHub"
-     height="80">](https://github.com/dstark5/Openlib/releases)
+     height="80">](https://github.com/dstark5/Openlib/releases) [<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png"
+     alt="Get it on IzzyDroid"
+     height="80">](https://android.izzysoft.de/repo/apk/com.app.openlib)
 
 
 ## Note
@@ -76,7 +76,7 @@ flutter build
 - The Build Will Be In './build/app/outputs/flutter-apk/app-release.apk'
 
 ## Contribution
-Whether you have ideas, design changes or even major code changes, help is always welcome. The app gets better and better with each contribution, no matter how big or small! If you'd like to get involved just fork the app make a pull request.
+Whether you have ideas, design changes or even major code changes, help is always welcome. The app gets better and better with each contribution, no matter how big or small! If you'd like to get involved. Please read our [CONTRIBUTING.md](https://github.com/dstark5/Openlib/blob/main/CONTRIBUTING.md)
 
 ## Issues
 
