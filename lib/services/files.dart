@@ -38,6 +38,7 @@ Future<void> deleteFileWithDbData(
     // ignore: unused_result
     ref.refresh(myLibraryProvider);
   } catch (e) {
-    print(e);
+    // print(e);
+    rethrow;
   }
 }
