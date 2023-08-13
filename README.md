@@ -76,7 +76,7 @@ flutter build
 - The Build Will Be In './build/app/outputs/flutter-apk/app-release.apk'
 
 ## Contribution
-Whether you have ideas, design changes or even major code changes, help is always welcome. The app gets better and better with each contribution, no matter how big or small! If you'd like to get involved. Please read our [CONTRIBUTING.md](https://github.com/dstark5/Openlib/blob/main/CONTRIBUTING.md)
+Whether you have ideas, design changes or even major code changes, help is always welcome. The app gets better and better with each contribution, no matter how big or small! If you'd like to get involved ,Please read our [CONTRIBUTING.md](https://github.com/dstark5/Openlib/blob/main/CONTRIBUTING.md)
 
 ## Issues
 
