@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:openlib/ui/extensions.dart';
@@ -14,6 +14,7 @@ import 'package:openlib/state/state.dart'
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  databaseFactory = databaseFactoryFfi;
   Database db = await Sqlite.initDb();
   runApp(ProviderScope(
       overrides: [dbProvider.overrideWithValue(MyLibraryDb(dbInstance: db))],
