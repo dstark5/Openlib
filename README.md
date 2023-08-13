@@ -7,9 +7,9 @@
 
 [<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png"
      alt="Get it on IzzyDroid"
-     height="80">](https://android.izzysoft.de/repo/apk/com.app.openlib) [<img src="get_github.png"
+     height="80">](https://android.izzysoft.de/repo/apk/com.app.openlib) [<img src="github_releases.png"
      alt="Download from GitHub"
-     height="90">](https://github.com/dstark5/Openlib/releases)
+     height="80">](https://github.com/dstark5/Openlib/releases)
 
 
 ## Note
