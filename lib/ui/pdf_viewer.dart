@@ -68,8 +68,9 @@ class _PdfViewerState extends ConsumerState<PdfViewer> {
     if (await canLaunchUrl(fileUrl)) {
       await launchUrl(fileUrl);
     } else {
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
             content: Text(
           'Could not open the PDF',
           textAlign: TextAlign.center,
@@ -150,6 +151,7 @@ class _PdfViewerState extends ConsumerState<PdfViewer> {
                     )),
                 onPressed: () async {
                   await _openPdfWithDefaultViewer("file://${widget.filePath}");
+                  // ignore: use_build_context_synchronously
                   Navigator.pop(context);
                 },
                 child: const Padding(

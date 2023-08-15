@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'dart:io' show Platform;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'dart:io' show Platform;
 
 import 'package:openlib/ui/extensions.dart';
 import 'package:openlib/ui/trending_page.dart';
@@ -22,9 +22,12 @@ void main() async {
   }
 
   Database db = await Sqlite.initDb();
-  runApp(ProviderScope(
+  runApp(
+    ProviderScope(
       overrides: [dbProvider.overrideWithValue(MyLibraryDb(dbInstance: db))],
-      child: const MyApp()));
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
