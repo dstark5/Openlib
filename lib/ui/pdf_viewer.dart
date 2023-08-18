@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:openlib/state/state.dart'
-    show filePathProvider, pdfCurrentPage, totalPdfPage;
+    show
+        filePathProvider,
+        pdfCurrentPage,
+        totalPdfPage,
+        savePdfState,
+        getBookPosition;
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io' show Platform;
 
@@ -20,7 +25,7 @@ class _PdfViewState extends ConsumerState<PdfView> {
   Widget build(BuildContext context) {
     final filePath = ref.watch(filePathProvider(widget.fileName));
     return filePath.when(data: (data) {
-      return PdfViewer(filePath: data);
+      return PdfViewer(filePath: data, fileName: widget.fileName);
     }, error: (error, stack) {
       return Scaffold(
         appBar: AppBar(
@@ -51,9 +56,11 @@ class _PdfViewState extends ConsumerState<PdfView> {
 }
 
 class PdfViewer extends ConsumerStatefulWidget {
-  const PdfViewer({Key? key, required this.filePath}) : super(key: key);
+  const PdfViewer({Key? key, required this.filePath, required this.fileName})
+      : super(key: key);
 
   final String filePath;
+  final String fileName;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _PdfViewerState();
@@ -61,6 +68,19 @@ class PdfViewer extends ConsumerStatefulWidget {
 
 class _PdfViewerState extends ConsumerState<PdfViewer> {
   late PDFViewController controller;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    if (Platform.isAndroid || Platform.isIOS) {
+      savePdfState(widget.fileName, ref);
+    }
+    super.dispose();
+  }
 
   Future<void> _openPdfWithDefaultViewer(String fileName) async {
     debugPrint("Opening : $fileName");
@@ -127,17 +147,47 @@ class _PdfViewerState extends ConsumerState<PdfViewer> {
             : [],
       ),
       body: isMobile
-          ? PDFView(
-              swipeHorizontal: true,
-              fitEachPage: true,
-              fitPolicy: FitPolicy.BOTH,
-              filePath: widget.filePath,
-              onViewCreated: (controller) {
-                this.controller = controller;
+          ? ref.watch(getBookPosition(widget.fileName)).when(
+              data: (data) {
+                return PDFView(
+                  swipeHorizontal: true,
+                  fitEachPage: true,
+                  fitPolicy: FitPolicy.BOTH,
+                  filePath: widget.filePath,
+                  onViewCreated: (controller) {
+                    this.controller = controller;
+                  },
+                  defaultPage: int.parse(data ?? '0'),
+                  onPageChanged: (page, total) {
+                    ref.read(pdfCurrentPage.notifier).state = page ?? 0;
+                    ref.read(totalPdfPage.notifier).state = total ?? 0;
+                  },
+                );
               },
-              onPageChanged: (page, total) {
-                ref.read(pdfCurrentPage.notifier).state = page ?? 0;
-                ref.read(totalPdfPage.notifier).state = total ?? 0;
+              error: (error, stackTrace) {
+                return PDFView(
+                  swipeHorizontal: true,
+                  fitEachPage: true,
+                  fitPolicy: FitPolicy.BOTH,
+                  filePath: widget.filePath,
+                  onViewCreated: (controller) {
+                    this.controller = controller;
+                  },
+                  onPageChanged: (page, total) {
+                    ref.read(pdfCurrentPage.notifier).state = page ?? 0;
+                    ref.read(totalPdfPage.notifier).state = total ?? 0;
+                  },
+                );
+              },
+              loading: () {
+                return Center(
+                    child: SizedBox(
+                  width: 25,
+                  height: 25,
+                  child: CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ));
               },
             )
           : Center(

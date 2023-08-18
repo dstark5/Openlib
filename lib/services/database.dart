@@ -1,15 +1,32 @@
+import 'dart:io';
 import 'package:sqflite/sqflite.dart';
 
 class Sqlite {
   static Future<Database> initDb() async {
     var databasesPath = await getDatabasesPath();
     String path = '$databasesPath/mylibrary.db';
+    bool isMobile = Platform.isAndroid || Platform.isIOS;
 
-    Database dbInstance = await openDatabase(path, version: 1,
-        onCreate: (Database db, int version) async {
-      await db.execute(
-          'CREATE TABLE mybooks (id TEXT PRIMARY KEY, title TEXT,author TEXT,thumbnail TEXT,link TEXT,publisher TEXT,info TEXT,format TEXT,description TEXT)');
-    });
+    Database dbInstance = await openDatabase(
+      path,
+      version: 2,
+      onCreate: (Database db, int version) async {
+        await db.execute(
+            'CREATE TABLE mybooks (id TEXT PRIMARY KEY, title TEXT,author TEXT,thumbnail TEXT,link TEXT,publisher TEXT,info TEXT,format TEXT,description TEXT)');
+        if (isMobile) {
+          await db.execute(
+              'CREATE TABLE bookposition (fileName TEXT PRIMARY KEY,position TEXT)');
+        }
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        List<dynamic> isTableExist = await db.query('sqlite_master',
+            where: 'name = ?', whereArgs: ['bookposition']);
+        if (isMobile && isTableExist.isEmpty) {
+          await db.execute(
+              'CREATE TABLE bookposition (fileName TEXT PRIMARY KEY,position TEXT)');
+        }
+      },
+    );
     return dbInstance;
   }
 }
@@ -117,5 +134,27 @@ class MyLibraryDb {
           description: maps[i]['description']);
     });
     return myBookList.reversed.toList();
+  }
+
+  Future<void> saveBookState(String fileName, String position) async {
+    await dbInstance.insert(
+      'bookposition',
+      {'fileName': fileName, 'position': position},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<String?> getBookState(String fileName) async {
+    List<Map<String, dynamic>> data = await dbInstance
+        .query('bookposition', where: 'fileName = ?', whereArgs: [fileName]);
+    List<dynamic> dataList = List.generate(data.length, (i) {
+      return {'fileName': data[i]['fileName'], 'position': data[i]['position']};
+    });
+    if (dataList.isNotEmpty) {
+      print(dataList);
+      return dataList[0]['position'];
+    } else {
+      return null;
+    }
   }
 }

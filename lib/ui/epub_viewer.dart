@@ -19,7 +19,7 @@ class _EpubViewState extends ConsumerState<EpubViewerWidget> {
   Widget build(BuildContext context) {
     final filePath = ref.watch(filePathProvider(widget.fileName));
     return filePath.when(data: (data) {
-      return EpubViewer(filePath: data);
+      return EpubViewer(filePath: data, fileName: widget.fileName);
     }, error: (error, stack) {
       return Scaffold(
         appBar: AppBar(
@@ -49,17 +49,19 @@ class _EpubViewState extends ConsumerState<EpubViewerWidget> {
   }
 }
 
-class EpubViewer extends StatefulWidget {
-  const EpubViewer({Key? key, required this.filePath}) : super(key: key);
+class EpubViewer extends ConsumerStatefulWidget {
+  const EpubViewer({Key? key, required this.filePath, required this.fileName})
+      : super(key: key);
 
   final String filePath;
+  final String fileName;
 
   @override
   // ignore: library_private_types_in_public_api
   _EpubViewerState createState() => _EpubViewerState();
 }
 
-class _EpubViewerState extends State<EpubViewer> {
+class _EpubViewerState extends ConsumerState<EpubViewer> {
   late EpubController _epubReaderController;
 
   @override

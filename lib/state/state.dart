@@ -125,6 +125,16 @@ final deleteFileFromMyLib =
 final pdfCurrentPage = StateProvider.autoDispose<int>((ref) => 0);
 final totalPdfPage = StateProvider.autoDispose<int>((ref) => 0);
 
+Future<void> savePdfState(String fileName, WidgetRef ref) async {
+  String position = ref.watch(pdfCurrentPage).toString();
+  await ref.watch(dbProvider).saveBookState(fileName, position);
+}
+
+final getBookPosition =
+    FutureProvider.family.autoDispose<String?, String>((ref, fileName) async {
+  return await ref.read(dbProvider).getBookState(fileName);
+});
+
 final filePathProvider =
     FutureProvider.family<String, String>((ref, fileName) async {
   String path = await getFilePath(fileName);
