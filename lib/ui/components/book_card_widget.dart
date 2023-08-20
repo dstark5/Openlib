@@ -22,26 +22,31 @@ class BookInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onClick,
-      child: Container(
-        width: double.infinity,
-        height: 120,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-          color: Theme.of(context).colorScheme.tertiaryContainer,
-        ),
-        margin: const EdgeInsets.only(bottom: 10),
+    return Card(
+      shadowColor: Colors.black.withOpacity(0),
+      margin: const EdgeInsets.only(bottom: 10),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: InkWell(
+        onTap: onClick,
+        borderRadius: BorderRadius.circular(15),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             CachedNetworkImage(
-              height: 120,
-              width: 90,
+              height: 180,
+              width: 135,
               imageUrl: thumbnail ?? "",
               imageBuilder: (context, imageProvider) => Container(
                 decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(5)),
+                  // borderRadius: const BorderRadius.only(
+                  //     topLeft: Radius.circular(15),
+                  //     bottomLeft: Radius.circular(15),
+                  //     bottomRight: Radius.circular(8),
+                  //     topRight: Radius.circular(8)
+                  //     ),
+                  borderRadius: BorderRadius.circular(15),
                   image: DecorationImage(
                     image: imageProvider,
                     fit: BoxFit.fill,
@@ -84,7 +89,7 @@ class BookInfoCard extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        // color: Colors.black,
                       ),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
@@ -94,7 +99,7 @@ class BookInfoCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: "#4D4D4D".toColor(),
+                        // color: "#4D4D4D".toColor(),
                       ),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,

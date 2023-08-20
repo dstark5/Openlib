@@ -23,20 +23,28 @@ class ResultPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: const Text("Openlib"),
-        titleTextStyle: Theme.of(context).textTheme.displayLarge,
+        // backgroundColor: Theme.of(context).colorScheme.primary,
+        title: const Text(
+          "Results",
+          style: TextStyle(fontWeight: FontWeight.w500),
+        ),
+        titleSpacing: 0,
+
+        // titleTextStyle: Theme.of(context).textTheme.displayLarge,
       ),
       body: searchBooks.when(
         data: (data) {
           if (data.isNotEmpty) {
             return Padding(
-              padding: const EdgeInsets.only(left: 5, right: 5, top: 10),
+              padding: const EdgeInsets.only(
+                left: 5,
+                right: 5,
+              ),
               child: CustomScrollView(
                 slivers: <Widget>[
-                  const SliverToBoxAdapter(
-                    child: TitleText("Results"),
-                  ),
+                  // const SliverToBoxAdapter(
+                  //   child: TitleText("Results"),
+                  // ),
                   SliverPadding(
                     padding: const EdgeInsets.only(left: 5, right: 5, top: 10),
                     sliver: SliverList(
