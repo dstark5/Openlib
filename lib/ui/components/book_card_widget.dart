@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:openlib/ui/extensions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+// TODO: Redesign this widget
 class BookInfoCard extends StatelessWidget {
   const BookInfoCard(
       {Key? key,
@@ -24,9 +25,13 @@ class BookInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       shadowColor: Colors.black.withOpacity(0),
-      margin: const EdgeInsets.only(bottom: 10),
+      margin: const EdgeInsets.only(bottom: 20),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
+        side: BorderSide(
+          color: Theme.of(context).colorScheme.surfaceVariant,
+          width: 1,
+        ),
       ),
       child: InkWell(
         onTap: onClick,
@@ -35,17 +40,11 @@ class BookInfoCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             CachedNetworkImage(
-              height: 180,
-              width: 135,
+              height: 140,
+              width: 105,
               imageUrl: thumbnail ?? "",
               imageBuilder: (context, imageProvider) => Container(
                 decoration: BoxDecoration(
-                  // borderRadius: const BorderRadius.only(
-                  //     topLeft: Radius.circular(15),
-                  //     bottomLeft: Radius.circular(15),
-                  //     bottomRight: Radius.circular(8),
-                  //     topRight: Radius.circular(8)
-                  //     ),
                   borderRadius: BorderRadius.circular(15),
                   image: DecorationImage(
                     image: imageProvider,
@@ -55,8 +54,8 @@ class BookInfoCard extends StatelessWidget {
               ),
               placeholder: (context, url) => Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  color: "#F8C0C8".toColor(),
+                  borderRadius: BorderRadius.circular(15),
+                  color: Theme.of(context).colorScheme.surfaceVariant,
                 ),
                 height: 120,
                 width: 90,
@@ -64,8 +63,8 @@ class BookInfoCard extends StatelessWidget {
               errorWidget: (context, url, error) {
                 return Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: "#F8C0C8".toColor(),
+                    borderRadius: BorderRadius.circular(15),
+                    color: Theme.of(context).colorScheme.surfaceVariant,
                   ),
                   height: 120,
                   width: 90,
@@ -77,7 +76,7 @@ class BookInfoCard extends StatelessWidget {
             ),
             Expanded(
                 child: Padding(
-              padding: const EdgeInsets.all(5),
+              padding: const EdgeInsets.all(18),
               child: SizedBox(
                 width: double.infinity,
                 child: Column(
@@ -87,29 +86,33 @@ class BookInfoCard extends StatelessWidget {
                     Text(
                       title,
                       style: const TextStyle(
-                        fontSize: 15,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                         // color: Colors.black,
                       ),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
                     ),
-                    Text(
-                      publisher,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        // color: "#4D4D4D".toColor(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Text(
+                        publisher,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          // color: "#4D4D4D".toColor(),
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
                       ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
                     ),
                     Text(
                       author,
                       style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                        color: "#7B7B7B".toColor(),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        // color: "#7B7B7B".toColor(),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,

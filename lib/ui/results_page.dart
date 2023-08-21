@@ -46,7 +46,7 @@ class ResultPage extends ConsumerWidget {
                   //   child: TitleText("Results"),
                   // ),
                   SliverPadding(
-                    padding: const EdgeInsets.only(left: 5, right: 5, top: 10),
+                    padding: const EdgeInsets.only(left: 5, right: 5, top: 15),
                     sliver: SliverList(
                       delegate: SliverChildListDelegate(data
                           .map((i) => BookInfoCard(
@@ -58,7 +58,8 @@ class ResultPage extends ConsumerWidget {
                                 onClick: () {
                                   Navigator.push(context, MaterialPageRoute(
                                       builder: (BuildContext context) {
-                                    return BookInfoPage(url: i.link);
+                                    return BookInfoPage(
+                                        url: i.link, title: i.title);
                                   }));
                                 },
                               ))
@@ -111,22 +112,14 @@ class ResultPage extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.only(left: 5, right: 5, top: 10),
-                child: TitleText("Results"),
-              ),
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Center(
-                        child: SizedBox(
-                      width: 25,
-                      height: 25,
-                      child: CircularProgressIndicator(
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
+                        child: CircularProgressIndicator(
+                      color: Theme.of(context).colorScheme.secondary,
                     ))
                   ],
                 ),
