@@ -7,17 +7,18 @@ import 'package:openlib/ui/components/book_info_widget.dart';
 import 'package:openlib/ui/components/file_buttons_widget.dart';
 
 class BookPage extends StatelessWidget {
-  const BookPage({Key? key, required this.id}) : super(key: key);
+  const BookPage({Key? key, required this.id, required this.title})
+      : super(key: key);
 
   final String id;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: const Text("Openlib"),
-        titleTextStyle: Theme.of(context).textTheme.displayLarge,
+        title: Text(title),
+        titleSpacing: 0,
       ),
       body: Consumer(
         builder: (BuildContext context, WidgetRef ref, _) {
@@ -42,12 +43,8 @@ class BookPage extends StatelessWidget {
                   );
                 } else {
                   return Center(
-                      child: SizedBox(
-                    width: 25,
-                    height: 25,
-                    child: CircularProgressIndicator(
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
+                      child: CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.secondary,
                   ));
                 }
               });
