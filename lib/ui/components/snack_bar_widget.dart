@@ -5,14 +5,14 @@ void showSnackBar({required BuildContext context, required String message}) {
     content: Text(
       message,
       style: const TextStyle(
-        fontSize: 11,
-        fontWeight: FontWeight.bold,
-        color: Colors.white,
+        fontSize: 12,
+        // fontWeight: FontWeight.bold,
+        // color: Colors.white,
       ),
       textAlign: TextAlign.center,
     ),
     // ignore: use_build_context_synchronously
-    backgroundColor: Theme.of(context).colorScheme.secondary,
+    // backgroundColor: Theme.of(context).colorScheme.secondary,
     width: 300,
     shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(50))),
