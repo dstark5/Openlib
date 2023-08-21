@@ -19,7 +19,7 @@ class TrendingPage extends ConsumerWidget {
     final trendingBooks = ref.watch(getTrendingBooks);
     return trendingBooks.when(data: (data) {
       return Padding(
-        padding: const EdgeInsets.only(left: 5, right: 5, top: 10),
+        padding: const EdgeInsets.only(left: 5, right: 5, top: 0),
         child: CustomScrollView(
           slivers: [
             const SliverToBoxAdapter(
@@ -37,6 +37,13 @@ class TrendingPage extends ConsumerWidget {
                 delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int index) {
                     return Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        side: BorderSide(
+                          color: Theme.of(context).colorScheme.surfaceVariant,
+                          width: 1,
+                        ),
+                      ),
                       shadowColor: Colors.black.withOpacity(0),
                       // shape: const RoundedRectangleBorder(
                       //     borderRadius:
@@ -85,7 +92,9 @@ class TrendingPage extends ConsumerWidget {
                                   return Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(5),
-                                      color: Colors.grey,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .surfaceVariant,
                                     ),
                                     height: imageHeight,
                                     width: imageWidth,
@@ -96,14 +105,14 @@ class TrendingPage extends ConsumerWidget {
                                 },
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(top: 4),
+                                padding: const EdgeInsets.only(top: 8),
                                 child: SizedBox(
                                   width: imageWidth,
                                   child: Text(
                                     data[index].title!,
                                     style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400),
                                     maxLines: 2,
                                   ),
                                 ),
