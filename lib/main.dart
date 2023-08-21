@@ -39,14 +39,14 @@ class MyApp extends StatelessWidget {
     return DynamicColorBuilder(
         builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
       return MaterialApp(
-        builder: (BuildContext context, Widget? child) {
-          return MediaQuery(
-            data: MediaQuery.of(context).copyWith(
-              textScaleFactor: 1.0,
-            ),
-            child: child!,
-          );
-        },
+        // builder: (BuildContext context, Widget? child) {
+        //   return MediaQuery(
+        //     data: MediaQuery.of(context).copyWith(
+        //       textScaleFactor: 1.0,
+        //     ),
+        //     child: child!,
+        //   );
+        // },
         debugShowCheckedModeBanner: false,
         title: 'Openlib',
         theme: ThemeData(
