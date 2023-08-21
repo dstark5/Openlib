@@ -12,10 +12,10 @@ class BookInfoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
+      // physics: const BouncingScrollPhysics(),
       scrollDirection: Axis.vertical,
       child: Padding(
-        padding: const EdgeInsets.only(left: 15, right: 15, top: 10),
+        padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -24,60 +24,59 @@ class BookInfoWidget extends StatelessWidget {
               width: double.infinity,
               height: 30,
             ),
-            Center(
-              child: CachedNetworkImage(
-                height: 230,
-                width: 170,
-                imageUrl: data.thumbnail,
-                imageBuilder: (context, imageProvider) => Container(
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    image: DecorationImage(
-                      image: imageProvider,
-                      fit: BoxFit.fill,
-                    ),
+            CachedNetworkImage(
+              height: 240,
+              width: 180,
+              imageUrl: data.thumbnail,
+              imageBuilder: (context, imageProvider) => Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(15)),
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: BoxFit.fill,
                   ),
                 ),
-                placeholder: (context, url) => Container(
+              ),
+              placeholder: (context, url) => Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.grey,
+                ),
+                height: 240,
+                width: 180,
+              ),
+              errorWidget: (context, url, error) {
+                return Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.grey,
                   ),
                   height: 230,
                   width: 170,
-                ),
-                errorWidget: (context, url, error) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.grey,
-                    ),
-                    height: 230,
-                    width: 170,
-                    child: const Center(
-                      child: Icon(Icons.image_rounded),
-                    ),
-                  );
-                },
-              ),
+                  child: const Center(
+                    child: Icon(Icons.image_rounded),
+                  ),
+                );
+              },
             ),
             _TopPaddedText(
               text: data.title,
-              fontSize: 19,
+              fontSize: 22,
               topPadding: 15,
-              color: Colors.black,
+              fontWeight: FontWeight.w600,
+              // color: Colors.black,
               maxLines: 7,
             ),
             _TopPaddedText(
               text: data.publisher ?? "unknown",
-              fontSize: 15,
+              fontSize: 17,
               topPadding: 7,
-              color: "#595E60".toColor(),
+              color: Theme.of(context).colorScheme.onSecondaryContainer,
               maxLines: 4,
             ),
             _TopPaddedText(
               text: data.author ?? "unknown",
-              fontSize: 13,
+              fontSize: 20,
               topPadding: 7,
               color: "#7F7F7F".toColor(),
               maxLines: 3,
@@ -91,33 +90,41 @@ class BookInfoWidget extends StatelessWidget {
             ),
             // child slot of page
             child,
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Description",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w900,
-                    color: Theme.of(context).colorScheme.tertiary,
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Description",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 15, bottom: 10),
+                        child: Text(
+                          data.description ?? "",
+                          style: const TextStyle(
+                            fontSize: 16,
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 7, bottom: 10),
-                  child: Text(
-                    data.description ?? "",
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                      color: "#6B6B6B".toColor(),
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                )
-              ],
+              ),
             )
           ],
         ),
@@ -130,14 +137,16 @@ class _TopPaddedText extends StatelessWidget {
   final String text;
   final double fontSize;
   final double topPadding;
-  final Color color;
+  final Color? color;
   final int maxLines;
+  final FontWeight fontWeight;
 
   const _TopPaddedText(
       {required this.text,
       required this.fontSize,
       required this.topPadding,
-      required this.color,
+      this.color,
+      this.fontWeight = FontWeight.w400,
       required this.maxLines,
       Key? key})
       : super(key: key);
@@ -150,9 +159,9 @@ class _TopPaddedText extends StatelessWidget {
         text,
         style: TextStyle(
           fontSize: fontSize,
-          fontWeight: FontWeight.w900,
+          fontWeight: fontWeight,
           color: color,
-          letterSpacing: 0.5,
+          // letterSpacing: 0.5,
         ),
         overflow: TextOverflow.ellipsis,
         maxLines: maxLines,
