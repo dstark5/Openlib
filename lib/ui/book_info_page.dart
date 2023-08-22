@@ -23,18 +23,21 @@ import 'package:openlib/ui/components/file_buttons_widget.dart';
 import 'package:openlib/ui/components/snack_bar_widget.dart';
 
 class BookInfoPage extends ConsumerWidget {
-  const BookInfoPage({Key? key, required this.url}) : super(key: key);
+  const BookInfoPage({Key? key, required this.url, required this.title})
+      : super(key: key);
 
   final String url;
+  final String title;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bookInfo = ref.watch(bookInfoProvider(url));
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: const Text("Openlib"),
-        titleTextStyle: Theme.of(context).textTheme.displayLarge,
+        // backgroundColor: Theme.of(context).colorScheme.primary,
+        title: Text(title),
+        titleSpacing: 0,
+        // titleTextStyle: Theme.of(context).textTheme.displayLarge,
       ),
       body: bookInfo.when(
         data: (data) {
@@ -95,21 +98,23 @@ class _ActionButtonWidgetState extends ConsumerState<ActionButtonWidget> {
         } else {
           return Padding(
             padding: const EdgeInsets.only(top: 21, bottom: 21),
-            child: TextButton(
-              style: TextButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.secondary,
-                  textStyle: const TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.white,
-                  )),
+            child: ElevatedButton(
+              // style: ElevatedButton.styleFrom(
+              //     // backgroundColor: Theme.of(context).colorScheme.secondary,
+              //     textStyle: const TextStyle(
+              //   // fontSize: 13,
+              //   fontWeight: FontWeight.w500,
+              //   // color: Colors.white,
+              // )),
               onPressed: () async {
                 await downloadFileWidget(ref, context, widget.data);
               },
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text('Add To My Library'),
-              ),
+              child: const Text('Add To My Library',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    // color: Colors.white,
+                  )),
             ),
           );
         }
@@ -190,111 +195,33 @@ class _ShowDialog extends ConsumerWidget {
       Navigator.of(context).pop();
     }
 
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Container(
-            width: double.infinity,
-            height: 255,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              color: Colors.white,
-            ),
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Text(
-                      "Downloading Book",
-                      style: TextStyle(
-                          fontSize: 19,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 54, 54, 54),
-                          decoration: TextDecoration.none),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Text(
-                      title,
-                      style: const TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black54,
-                          decoration: TextDecoration.none),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Text(
-                          '$downloadedFileSize/$fileSize',
-                          style: TextStyle(
-                              fontSize: 9,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.secondary,
-                              decoration: TextDecoration.none,
-                              letterSpacing: 1),
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          textAlign: TextAlign.start,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(50)),
-                      child: LinearProgressIndicator(
-                        color: Theme.of(context).colorScheme.secondary,
-                        backgroundColor: Colors.black26,
-                        value: downloadProgress,
-                        minHeight: 4,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        TextButton(
-                          style: TextButton.styleFrom(
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.secondary,
-                              textStyle: const TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.w900,
-                                color: Colors.white,
-                              )),
-                          onPressed: () {
-                            ref.read(cancelCurrentDownload).cancel();
-                            Navigator.of(context).pop();
-                          },
-                          child: const Padding(
-                            padding: EdgeInsets.all(3.0),
-                            child: Text('Cancel'),
-                          ),
-                        )
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
+    return AlertDialog(
+      title: const Text("Downloading Book"),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(title),
+          const SizedBox(
+            height: 20,
           ),
+          LinearProgressIndicator(
+            value: downloadProgress,
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Text(
+            '$downloadedFileSize/$fileSize',
+          )
+        ],
+      ),
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            ref.read(cancelCurrentDownload).cancel();
+            Navigator.pop(context, 'Cancel');
+          },
+          child: const Text('Cancel'),
         ),
       ],
     );

@@ -38,9 +38,9 @@ class _PdfViewState extends ConsumerState<PdfView> {
     }, loading: () {
       return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.primary,
+          // backgroundColor: Theme.of(context).colorScheme.primary,
           title: const Text("Openlib"),
-          titleTextStyle: Theme.of(context).textTheme.displayLarge,
+          // titleTextStyle: Theme.of(context).textTheme.displayLarge,
         ),
         body: Center(
             child: SizedBox(
@@ -111,9 +111,10 @@ class _PdfViewerState extends ConsumerState<PdfViewer> {
     final totalPages = ref.watch(totalPdfPage);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        // backgroundColor: Theme.of(context).colorScheme.primary,
         title: const Text("Openlib"),
-        titleTextStyle: Theme.of(context).textTheme.displayLarge,
+        titleSpacing: 0,
+        // titleTextStyle: Theme.of(context).textTheme.displayLarge,
         actions: isMobile
             ? [
                 IconButton(
@@ -186,12 +187,8 @@ class _PdfViewerState extends ConsumerState<PdfViewer> {
               },
               loading: () {
                 return Center(
-                    child: SizedBox(
-                  width: 25,
-                  height: 25,
-                  child: CircularProgressIndicator(
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
+                    child: CircularProgressIndicator(
+                  color: Theme.of(context).colorScheme.secondary,
                 ));
               },
             )

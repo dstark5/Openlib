@@ -1,4 +1,6 @@
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:io' show Platform;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
@@ -34,45 +36,30 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      builder: (BuildContext context, Widget? child) {
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            textScaleFactor: 1.0,
-          ),
-          child: child!,
-        );
-      },
-      debugShowCheckedModeBanner: false,
-      title: 'Openlib',
-      theme: ThemeData(
-          primaryColor: Colors.white,
-          colorScheme: ColorScheme.light(
-            primary: Colors.white,
-            secondary: '#FB0101'.toColor(),
-            tertiary: Colors.black,
-            tertiaryContainer: '#F2F2F2'.toColor(),
-          ),
-          textTheme: const TextTheme(
-            displayLarge: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 21,
-            ),
-            displayMedium: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          fontFamily: GoogleFonts.nunito().fontFamily,
+    return DynamicColorBuilder(
+        builder: (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
+      return MaterialApp(
+        // builder: (BuildContext context, Widget? child) {
+        //   return MediaQuery(
+        //     data: MediaQuery.of(context).copyWith(
+        //       textScaleFactor: 1.0,
+        //     ),
+        //     child: child!,
+        //   );
+        // },
+        debugShowCheckedModeBanner: false,
+        title: 'Openlib',
+        theme: ThemeData(
           useMaterial3: true,
-          textSelectionTheme: TextSelectionThemeData(
-              selectionColor: '#FB0101'.toColor(),
-              selectionHandleColor: '#FB0101'.toColor())),
-      home: const HomePage(),
-    );
+          colorScheme: lightDynamic,
+        ),
+        darkTheme: ThemeData(
+          useMaterial3: true,
+          colorScheme: darkDynamic,
+        ),
+        home: const HomePage(),
+      );
+    });
   }
 }
 
@@ -94,67 +81,37 @@ class _HomePageState extends ConsumerState<HomePage> {
   Widget build(BuildContext context) {
     final selectedIndex = ref.watch(selectedIndexProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        title: const Text("Openlib"),
-        titleTextStyle: Theme.of(context).textTheme.displayLarge,
-      ),
-      body: _widgetOptions.elementAt(selectedIndex),
-      bottomNavigationBar: SafeArea(
-        child: GNav(
-          rippleColor: Colors.redAccent,
-          backgroundColor: Colors.black,
-          haptic: true,
-          tabBorderRadius: 50,
-          tabActiveBorder: Border.all(
-            color: Theme.of(context).colorScheme.secondary,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+          systemNavigationBarColor: ElevationOverlay.applySurfaceTint(
+              Theme.of(context).colorScheme.surface,
+              Theme.of(context).colorScheme.surfaceTint,
+              3)),
+      child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
+        appBar: AppBar(
+          leading:
+              Icon(Icons.book, color: Theme.of(context).colorScheme.primary),
+          title: const Text(
+            "Openlib",
+            style: TextStyle(fontWeight: FontWeight.w600),
           ),
-          tabMargin: const EdgeInsets.fromLTRB(13, 6, 13, 2.5),
-          curve: Curves.easeInOut, // tab animation curves
-          duration: const Duration(milliseconds: 150),
-          gap: 5,
-          color: const Color.fromARGB(255, 255, 255, 255),
-          activeColor: const Color.fromARGB(255, 255, 255, 255),
-          iconSize: 21, // tab button icon size
-          tabBackgroundColor: Theme.of(context).colorScheme.secondary,
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 6.5),
-          tabs: const [
-            GButton(
-              icon: Icons.trending_up,
-              text: 'Trending',
-              iconColor: Colors.white,
-              textStyle: TextStyle(
-                fontWeight: FontWeight.w900,
-                color: Colors.white,
-                fontSize: 13,
-              ),
-            ),
-            GButton(
-              icon: Icons.search,
-              text: 'Search',
-              iconColor: Colors.white,
-              textStyle: TextStyle(
-                fontWeight: FontWeight.w900,
-                color: Colors.white,
-                fontSize: 13,
-              ),
-            ),
-            GButton(
-              icon: Icons.collections_bookmark,
-              text: 'My Library',
-              iconColor: Colors.white,
-              textStyle: TextStyle(
-                fontWeight: FontWeight.w900,
-                color: Colors.white,
-                fontSize: 13,
-              ),
-            ),
+          titleSpacing: 1,
+        ),
+        body: _widgetOptions.elementAt(selectedIndex),
+        bottomNavigationBar: NavigationBar(
+          destinations: const [
+            NavigationDestination(
+                icon: Icon(Icons.trending_up), label: "Trending"),
+            NavigationDestination(icon: Icon(Icons.search), label: "Search"),
+            NavigationDestination(
+                icon: Icon(Icons.collections_bookmark), label: "My Library"),
           ],
           selectedIndex: selectedIndex,
-          onTabChange: (index) async {
+          onDestinationSelected: (index) async {
             ref.read(selectedIndexProvider.notifier).state = index;
           },
+          labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         ),
       ),
     );

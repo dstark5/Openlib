@@ -24,7 +24,7 @@ class FileOpenAndDeleteButtons extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextButton(
+          FilledButton(
             style: TextButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.secondary,
                 textStyle: const TextStyle(
@@ -60,7 +60,7 @@ class FileOpenAndDeleteButtons extends StatelessWidget {
           const SizedBox(
             width: 10,
           ),
-          TextButton(
+          OutlinedButton(
             style: ButtonStyle(
               shape: MaterialStateProperty.all(
                 RoundedRectangleBorder(
@@ -82,14 +82,14 @@ class FileOpenAndDeleteButtons extends StatelessWidget {
                     );
                   });
             },
-            child: const Padding(
-              padding: EdgeInsets.all(5.3),
+            child: Padding(
+              padding: const EdgeInsets.all(5.3),
               child: Text(
                 'Delete',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ),

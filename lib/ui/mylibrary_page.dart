@@ -38,7 +38,7 @@ class MyLibraryPage extends ConsumerWidget {
                             onClick: () {
                               Navigator.push(context, MaterialPageRoute(
                                   builder: (BuildContext context) {
-                                return BookPage(id: i.id);
+                                return BookPage(id: i.id, title: i.title);
                               }));
                             }))
                         .toList()),
@@ -81,12 +81,8 @@ class MyLibraryPage extends ConsumerWidget {
       },
       loading: () {
         return Center(
-            child: SizedBox(
-          width: 25,
-          height: 25,
-          child: CircularProgressIndicator(
-            color: Theme.of(context).colorScheme.secondary,
-          ),
+            child: CircularProgressIndicator(
+          color: Theme.of(context).colorScheme.secondary,
         ));
       },
     );

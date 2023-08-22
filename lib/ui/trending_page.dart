@@ -19,7 +19,7 @@ class TrendingPage extends ConsumerWidget {
     final trendingBooks = ref.watch(getTrendingBooks);
     return trendingBooks.when(data: (data) {
       return Padding(
-        padding: const EdgeInsets.only(left: 5, right: 5, top: 10),
+        padding: const EdgeInsets.only(left: 5, right: 5, top: 0),
         child: CustomScrollView(
           slivers: [
             const SliverToBoxAdapter(
@@ -29,28 +29,37 @@ class TrendingPage extends ConsumerWidget {
               padding: const EdgeInsets.all(5),
               sliver: SliverGrid(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
+                  crossAxisCount: 2,
                   mainAxisSpacing: 10.0,
                   crossAxisSpacing: 13.0,
-                  mainAxisExtent: 205,
+                  mainAxisExtent: 220,
                 ),
                 delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int index) {
-                    return InkWell(
-                      onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (BuildContext context) {
-                          return ResultPage(
-                            searchQuery: data[index].title!,
-                          );
-                        }));
-                      },
-                      child: Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        color: const Color.fromARGB(255, 255, 255, 255),
+                    return Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        side: BorderSide(
+                          color: Theme.of(context).colorScheme.surfaceVariant,
+                          width: 1,
+                        ),
+                      ),
+                      shadowColor: Colors.black.withOpacity(0),
+                      // shape: const RoundedRectangleBorder(
+                      //     borderRadius:
+                      //         BorderRadius.all(Radius.circular(20.0))),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(10),
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(
+                              builder: (BuildContext context) {
+                            return ResultPage(
+                              searchQuery: data[index].title!,
+                            );
+                          }));
+                        },
                         child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               CachedNetworkImage(
@@ -60,12 +69,6 @@ class TrendingPage extends ConsumerWidget {
                                 imageBuilder: (context, imageProvider) =>
                                     Container(
                                   decoration: BoxDecoration(
-                                    boxShadow: const [
-                                      BoxShadow(
-                                          color: Colors.grey,
-                                          spreadRadius: 0.1,
-                                          blurRadius: 1)
-                                    ],
                                     borderRadius: const BorderRadius.all(
                                         Radius.circular(5)),
                                     image: DecorationImage(
@@ -77,7 +80,10 @@ class TrendingPage extends ConsumerWidget {
                                 placeholder: (context, url) => Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(5),
-                                    color: "#E3E8E9".toColor(),
+                                    // color: "#E3E8E9".toColor(),
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .surfaceVariant,
                                   ),
                                   height: imageHeight,
                                   width: imageWidth,
@@ -86,7 +92,9 @@ class TrendingPage extends ConsumerWidget {
                                   return Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(5),
-                                      color: Colors.grey,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .surfaceVariant,
                                     ),
                                     height: imageHeight,
                                     width: imageWidth,
@@ -97,14 +105,14 @@ class TrendingPage extends ConsumerWidget {
                                 },
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(top: 4),
+                                padding: const EdgeInsets.only(top: 8),
                                 child: SizedBox(
                                   width: imageWidth,
                                   child: Text(
                                     data[index].title!,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displayMedium,
+                                    style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400),
                                     maxLines: 2,
                                   ),
                                 ),
@@ -130,13 +138,13 @@ class TrendingPage extends ConsumerWidget {
         },
       );
     }, loading: () {
-      return Center(
+      return const Center(
           child: SizedBox(
         width: 25,
         height: 25,
         child: CircularProgressIndicator(
-          color: Theme.of(context).colorScheme.secondary,
-        ),
+            // color: Theme.of(context).colorScheme.secondary,
+            ),
       ));
     });
   }
