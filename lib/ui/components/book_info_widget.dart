@@ -24,40 +24,42 @@ class BookInfoWidget extends StatelessWidget {
               width: double.infinity,
               height: 30,
             ),
-            CachedNetworkImage(
-              height: 240,
-              width: 180,
-              imageUrl: data.thumbnail,
-              imageBuilder: (context, imageProvider) => Container(
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(15)),
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.fill,
-                  ),
-                ),
-              ),
-              placeholder: (context, url) => Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.grey,
-                ),
+            Center(
+              child: CachedNetworkImage(
                 height: 240,
                 width: 180,
-              ),
-              errorWidget: (context, url, error) {
-                return Container(
+                imageUrl: data.thumbnail,
+                imageBuilder: (context, imageProvider) => Container(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+                placeholder: (context, url) => Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.grey,
                   ),
-                  height: 230,
-                  width: 170,
-                  child: const Center(
-                    child: Icon(Icons.image_rounded),
-                  ),
-                );
-              },
+                  height: 240,
+                  width: 180,
+                ),
+                errorWidget: (context, url, error) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.grey,
+                    ),
+                    height: 230,
+                    width: 170,
+                    child: const Center(
+                      child: Icon(Icons.image_rounded),
+                    ),
+                  );
+                },
+              ),
             ),
             _TopPaddedText(
               text: data.title,

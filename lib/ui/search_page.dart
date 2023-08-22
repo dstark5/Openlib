@@ -65,7 +65,7 @@ class SearchPage extends ConsumerWidget {
                   filled: true,
                   // hintStyle: const TextStyle(
                   //     color: Colors.grey, fontWeight: FontWeight.bold),
-                  hintText: "Harry Potter and th...",
+                  hintText: "Search books ,author or ISBN",
                   // fillColor: Theme.of(context).colorScheme.primary,
                 ),
                 onSubmitted: (String value) => onSubmit(context, ref),
@@ -79,124 +79,93 @@ class SearchPage extends ConsumerWidget {
                 },
               ),
             ),
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 7, right: 7, top: 19),
-                  child: SizedBox(
-                    width: 200,
-                    child: DropdownButtonFormField(
-                      decoration: InputDecoration(
-                        labelText: 'Type',
-                        labelStyle: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.outline,
-                              width: 2),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(50)),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.outline,
-                              width: 2),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(50)),
-                        ),
-                      ),
-                      icon: const Icon(Icons.arrow_drop_down),
-                      value: dropdownTypeValue,
-                      items: typeValues.keys
-                          .toList()
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(
-                            value,
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (String? val) {
-                        ref.read(selectedTypeState.notifier).state = val ?? '';
-                      },
+            Padding(
+              padding: const EdgeInsets.only(left: 7, right: 7, top: 19),
+              child: SizedBox(
+                width: 250,
+                child: DropdownButtonFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Type',
+                    labelStyle: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.outline,
+                          width: 2),
+                      borderRadius: const BorderRadius.all(Radius.circular(50)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.outline,
+                          width: 2),
+                      borderRadius: const BorderRadius.all(Radius.circular(50)),
                     ),
                   ),
+                  icon: const Icon(Icons.arrow_drop_down),
+                  value: dropdownTypeValue,
+                  items: typeValues.keys
+                      .toList()
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(
+                        value,
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (String? val) {
+                    ref.read(selectedTypeState.notifier).state = val ?? '';
+                  },
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 7, right: 7, top: 19),
-                  child: SizedBox(
-                    width: 150,
-                    child: DropdownButtonFormField(
-                      decoration: InputDecoration(
-                        labelText: 'Sort by',
-                        labelStyle: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.outline,
-                              width: 2),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(50)),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.outline,
-                              width: 2),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(50)),
-                        ),
-                      ),
-                      value: dropdownSortValue,
-                      items: sortValues.keys
-                          .toList()
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(
-                            value,
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (String? val) {
-                        ref.read(selectedSortState.notifier).state = val ?? '';
-                      },
-                    ),
-                  ),
-                )
-              ],
+              ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-              child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(),
-                  onPressed: () {
-                    onSubmit(context, ref);
+              padding: const EdgeInsets.only(left: 7, right: 7, top: 19),
+              child: SizedBox(
+                width: 210,
+                child: DropdownButtonFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Sort by',
+                    labelStyle: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.outline,
+                          width: 2),
+                      borderRadius: const BorderRadius.all(Radius.circular(50)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.outline,
+                          width: 2),
+                      borderRadius: const BorderRadius.all(Radius.circular(50)),
+                    ),
+                  ),
+                  value: dropdownSortValue,
+                  items: sortValues.keys
+                      .toList()
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(
+                        value,
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (String? val) {
+                    ref.read(selectedSortState.notifier).state = val ?? '';
                   },
-                  child: const Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        "Search",
-                        style: TextStyle(fontSize: 14),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 8),
-                        child: Icon(Icons.search, size: 18),
-                      ),
-                    ],
-                  )),
-            )
+                ),
+              ),
+            ),
           ],
         ),
       ),

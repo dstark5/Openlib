@@ -11,8 +11,8 @@ class TitleText extends StatelessWidget {
       child: Text(
         text,
         style: const TextStyle(
-          fontSize: 40,
-          // fontWeight: FontWeight.w500,
+          fontSize: 25,
+          fontWeight: FontWeight.w500,
           // color: Theme.of(context).colorScheme.onInverseSurface,
         ),
       ),

@@ -27,7 +27,7 @@ class BookInfoCard extends StatelessWidget {
       shadowColor: Colors.black.withOpacity(0),
       margin: const EdgeInsets.only(bottom: 20),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(5),
         side: BorderSide(
           color: Theme.of(context).colorScheme.surfaceVariant,
           width: 1,
@@ -35,7 +35,7 @@ class BookInfoCard extends StatelessWidget {
       ),
       child: InkWell(
         onTap: onClick,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(5),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -45,7 +45,7 @@ class BookInfoCard extends StatelessWidget {
               imageUrl: thumbnail ?? "",
               imageBuilder: (context, imageProvider) => Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(5),
                   image: DecorationImage(
                     image: imageProvider,
                     fit: BoxFit.fill,
@@ -54,7 +54,7 @@ class BookInfoCard extends StatelessWidget {
               ),
               placeholder: (context, url) => Container(
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
+                  borderRadius: BorderRadius.circular(5),
                   color: Theme.of(context).colorScheme.surfaceVariant,
                 ),
                 height: 120,
@@ -63,7 +63,7 @@ class BookInfoCard extends StatelessWidget {
               errorWidget: (context, url, error) {
                 return Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(5),
                     color: Theme.of(context).colorScheme.surfaceVariant,
                   ),
                   height: 120,

@@ -29,96 +29,83 @@ class TrendingPage extends ConsumerWidget {
               padding: const EdgeInsets.all(5),
               sliver: SliverGrid(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
+                  crossAxisCount: 3,
                   mainAxisSpacing: 10.0,
                   crossAxisSpacing: 13.0,
-                  mainAxisExtent: 220,
+                  mainAxisExtent: 205,
                 ),
                 delegate: SliverChildBuilderDelegate(
                   (BuildContext context, int index) {
-                    return Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                        side: BorderSide(
-                          color: Theme.of(context).colorScheme.surfaceVariant,
-                          width: 1,
-                        ),
-                      ),
-                      shadowColor: Colors.black.withOpacity(0),
-                      // shape: const RoundedRectangleBorder(
-                      //     borderRadius:
-                      //         BorderRadius.all(Radius.circular(20.0))),
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(10),
-                        onTap: () {
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (BuildContext context) {
-                            return ResultPage(
-                              searchQuery: data[index].title!,
-                            );
-                          }));
-                        },
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              CachedNetworkImage(
-                                height: imageHeight,
-                                width: imageWidth,
-                                imageUrl: data[index].thumbnail!,
-                                imageBuilder: (context, imageProvider) =>
-                                    Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(5)),
-                                    image: DecorationImage(
-                                      image: imageProvider,
-                                      fit: BoxFit.fill,
-                                    ),
+                    return InkWell(
+                      borderRadius: BorderRadius.circular(10),
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (BuildContext context) {
+                          return ResultPage(
+                            searchQuery: data[index].title!,
+                          );
+                        }));
+                      },
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            CachedNetworkImage(
+                              height: imageHeight,
+                              width: imageWidth,
+                              imageUrl: data[index].thumbnail!,
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(5)),
+                                  image: DecorationImage(
+                                    image: imageProvider,
+                                    fit: BoxFit.fill,
                                   ),
                                 ),
-                                placeholder: (context, url) => Container(
+                              ),
+                              placeholder: (context, url) => Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  // color: "#E3E8E9".toColor(),
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .surfaceVariant,
+                                ),
+                                height: imageHeight,
+                                width: imageWidth,
+                              ),
+                              errorWidget: (context, url, error) {
+                                return Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(5),
-                                    // color: "#E3E8E9".toColor(),
                                     color: Theme.of(context)
                                         .colorScheme
                                         .surfaceVariant,
                                   ),
                                   height: imageHeight,
                                   width: imageWidth,
-                                ),
-                                errorWidget: (context, url, error) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .surfaceVariant,
-                                    ),
-                                    height: imageHeight,
-                                    width: imageWidth,
-                                    child: const Center(
-                                      child: Icon(Icons.image_rounded),
-                                    ),
-                                  );
-                                },
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 8),
-                                child: SizedBox(
-                                  width: imageWidth,
-                                  child: Text(
-                                    data[index].title!,
-                                    style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400),
-                                    maxLines: 2,
+                                  child: const Center(
+                                    child: Icon(Icons.image_rounded),
                                   ),
+                                );
+                              },
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: SizedBox(
+                                width: imageWidth,
+                                child: Text(
+                                  data[index].title!,
+                                  style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400),
+                                  maxLines: 2,
                                 ),
                               ),
-                            ]),
-                      ),
+                            ),
+                          ]),
                     );
                   },
                   childCount: data.length,
