@@ -75,10 +75,15 @@ class _PdfViewerState extends ConsumerState<PdfViewer> {
   }
 
   @override
-  void dispose() {
+  void deactivate() {
     if (Platform.isAndroid || Platform.isIOS) {
       savePdfState(widget.fileName, ref);
     }
+    super.deactivate();
+  }
+
+  @override
+  void dispose() {
     super.dispose();
   }
 

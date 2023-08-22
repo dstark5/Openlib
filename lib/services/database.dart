@@ -144,6 +144,14 @@ class MyLibraryDb {
     );
   }
 
+  Future<void> deleteBookState(String fileName) async {
+    await dbInstance.delete(
+      'bookposition',
+      where: 'fileName = ?',
+      whereArgs: [fileName],
+    );
+  }
+
   Future<String?> getBookState(String fileName) async {
     List<Map<String, dynamic>> data = await dbInstance
         .query('bookposition', where: 'fileName = ?', whereArgs: [fileName]);
@@ -151,7 +159,6 @@ class MyLibraryDb {
       return {'fileName': data[i]['fileName'], 'position': data[i]['position']};
     });
     if (dataList.isNotEmpty) {
-      print(dataList);
       return dataList[0]['position'];
     } else {
       return null;

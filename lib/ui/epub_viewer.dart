@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:epub_view/epub_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:openlib/state/state.dart' show filePathProvider;
+import 'package:openlib/state/state.dart'
+    show filePathProvider, saveEpubState, getBookPosition;
 
 class EpubViewerWidget extends ConsumerStatefulWidget {
   const EpubViewerWidget({super.key, required this.fileName});
@@ -37,13 +38,14 @@ class _EpubViewState extends ConsumerState<EpubViewerWidget> {
           titleTextStyle: Theme.of(context).textTheme.displayLarge,
         ),
         body: Center(
-            child: SizedBox(
-          width: 25,
-          height: 25,
-          child: CircularProgressIndicator(
-            color: Theme.of(context).colorScheme.secondary,
+          child: SizedBox(
+            width: 25,
+            height: 25,
+            child: CircularProgressIndicator(
+              color: Theme.of(context).colorScheme.secondary,
+            ),
           ),
-        )),
+        ),
       );
     });
   }
@@ -63,6 +65,7 @@ class EpubViewer extends ConsumerStatefulWidget {
 
 class _EpubViewerState extends ConsumerState<EpubViewer> {
   late EpubController _epubReaderController;
+  String? epubConf;
 
   @override
   void initState() {
@@ -73,6 +76,14 @@ class _EpubViewerState extends ConsumerState<EpubViewer> {
   }
 
   @override
+  void deactivate() {
+    if (Platform.isAndroid || Platform.isIOS) {
+      saveEpubState(widget.fileName, epubConf, ref);
+    }
+    super.deactivate();
+  }
+
+  @override
   void dispose() {
     _epubReaderController.dispose();
     super.dispose();
@@ -80,6 +91,7 @@ class _EpubViewerState extends ConsumerState<EpubViewer> {
 
   @override
   Widget build(BuildContext context) {
+    final position = ref.watch(getBookPosition(widget.fileName));
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
@@ -89,14 +101,48 @@ class _EpubViewerState extends ConsumerState<EpubViewer> {
       endDrawer: Drawer(
         child: EpubViewTableOfContents(controller: _epubReaderController),
       ),
-      body: EpubView(
-        onDocumentLoaded: (doc) {},
-        onChapterChanged: (value) {},
-        builders: EpubViewBuilders<DefaultBuilderOptions>(
-          options: const DefaultBuilderOptions(),
-          chapterDividerBuilder: (_) => const Divider(),
-        ),
-        controller: _epubReaderController,
+      body: position.when(
+        data: (data) {
+          return EpubView(
+            onDocumentLoaded: (doc) {
+              Future.delayed(const Duration(milliseconds: 20), () {
+                String pos = data ?? "";
+                _epubReaderController.gotoEpubCfi(pos);
+              });
+            },
+            onChapterChanged: (value) {
+              epubConf = _epubReaderController.generateEpubCfi();
+            },
+            builders: EpubViewBuilders<DefaultBuilderOptions>(
+              options: const DefaultBuilderOptions(),
+              chapterDividerBuilder: (_) => const Divider(),
+            ),
+            controller: _epubReaderController,
+          );
+        },
+        error: (err, _) {
+          return EpubView(
+            onChapterChanged: (value) {
+              epubConf = _epubReaderController.generateEpubCfi();
+            },
+            builders: EpubViewBuilders<DefaultBuilderOptions>(
+              options: const DefaultBuilderOptions(),
+              chapterDividerBuilder: (_) => const Divider(),
+            ),
+            controller: _epubReaderController,
+          );
+        },
+        loading: () {
+          return Center(
+            child: SizedBox(
+              width: 25,
+              height: 25,
+              child: CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            ),
+          );
+        },
       ),
     );
   }

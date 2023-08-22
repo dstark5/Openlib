@@ -35,6 +35,7 @@ Future<void> deleteFileWithDbData(
     String appDirPath = await getAppDirectoryPath;
     await deleteFile('$appDirPath/$fileName');
     await ref.read(dbProvider).delete(md5);
+    await ref.read(dbProvider).deleteBookState(fileName);
     // ignore: unused_result
     ref.refresh(myLibraryProvider);
   } catch (e) {

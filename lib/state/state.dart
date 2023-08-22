@@ -130,6 +130,12 @@ Future<void> savePdfState(String fileName, WidgetRef ref) async {
   await ref.watch(dbProvider).saveBookState(fileName, position);
 }
 
+Future<void> saveEpubState(
+    String fileName, String? position, WidgetRef ref) async {
+  String pos = position ?? '';
+  await ref.watch(dbProvider).saveBookState(fileName, pos);
+}
+
 final getBookPosition =
     FutureProvider.family.autoDispose<String?, String>((ref, fileName) async {
   return await ref.read(dbProvider).getBookState(fileName);
