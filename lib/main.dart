@@ -3,16 +3,15 @@ import 'dart:io' show Platform;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-import 'package:openlib/ui/extensions.dart';
+import 'package:openlib/ui/themes.dart';
 import 'package:openlib/ui/trending_page.dart';
 import 'package:openlib/ui/search_page.dart';
 import 'package:openlib/ui/mylibrary_page.dart';
 import 'package:openlib/ui/settings_page.dart';
 import 'package:openlib/services/database.dart' show Sqlite, MyLibraryDb;
 import 'package:openlib/state/state.dart'
-    show selectedIndexProvider, dbProvider;
+    show selectedIndexProvider, themeModeProvider, dbProvider;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,10 +30,10 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
       builder: (BuildContext context, Widget? child) {
         return MediaQuery(
@@ -46,32 +45,9 @@ class MyApp extends StatelessWidget {
       },
       debugShowCheckedModeBanner: false,
       title: 'Openlib',
-      theme: ThemeData(
-          primaryColor: Colors.white,
-          colorScheme: ColorScheme.light(
-            primary: Colors.white,
-            secondary: '#FB0101'.toColor(),
-            tertiary: Colors.black,
-            tertiaryContainer: '#F2F2F2'.toColor(),
-          ),
-          textTheme: const TextTheme(
-            displayLarge: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-              fontSize: 21,
-            ),
-            displayMedium: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          fontFamily: GoogleFonts.nunito().fontFamily,
-          useMaterial3: true,
-          textSelectionTheme: TextSelectionThemeData(
-              selectionColor: '#FB0101'.toColor(),
-              selectionHandleColor: '#FB0101'.toColor())),
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: ref.watch(themeModeProvider),
       home: const HomePage(),
     );
   }

@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:openlib/services/database.dart';
 import 'package:dio/dio.dart';
@@ -30,6 +31,8 @@ Map<String, String> sortValues = {
 };
 
 final selectedIndexProvider = StateProvider<int>((ref) => 0);
+
+final themeModeProvider = StateProvider<ThemeMode>((ref) => ThemeMode.light);
 
 final selectedTypeState = StateProvider<String>((ref) => "All");
 

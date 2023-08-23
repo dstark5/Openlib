@@ -81,10 +81,10 @@ class BookInfoCard extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        color: Theme.of(context).colorScheme.tertiary,
                       ),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
@@ -94,7 +94,8 @@ class BookInfoCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: "#4D4D4D".toColor(),
+                        color:
+                            Theme.of(context).textTheme.headlineMedium?.color,
                       ),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
@@ -104,7 +105,7 @@ class BookInfoCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
-                        color: "#7B7B7B".toColor(),
+                        color: Theme.of(context).textTheme.headlineSmall?.color,
                       ),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,

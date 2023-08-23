@@ -46,10 +46,9 @@ class TrendingPage extends ConsumerWidget {
                           );
                         }));
                       },
-                      child: Container(
+                      child: SizedBox(
                         width: double.infinity,
                         height: double.infinity,
-                        color: const Color.fromARGB(255, 255, 255, 255),
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,

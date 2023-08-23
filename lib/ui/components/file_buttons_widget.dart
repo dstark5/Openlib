@@ -27,10 +27,10 @@ class FileOpenAndDeleteButtons extends StatelessWidget {
           TextButton(
             style: TextButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.secondary,
-                textStyle: const TextStyle(
+                textStyle: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w900,
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.primary,
                 )),
             onPressed: () => {
               if (format == 'pdf')
@@ -82,14 +82,14 @@ class FileOpenAndDeleteButtons extends StatelessWidget {
                     );
                   });
             },
-            child: const Padding(
-              padding: EdgeInsets.all(5.3),
+            child: Padding(
+              padding: const EdgeInsets.all(5.3),
               child: Text(
                 'Delete',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
+                  color: Theme.of(context).colorScheme.tertiary,
                 ),
               ),
             ),

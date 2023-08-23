@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:openlib/ui/components/page_title_widget.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:openlib/state/state.dart' show themeModeProvider;
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends ConsumerWidget {
   const SettingsPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.only(left: 5, right: 5, top: 10),
       child: SingleChildScrollView(
@@ -28,56 +30,21 @@ class SettingsPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        "Material You",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      Switch(
-                        // This bool value toggles the switch.
-                        value: true,
-                        activeColor: Colors.red,
-                        onChanged: (bool value) {
-                          // This is called when the user toggles the switch.
-                          print(value);
-                        },
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 5, right: 5, top: 10),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  color: Theme.of(context).colorScheme.tertiaryContainer,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
+                      Text(
                         "Dark Mode",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                          color: Theme.of(context).colorScheme.tertiary,
                         ),
                       ),
                       Switch(
                         // This bool value toggles the switch.
-                        value: false,
+                        value: ref.watch(themeModeProvider) == ThemeMode.dark,
                         activeColor: Colors.red,
                         onChanged: (bool value) {
-                          // This is called when the user toggles the switch.
-                          print(value);
+                          ref.read(themeModeProvider.notifier).state =
+                              value == true ? ThemeMode.dark : ThemeMode.light;
                         },
                       )
                     ],

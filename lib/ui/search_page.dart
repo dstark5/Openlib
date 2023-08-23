@@ -42,12 +42,14 @@ class SearchPage extends ConsumerWidget {
                 cursorColor: Theme.of(context).colorScheme.secondary,
                 decoration: InputDecoration(
                   enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black45, width: 2),
+                    borderSide: BorderSide(color: Colors.grey, width: 2),
                     borderRadius: BorderRadius.all(Radius.circular(50)),
                   ),
-                  focusedBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black54, width: 2),
-                    borderRadius: BorderRadius.all(Radius.circular(50)),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.tertiary,
+                        width: 2),
+                    borderRadius: const BorderRadius.all(Radius.circular(50)),
                   ),
                   suffixIcon: IconButton(
                     padding: const EdgeInsets.only(right: 5),
@@ -88,12 +90,14 @@ class SearchPage extends ConsumerWidget {
                       color: Theme.of(context).colorScheme.secondary,
                     ),
                     enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black54, width: 2),
+                      borderSide: BorderSide(color: Colors.grey, width: 2),
                       borderRadius: BorderRadius.all(Radius.circular(50)),
                     ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black54, width: 2),
-                      borderRadius: BorderRadius.all(Radius.circular(50)),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.tertiary,
+                          width: 2),
+                      borderRadius: const BorderRadius.all(Radius.circular(50)),
                     ),
                   ),
                   icon: const Icon(Icons.arrow_drop_down),
@@ -129,12 +133,14 @@ class SearchPage extends ConsumerWidget {
                       color: Theme.of(context).colorScheme.secondary,
                     ),
                     enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black45, width: 2),
+                      borderSide: BorderSide(color: Colors.grey, width: 2),
                       borderRadius: BorderRadius.all(Radius.circular(50)),
                     ),
-                    focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black54, width: 2),
-                      borderRadius: BorderRadius.all(Radius.circular(50)),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.tertiary,
+                          width: 2),
+                      borderRadius: const BorderRadius.all(Radius.circular(50)),
                     ),
                   ),
                   value: dropdownSortValue,

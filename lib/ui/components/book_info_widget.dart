@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:openlib/ui/extensions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class BookInfoWidget extends StatelessWidget {
@@ -65,28 +64,32 @@ class BookInfoWidget extends StatelessWidget {
               text: data.title,
               fontSize: 19,
               topPadding: 15,
-              color: Colors.black,
+              color: Theme.of(context).colorScheme.tertiary,
               maxLines: 7,
             ),
             _TopPaddedText(
               text: data.publisher ?? "unknown",
               fontSize: 15,
               topPadding: 7,
-              color: "#595E60".toColor(),
+              color: Theme.of(context).textTheme.headlineMedium!.color!,
               maxLines: 4,
             ),
             _TopPaddedText(
               text: data.author ?? "unknown",
               fontSize: 13,
               topPadding: 7,
-              color: "#7F7F7F".toColor(),
+              color: Theme.of(context).textTheme.headlineSmall!.color!,
               maxLines: 3,
             ),
             _TopPaddedText(
               text: data.info ?? "",
               fontSize: 11,
               topPadding: 9,
-              color: "#A9A8A2".toColor(),
+              color: Theme.of(context)
+                  .textTheme
+                  .headlineSmall!
+                  .color!
+                  .withAlpha(155),
               maxLines: 4,
             ),
             // child slot of page
@@ -112,7 +115,8 @@ class BookInfoWidget extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
-                      color: "#6B6B6B".toColor(),
+                      color:
+                          Theme.of(context).colorScheme.tertiary.withAlpha(150),
                       letterSpacing: 1.5,
                     ),
                   ),
