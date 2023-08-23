@@ -105,7 +105,8 @@ class SearchPage extends ConsumerWidget {
                       value: value,
                       child: Text(
                         value,
-                        style: const TextStyle(fontSize: 12),
+                        style: const TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.bold),
                       ),
                     );
                   }).toList(),
@@ -144,7 +145,8 @@ class SearchPage extends ConsumerWidget {
                       value: value,
                       child: Text(
                         value,
-                        style: const TextStyle(fontSize: 12),
+                        style: const TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.bold),
                       ),
                     );
                   }).toList(),
