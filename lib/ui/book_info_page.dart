@@ -200,7 +200,7 @@ class _ShowDialog extends ConsumerWidget {
             height: 255,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.tertiaryContainer,
             ),
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
             child: SingleChildScrollView(
@@ -208,14 +208,14 @@ class _ShowDialog extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.all(8),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
                     child: Text(
                       "Downloading Book",
                       style: TextStyle(
                           fontSize: 19,
                           fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 54, 54, 54),
+                          color: Theme.of(context).colorScheme.tertiary,
                           decoration: TextDecoration.none),
                     ),
                   ),
@@ -223,10 +223,13 @@ class _ShowDialog extends ConsumerWidget {
                     padding: const EdgeInsets.all(8),
                     child: Text(
                       title,
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black54,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .tertiary
+                              .withAlpha(170),
                           decoration: TextDecoration.none),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
@@ -259,7 +262,10 @@ class _ShowDialog extends ConsumerWidget {
                       borderRadius: const BorderRadius.all(Radius.circular(50)),
                       child: LinearProgressIndicator(
                         color: Theme.of(context).colorScheme.secondary,
-                        backgroundColor: Colors.black26,
+                        backgroundColor: Theme.of(context)
+                            .colorScheme
+                            .tertiary
+                            .withAlpha(50),
                         value: downloadProgress,
                         minHeight: 4,
                       ),

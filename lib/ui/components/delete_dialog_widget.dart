@@ -26,7 +26,7 @@ class ShowDeleteDialog extends ConsumerWidget {
             height: 219,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.tertiaryContainer,
             ),
             padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
             child: SingleChildScrollView(
@@ -34,25 +34,28 @@ class ShowDeleteDialog extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.all(8),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
                     child: Text(
                       "Delete Book",
                       style: TextStyle(
                           fontSize: 19,
                           fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 54, 54, 54),
+                          color: Theme.of(context).colorScheme.tertiary,
                           decoration: TextDecoration.none),
                     ),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.all(8),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
                     child: Text(
                       "This is permanent and cannot be undone",
                       style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black54,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .tertiary
+                              .withAlpha(170),
                           decoration: TextDecoration.none),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
@@ -88,14 +91,14 @@ class ShowDeleteDialog extends ConsumerWidget {
 
                             onDelete();
                           },
-                          child: const Padding(
-                            padding: EdgeInsets.all(5.0),
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
                             child: Text(
                               'Delete',
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black,
+                                color: Theme.of(context).colorScheme.tertiary,
                               ),
                             ),
                           ),
