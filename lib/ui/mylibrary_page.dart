@@ -21,6 +21,7 @@ class MyLibraryPage extends ConsumerWidget {
           return Padding(
             padding: const EdgeInsets.only(left: 5, right: 5, top: 10),
             child: CustomScrollView(
+              physics: const BouncingScrollPhysics(),
               slivers: <Widget>[
                 const SliverToBoxAdapter(
                   child: TitleText("My Library"),

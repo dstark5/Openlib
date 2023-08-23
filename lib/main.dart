@@ -9,6 +9,7 @@ import 'package:openlib/ui/extensions.dart';
 import 'package:openlib/ui/trending_page.dart';
 import 'package:openlib/ui/search_page.dart';
 import 'package:openlib/ui/mylibrary_page.dart';
+import 'package:openlib/ui/settings_page.dart';
 import 'package:openlib/services/database.dart' show Sqlite, MyLibraryDb;
 import 'package:openlib/state/state.dart'
     show selectedIndexProvider, dbProvider;
@@ -87,7 +88,8 @@ class _HomePageState extends ConsumerState<HomePage> {
   static const List<Widget> _widgetOptions = <Widget>[
     TrendingPage(),
     SearchPage(),
-    MyLibraryPage()
+    MyLibraryPage(),
+    SettingsPage()
   ];
 
   @override
@@ -118,7 +120,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           activeColor: const Color.fromARGB(255, 255, 255, 255),
           iconSize: 21, // tab button icon size
           tabBackgroundColor: Theme.of(context).colorScheme.secondary,
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 6.5),
+          padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 6.5),
           tabs: const [
             GButton(
               icon: Icons.trending_up,
@@ -143,6 +145,16 @@ class _HomePageState extends ConsumerState<HomePage> {
             GButton(
               icon: Icons.collections_bookmark,
               text: 'My Library',
+              iconColor: Colors.white,
+              textStyle: TextStyle(
+                fontWeight: FontWeight.w900,
+                color: Colors.white,
+                fontSize: 13,
+              ),
+            ),
+            GButton(
+              icon: Icons.build,
+              text: 'Settings',
               iconColor: Colors.white,
               textStyle: TextStyle(
                 fontWeight: FontWeight.w900,
