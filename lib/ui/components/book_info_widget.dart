@@ -10,6 +10,9 @@ class BookInfoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String description = data.description.toString().length < 3
+        ? "No Description available"
+        : data.description.toString();
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       scrollDirection: Axis.vertical,
@@ -111,7 +114,7 @@ class BookInfoWidget extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 7, bottom: 10),
                   child: Text(
-                    data.description ?? "",
+                    description,
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,

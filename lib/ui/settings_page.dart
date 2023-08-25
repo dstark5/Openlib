@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:openlib/ui/components/page_title_widget.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:openlib/state/state.dart' show themeModeProvider;
+import 'package:openlib/state/state.dart' show themeModeProvider, dbProvider;
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -45,6 +45,9 @@ class SettingsPage extends ConsumerWidget {
                         onChanged: (bool value) {
                           ref.read(themeModeProvider.notifier).state =
                               value == true ? ThemeMode.dark : ThemeMode.light;
+                          ref
+                              .read(dbProvider)
+                              .savePreference('darkMode', value);
                         },
                       )
                     ],

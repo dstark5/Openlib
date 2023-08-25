@@ -21,10 +21,16 @@ void main() async {
     databaseFactory = databaseFactoryFfi;
   }
 
-  Database db = await Sqlite.initDb();
+  Database initDb = await Sqlite.initDb();
+  MyLibraryDb dataBase = MyLibraryDb(dbInstance: initDb);
+  bool isDarkMode = await dataBase.getPreference('darkMode');
   runApp(
     ProviderScope(
-      overrides: [dbProvider.overrideWithValue(MyLibraryDb(dbInstance: db))],
+      overrides: [
+        dbProvider.overrideWithValue(dataBase),
+        themeModeProvider.overrideWith(
+            (ref) => isDarkMode ? ThemeMode.dark : ThemeMode.light)
+      ],
       child: const MyApp(),
     ),
   );
@@ -89,12 +95,12 @@ class _HomePageState extends ConsumerState<HomePage> {
             color: Theme.of(context).colorScheme.secondary,
           ),
           tabMargin: const EdgeInsets.fromLTRB(13, 6, 13, 2.5),
-          curve: Curves.easeInOut, // tab animation curves
-          duration: const Duration(milliseconds: 150),
+          curve: Curves.easeInOut,
+          duration: const Duration(milliseconds: 50),
           gap: 5,
           color: const Color.fromARGB(255, 255, 255, 255),
           activeColor: const Color.fromARGB(255, 255, 255, 255),
-          iconSize: 21, // tab button icon size
+          iconSize: 19, // tab button icon size
           tabBackgroundColor: Theme.of(context).colorScheme.secondary,
           padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 6.5),
           tabs: const [
@@ -105,7 +111,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               textStyle: TextStyle(
                 fontWeight: FontWeight.w900,
                 color: Colors.white,
-                fontSize: 13,
+                fontSize: 11,
               ),
             ),
             GButton(
@@ -115,7 +121,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               textStyle: TextStyle(
                 fontWeight: FontWeight.w900,
                 color: Colors.white,
-                fontSize: 13,
+                fontSize: 11,
               ),
             ),
             GButton(
@@ -125,7 +131,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               textStyle: TextStyle(
                 fontWeight: FontWeight.w900,
                 color: Colors.white,
-                fontSize: 13,
+                fontSize: 11,
               ),
             ),
             GButton(
@@ -135,7 +141,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               textStyle: TextStyle(
                 fontWeight: FontWeight.w900,
                 color: Colors.white,
-                fontSize: 13,
+                fontSize: 11,
               ),
             ),
           ],

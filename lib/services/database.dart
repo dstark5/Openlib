@@ -9,10 +9,12 @@ class Sqlite {
 
     Database dbInstance = await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: (Database db, int version) async {
         await db.execute(
             'CREATE TABLE mybooks (id TEXT PRIMARY KEY, title TEXT,author TEXT,thumbnail TEXT,link TEXT,publisher TEXT,info TEXT,format TEXT,description TEXT)');
+        await db.execute(
+            'CREATE TABLE preferences (name TEXT PRIMARY KEY,value BOOLEAN)');
         if (isMobile) {
           await db.execute(
               'CREATE TABLE bookposition (fileName TEXT PRIMARY KEY,position TEXT)');
@@ -21,6 +23,12 @@ class Sqlite {
       onUpgrade: (db, oldVersion, newVersion) async {
         List<dynamic> isTableExist = await db.query('sqlite_master',
             where: 'name = ?', whereArgs: ['bookposition']);
+        List<dynamic> isPreferenceTableExist = await db.query('sqlite_master',
+            where: 'name = ?', whereArgs: ['preferences']);
+        if (isPreferenceTableExist.isEmpty) {
+          await db.execute(
+              'CREATE TABLE preferences (name TEXT PRIMARY KEY,value BOOLEAN)');
+        }
         if (isMobile && isTableExist.isEmpty) {
           await db.execute(
               'CREATE TABLE bookposition (fileName TEXT PRIMARY KEY,position TEXT)');
@@ -162,6 +170,28 @@ class MyLibraryDb {
       return dataList[0]['position'];
     } else {
       return null;
+    }
+  }
+
+  Future<void> savePreference(String name, bool value) async {
+    int boolInt = value ? 1 : 0;
+    await dbInstance.insert(
+      'preferences',
+      {'name': name, 'value': boolInt},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<bool> getPreference(String name) async {
+    List<Map<String, dynamic>> data = await dbInstance
+        .query('preferences', where: 'name = ?', whereArgs: [name]);
+    List<dynamic> dataList = List.generate(data.length, (i) {
+      return {'name': data[i]['name'], 'value': data[i]['value']};
+    });
+    if (dataList.isNotEmpty) {
+      return dataList[0]['value'] == 0 ? false : true;
+    } else {
+      return false;
     }
   }
 }
