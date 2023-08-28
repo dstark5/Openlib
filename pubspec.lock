@@ -741,6 +741,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  vocsy_epub_viewer:
+    dependency: "direct main"
+    description:
+      name: vocsy_epub_viewer
+      sha256: "30aab4a5be22e8c98f22fed3345f6989caaca861178c38cab2a8b8cd66ad53de"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   win32:
     dependency: transitive
     description:

@@ -36,6 +36,7 @@ dependencies:
 
   epub_view: ^3.2.0
   flutter_pdfview: ^1.2.7
+  vocsy_epub_viewer: ^2.0.0
   # syncfusion_flutter_pdfviewer: ^22.2.5
   # pdfx: ^2.4.0
 

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:openlib/ui/components/delete_dialog_widget.dart';
-import 'package:openlib/ui/epub_viewer.dart';
+// import 'package:openlib/ui/epub_viewer.dart';
+import 'package:vocsy_epub_viewer/epub_viewer.dart';
 import 'package:openlib/ui/pdf_viewer.dart';
+import 'package:openlib/services/files.dart';
 
 class FileOpenAndDeleteButtons extends StatelessWidget {
   final String id;
@@ -32,25 +34,32 @@ class FileOpenAndDeleteButtons extends StatelessWidget {
                   fontWeight: FontWeight.w900,
                   color: Theme.of(context).colorScheme.primary,
                 )),
-            onPressed: () => {
-              if (format == 'pdf')
-                {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (BuildContext context) {
-                    return PdfView(
-                      fileName: '$id.$format',
-                    );
-                  }))
-                }
-              else
-                {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (BuildContext context) {
-                    return EpubViewerWidget(
-                      fileName: '$id.$format',
-                    );
-                  }))
-                }
+            onPressed: () async {
+              if (format == 'pdf') {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (BuildContext context) {
+                  return PdfView(
+                    fileName: '$id.$format',
+                  );
+                }));
+              } else {
+                String path = await getFilePath('$id.$format');
+                VocsyEpub.setConfig(
+                  themeColor: Theme.of(context).colorScheme.secondary,
+                  identifier: "iosBook",
+                  scrollDirection: EpubScrollDirection.ALLDIRECTIONS,
+                  allowSharing: true,
+                  enableTts: true,
+                  // nightMode: true,
+                );
+                VocsyEpub.open(path);
+                // Navigator.push(context,
+                //     MaterialPageRoute(builder: (BuildContext context) {
+                //   return EpubViewerWidget(
+                //     fileName: '$id.$format',
+                //   );
+                // }))
+              }
             },
             child: const Padding(
               padding: EdgeInsets.fromLTRB(17, 8, 17, 8),
