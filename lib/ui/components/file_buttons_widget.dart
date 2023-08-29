@@ -1,7 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:openlib/ui/components/delete_dialog_widget.dart';
-// import 'package:openlib/ui/epub_viewer.dart';
+import 'package:openlib/ui/epub_viewer.dart';
 import 'package:vocsy_epub_viewer/epub_viewer.dart';
 import 'package:openlib/ui/pdf_viewer.dart';
 import 'package:openlib/services/files.dart';
@@ -43,22 +44,8 @@ class FileOpenAndDeleteButtons extends StatelessWidget {
                   );
                 }));
               } else {
-                String path = await getFilePath('$id.$format');
-                VocsyEpub.setConfig(
-                  themeColor: Theme.of(context).colorScheme.secondary,
-                  identifier: "iosBook",
-                  scrollDirection: EpubScrollDirection.ALLDIRECTIONS,
-                  allowSharing: true,
-                  enableTts: true,
-                  // nightMode: true,
-                );
-                VocsyEpub.open(path);
-                // Navigator.push(context,
-                //     MaterialPageRoute(builder: (BuildContext context) {
-                //   return EpubViewerWidget(
-                //     fileName: '$id.$format',
-                //   );
-                // }))
+                await launchEpubViewer(
+                    fileName: '$id.$format', context: context);
               }
             },
             child: const Padding(
@@ -106,5 +93,33 @@ class FileOpenAndDeleteButtons extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+Future<void> launchEpubViewer(
+    {required String fileName, required BuildContext context}) async {
+  if (Platform.isAndroid || Platform.isIOS) {
+    String path = await getFilePath(fileName);
+    VocsyEpub.setConfig(
+      // ignore: use_build_context_synchronously
+      themeColor: Theme.of(context).colorScheme.secondary,
+      identifier: "iosBook",
+      scrollDirection: EpubScrollDirection.ALLDIRECTIONS,
+      allowSharing: true,
+      enableTts: true,
+      // nightMode: true,
+    );
+    VocsyEpub.open(path);
+
+    VocsyEpub.locatorStream.listen((locator) {
+      print('LOCATOR: ${EpubLocator.fromJson(locator)}');
+      // convert locator from string to json and save to your database to be retrieved later
+    });
+  } else {
+    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+      return EpubViewerWidget(
+        fileName: fileName,
+      );
+    }));
   }
 }
