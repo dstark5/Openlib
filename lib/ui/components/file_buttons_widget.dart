@@ -114,7 +114,9 @@ Future<void> launchEpubViewer(
       scrollDirection: EpubScrollDirection.HORIZONTAL,
     );
 
-    if ((epubConfig?.isNotEmpty ?? true) && (epubConfig != null)) {
+    if ((epubConfig?.isNotEmpty ?? true) &&
+        (epubConfig != null) &&
+        (!(epubConfig.startsWith('epubcfi')))) {
       VocsyEpub.open(path,
           lastLocation: EpubLocator.fromJson(json.decode(epubConfig)));
     } else {
