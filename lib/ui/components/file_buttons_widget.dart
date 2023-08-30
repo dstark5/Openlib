@@ -1,14 +1,9 @@
-import 'dart:io';
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:openlib/ui/components/delete_dialog_widget.dart';
-import 'package:openlib/ui/epub_viewer.dart';
-import 'package:vocsy_epub_viewer/epub_viewer.dart';
+import 'package:openlib/ui/epub_viewer.dart' show launchEpubViewer;
 import 'package:openlib/ui/pdf_viewer.dart';
-import 'package:openlib/services/files.dart';
-import 'package:openlib/state/state.dart' show saveEpubState, dbProvider;
 
 class FileOpenAndDeleteButtons extends ConsumerWidget {
   final String id;
@@ -96,42 +91,5 @@ class FileOpenAndDeleteButtons extends ConsumerWidget {
         ],
       ),
     );
-  }
-}
-
-Future<void> launchEpubViewer(
-    {required String fileName,
-    required BuildContext context,
-    required WidgetRef ref}) async {
-  if (Platform.isAndroid || Platform.isIOS) {
-    String path = await getFilePath(fileName);
-    String? epubConfig = await ref.read(dbProvider).getBookState(fileName);
-
-    VocsyEpub.setConfig(
-      // ignore: use_build_context_synchronously
-      themeColor: Theme.of(context).colorScheme.secondary,
-      identifier: "iosBook",
-      scrollDirection: EpubScrollDirection.HORIZONTAL,
-    );
-
-    if ((epubConfig?.isNotEmpty ?? true) &&
-        (epubConfig != null) &&
-        (!(epubConfig.startsWith('epubcfi')))) {
-      VocsyEpub.open(path,
-          lastLocation: EpubLocator.fromJson(json.decode(epubConfig)));
-    } else {
-      VocsyEpub.open(path);
-    }
-
-    VocsyEpub.locatorStream.listen((locator) {
-      saveEpubState(fileName, locator, ref);
-      // convert locator from string to json and save to your database to be retrieved later
-    });
-  } else {
-    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
-      return EpubViewerWidget(
-        fileName: fileName,
-      );
-    }));
   }
 }

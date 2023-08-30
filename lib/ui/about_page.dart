@@ -37,7 +37,7 @@ class AboutPage extends StatelessWidget {
                 padding: EdgeInsets.only(left: 7, right: 7, top: 10),
                 child: Text(
                   "Github",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
                 ),
               ),
               _UrlText(
@@ -55,7 +55,7 @@ class AboutPage extends StatelessWidget {
                 padding: EdgeInsets.only(left: 7, right: 7, top: 10),
                 child: Text(
                   "Licence",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
                 ),
               ),
               _UrlText(
@@ -93,7 +93,7 @@ class _UrlText extends StatelessWidget {
             Text(
               text,
               style: const TextStyle(
-                fontSize: 17,
+                fontSize: 15,
                 fontWeight: FontWeight.bold,
                 color: Colors.blueAccent,
               ),
@@ -103,7 +103,7 @@ class _UrlText extends StatelessWidget {
             ),
             const Icon(
               Icons.launch,
-              size: 20,
+              size: 17,
               color: Colors.blueAccent,
             )
           ],
