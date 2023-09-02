@@ -36,6 +36,23 @@ class AboutPage extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(left: 7, right: 7, top: 10),
                 child: Text(
+                  "Version",
+                  style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 7, right: 7, top: 5),
+                child: Text(
+                  "1.0.1",
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 7, right: 7, top: 15),
+                child: Text(
                   "Github",
                   style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
                 ),
@@ -52,7 +69,7 @@ class AboutPage extends StatelessWidget {
                   text: 'Report An Issue',
                   url: 'https://github.com/dstark5/Openlib/issues'),
               Padding(
-                padding: EdgeInsets.only(left: 7, right: 7, top: 10),
+                padding: EdgeInsets.only(left: 7, right: 7, top: 15),
                 child: Text(
                   "Licence",
                   style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold),
