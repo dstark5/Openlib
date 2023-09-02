@@ -144,6 +144,9 @@ final getBookPosition =
   return await ref.read(dbProvider).getBookState(fileName);
 });
 
+final openPdfWithExternalAppProvider = StateProvider<bool>((ref) => false);
+final openEpubWithExternalAppProvider = StateProvider<bool>((ref) => false);
+
 final filePathProvider =
     FutureProvider.family<String, String>((ref, fileName) async {
   String path = await getFilePath(fileName);

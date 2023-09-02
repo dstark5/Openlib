@@ -1,9 +1,9 @@
-import 'package:path_provider/path_provider.dart';
 import 'package:dio/dio.dart';
+import 'files.dart';
 
 Future<String> _getFilePath(String fileName) async {
-  final path = await getApplicationDocumentsDirectory();
-  return '${path.path}/$fileName';
+  final path = await getAppDirectoryPath;
+  return '$path/$fileName';
 }
 
 List<String> _reorderMirrors(List<String> mirrors) {

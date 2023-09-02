@@ -7,9 +7,30 @@ import 'package:openlib/state/state.dart'
         pdfCurrentPage,
         totalPdfPage,
         savePdfState,
+        openPdfWithExternalAppProvider,
         getBookPosition;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:open_file/open_file.dart';
 import 'dart:io' show Platform;
+
+import 'package:openlib/services/files.dart' show getFilePath;
+
+Future<void> launchPdfViewer(
+    {required String fileName,
+    required BuildContext context,
+    required WidgetRef ref}) async {
+  bool openWithExternalApp = ref.watch(openPdfWithExternalAppProvider);
+  if (openWithExternalApp) {
+    String path = await getFilePath(fileName);
+    await OpenFile.open(path);
+  } else {
+    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+      return PdfView(
+        fileName: fileName,
+      );
+    }));
+  }
+}
 
 class PdfView extends ConsumerStatefulWidget {
   const PdfView({super.key, required this.fileName});

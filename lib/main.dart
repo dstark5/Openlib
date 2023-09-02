@@ -10,8 +10,15 @@ import 'package:openlib/ui/search_page.dart';
 import 'package:openlib/ui/mylibrary_page.dart';
 import 'package:openlib/ui/settings_page.dart';
 import 'package:openlib/services/database.dart' show Sqlite, MyLibraryDb;
+import 'package:openlib/services/files.dart'
+    show moveFilesToAndroidInternalStorage;
 import 'package:openlib/state/state.dart'
-    show selectedIndexProvider, themeModeProvider, dbProvider;
+    show
+        selectedIndexProvider,
+        themeModeProvider,
+        openPdfWithExternalAppProvider,
+        openEpubWithExternalAppProvider,
+        dbProvider;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,12 +31,25 @@ void main() async {
   Database initDb = await Sqlite.initDb();
   MyLibraryDb dataBase = MyLibraryDb(dbInstance: initDb);
   bool isDarkMode = await dataBase.getPreference('darkMode');
+  bool openPdfwithExternalapp =
+      await dataBase.getPreference('openPdfwithExternalApp');
+  bool openEpubwithExternalapp =
+      await dataBase.getPreference('openEpubwithExternalApp');
+
+  if (Platform.isAndroid) {
+    await moveFilesToAndroidInternalStorage();
+  }
+
   runApp(
     ProviderScope(
       overrides: [
         dbProvider.overrideWithValue(dataBase),
         themeModeProvider.overrideWith(
-            (ref) => isDarkMode ? ThemeMode.dark : ThemeMode.light)
+            (ref) => isDarkMode ? ThemeMode.dark : ThemeMode.light),
+        openPdfWithExternalAppProvider
+            .overrideWith((ref) => openPdfwithExternalapp),
+        openEpubWithExternalAppProvider
+            .overrideWith((ref) => openEpubwithExternalapp)
       ],
       child: const MyApp(),
     ),

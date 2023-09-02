@@ -3,7 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:openlib/ui/components/page_title_widget.dart';
 import 'package:openlib/ui/about_page.dart';
-import 'package:openlib/state/state.dart' show themeModeProvider, dbProvider;
+import 'package:openlib/state/state.dart'
+    show
+        themeModeProvider,
+        openPdfWithExternalAppProvider,
+        openEpubWithExternalAppProvider,
+        dbProvider;
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -37,6 +42,56 @@ class SettingsPage extends ConsumerWidget {
                     ref.read(themeModeProvider.notifier).state =
                         value == true ? ThemeMode.dark : ThemeMode.light;
                     ref.read(dbProvider).savePreference('darkMode', value);
+                  },
+                )
+              ],
+            ),
+            _PaddedContainer(
+              children: [
+                Text(
+                  "Open PDF with External Reader",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
+                ),
+                Switch(
+                  // This bool value toggles the switch.
+                  value: ref.watch(openPdfWithExternalAppProvider),
+                  activeColor: Colors.red,
+                  onChanged: (bool value) {
+                    ref.read(openPdfWithExternalAppProvider.notifier).state =
+                        value;
+                    ref
+                        .read(dbProvider)
+                        .savePreference('openPdfwithExternalApp', value);
+                  },
+                )
+              ],
+            ),
+            _PaddedContainer(
+              children: [
+                Text(
+                  "Open Epub with External Reader",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
+                ),
+                Switch(
+                  // This bool value toggles the switch.
+                  value: ref.watch(
+                    openEpubWithExternalAppProvider,
+                  ),
+                  activeColor: Colors.red,
+                  onChanged: (bool value) {
+                    ref.read(openEpubWithExternalAppProvider.notifier).state =
+                        value;
+                    ref
+                        .read(dbProvider)
+                        .savePreference('openEpubwithExternalApp', value);
                   },
                 )
               ],

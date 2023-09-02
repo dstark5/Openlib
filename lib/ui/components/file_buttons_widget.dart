@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:openlib/ui/components/delete_dialog_widget.dart';
 import 'package:openlib/ui/epub_viewer.dart' show launchEpubViewer;
-import 'package:openlib/ui/pdf_viewer.dart';
+import 'package:openlib/ui/pdf_viewer.dart' show launchPdfViewer;
 
 class FileOpenAndDeleteButtons extends ConsumerWidget {
   final String id;
@@ -35,12 +35,8 @@ class FileOpenAndDeleteButtons extends ConsumerWidget {
                 )),
             onPressed: () async {
               if (format == 'pdf') {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (BuildContext context) {
-                  return PdfView(
-                    fileName: '$id.$format',
-                  );
-                }));
+                await launchPdfViewer(
+                    fileName: '$id.$format', context: context, ref: ref);
               } else {
                 await launchEpubViewer(
                     fileName: '$id.$format', context: context, ref: ref);
