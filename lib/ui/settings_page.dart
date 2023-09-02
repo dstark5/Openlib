@@ -29,7 +29,7 @@ class SettingsPage extends ConsumerWidget {
                 Text(
                   "Dark Mode",
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 15,
                     fontWeight: FontWeight.bold,
                     color: Theme.of(context).colorScheme.tertiary,
                   ),
@@ -51,7 +51,7 @@ class SettingsPage extends ConsumerWidget {
                 Text(
                   "Open PDF with External Reader",
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 15,
                     fontWeight: FontWeight.bold,
                     color: Theme.of(context).colorScheme.tertiary,
                   ),
@@ -75,7 +75,7 @@ class SettingsPage extends ConsumerWidget {
                 Text(
                   "Open Epub with External Reader",
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 15,
                     fontWeight: FontWeight.bold,
                     color: Theme.of(context).colorScheme.tertiary,
                   ),
@@ -107,7 +107,7 @@ class SettingsPage extends ConsumerWidget {
                 Text(
                   "About",
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 15,
                     fontWeight: FontWeight.bold,
                     color: Theme.of(context).colorScheme.tertiary,
                   ),

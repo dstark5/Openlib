@@ -1,17 +1,12 @@
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
-// import 'package:permission_handler/permission_handler.dart';
 import 'package:openlib/state/state.dart' show dbProvider, myLibraryProvider;
 
 Future<String> get getAppDirectoryPath async {
   if (Platform.isAndroid) {
     final directory = await getExternalStorageDirectory();
     return directory!.path;
-    // // final path = '/storage/emulated/0/Openlib';
-    // print(directory.path);
-    // // File(directory.path).copySync(newPath);
-    // return '/storage/emulated/0/Openlib';
   } else {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;
@@ -32,26 +27,10 @@ Future<void> moveFilesToAndroidInternalStorage() async {
       }
     }
   } catch (e) {
+    // ignore: avoid_print
     print(e);
   }
 }
-
-// Future<void> getStoragePermissionAndroid() async {
-//   if (Platform.isAndroid) {
-//     print("hi");
-//     if (await Permission.storage.status.isGranted ||
-//         await Permission.manageExternalStorage.status.isGranted) {
-//     final storagePermission = await Permission.storage.request().isGranted;
-//     final manageStoragePermission =
-//         await Permission.manageExternalStorage.request().isGranted;
-//     print(storagePermission || manageStoragePermission);
-//     if (storagePermission || manageStoragePermission) {
-//       await openAppSettings();
-//       print(storagePermission || manageStoragePermission);
-//     }
-//   }
-//   }
-// }
 
 Future<bool> isFileExists(String filePath) async {
   return await File(filePath).exists();
