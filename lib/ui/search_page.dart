@@ -10,15 +10,24 @@ import 'package:openlib/state/state.dart'
         typeValues,
         sortValues;
 
+import 'components/snack_bar_widget.dart';
+
 class SearchPage extends ConsumerWidget {
   const SearchPage({Key? key}) : super(key: key);
 
   void onSubmit(BuildContext context, WidgetRef ref) {
-    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
-      return ResultPage(
-        searchQuery: ref.read(searchQueryProvider),
-      );
-    }));
+    if(ref.read(searchQueryProvider).isNotEmpty) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (BuildContext context) {
+        return ResultPage(
+          searchQuery: ref.read(searchQueryProvider),
+        );
+      }
+      ));
+    }
+    else{
+      showSnackBar(context: context, message: 'Search field is empty');
+    }
   }
 
   @override
