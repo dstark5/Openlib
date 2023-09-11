@@ -110,7 +110,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       bottomNavigationBar: SafeArea(
         child: GNav(
           rippleColor: Colors.redAccent,
-          backgroundColor: isDarkMode ? Colors.black : Colors.white70,
+          backgroundColor: isDarkMode ? Colors.black : Colors.grey.shade300,
           haptic: true,
           tabBorderRadius: 50,
           tabActiveBorder: Border.all(
