@@ -135,14 +135,19 @@ class AnnasArchieve {
   Future<BookInfoData?> _bookInfoParser(resData, url) async {
     var document = parse(resData.toString());
     var main = document.querySelector('main[class="main"]');
-    var ul = main?.querySelector('ul[class="mb-4"]');
+    var ul = main?.querySelectorAll('ul[class="mb-4"]');
 
     List<String> mirrors = [];
 
     if (ul != null) {
-      var a = ul.querySelectorAll('a');
+      var anchorTags = [];
+      if (ul.length == 2) {
+        anchorTags = ul[1].querySelectorAll('a');
+      } else {
+        anchorTags = ul[0].querySelectorAll('a');
+      }
 
-      for (var element in a) {
+      for (var element in anchorTags) {
         if (element.attributes['href']!.startsWith('https://')) {
           if (element.attributes['href'] != null) {
             mirrors.add(element.attributes['href']!);
