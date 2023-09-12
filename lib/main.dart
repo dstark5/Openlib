@@ -14,11 +14,11 @@ import 'package:openlib/services/files.dart'
     show moveFilesToAndroidInternalStorage;
 import 'package:openlib/state/state.dart'
     show
-        selectedIndexProvider,
-        themeModeProvider,
-        openPdfWithExternalAppProvider,
-        openEpubWithExternalAppProvider,
-        dbProvider;
+    selectedIndexProvider,
+    themeModeProvider,
+    openPdfWithExternalAppProvider,
+    openEpubWithExternalAppProvider,
+    dbProvider;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,9 +32,9 @@ void main() async {
   MyLibraryDb dataBase = MyLibraryDb(dbInstance: initDb);
   bool isDarkMode = await dataBase.getPreference('darkMode');
   bool openPdfwithExternalapp =
-      await dataBase.getPreference('openPdfwithExternalApp');
+  await dataBase.getPreference('openPdfwithExternalApp');
   bool openEpubwithExternalapp =
-      await dataBase.getPreference('openEpubwithExternalApp');
+  await dataBase.getPreference('openEpubwithExternalApp');
 
   if (Platform.isAndroid) {
     await moveFilesToAndroidInternalStorage();
@@ -45,7 +45,7 @@ void main() async {
       overrides: [
         dbProvider.overrideWithValue(dataBase),
         themeModeProvider.overrideWith(
-            (ref) => isDarkMode ? ThemeMode.dark : ThemeMode.light),
+                (ref) => isDarkMode ? ThemeMode.dark : ThemeMode.light),
         openPdfWithExternalAppProvider
             .overrideWith((ref) => openPdfwithExternalapp),
         openEpubWithExternalAppProvider
@@ -96,6 +96,8 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     final selectedIndex = ref.watch(selectedIndexProvider);
 
     return Scaffold(
@@ -108,7 +110,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       bottomNavigationBar: SafeArea(
         child: GNav(
           rippleColor: Colors.redAccent,
-          backgroundColor: Colors.black,
+          backgroundColor: isDarkMode ? Colors.black : Colors.grey.shade300,
           haptic: true,
           tabBorderRadius: 50,
           tabActiveBorder: Border.all(
@@ -123,12 +125,12 @@ class _HomePageState extends ConsumerState<HomePage> {
           iconSize: 19, // tab button icon size
           tabBackgroundColor: Theme.of(context).colorScheme.secondary,
           padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 6.5),
-          tabs: const [
+          tabs: [
             GButton(
               icon: Icons.trending_up,
               text: 'Trending',
-              iconColor: Colors.white,
-              textStyle: TextStyle(
+              iconColor:  isDarkMode ? Colors.white : Colors.black,
+              textStyle: const TextStyle(
                 fontWeight: FontWeight.w900,
                 color: Colors.white,
                 fontSize: 11,
@@ -137,8 +139,8 @@ class _HomePageState extends ConsumerState<HomePage> {
             GButton(
               icon: Icons.search,
               text: 'Search',
-              iconColor: Colors.white,
-              textStyle: TextStyle(
+              iconColor: isDarkMode ? Colors.white : Colors.black,
+              textStyle: const TextStyle(
                 fontWeight: FontWeight.w900,
                 color: Colors.white,
                 fontSize: 11,
@@ -147,8 +149,8 @@ class _HomePageState extends ConsumerState<HomePage> {
             GButton(
               icon: Icons.collections_bookmark,
               text: 'My Library',
-              iconColor: Colors.white,
-              textStyle: TextStyle(
+              iconColor: isDarkMode ? Colors.white : Colors.black,
+              textStyle: const TextStyle(
                 fontWeight: FontWeight.w900,
                 color: Colors.white,
                 fontSize: 11,
@@ -157,8 +159,8 @@ class _HomePageState extends ConsumerState<HomePage> {
             GButton(
               icon: Icons.build,
               text: 'Settings',
-              iconColor: Colors.white,
-              textStyle: TextStyle(
+              iconColor: isDarkMode ? Colors.white : Colors.black,
+              textStyle: const TextStyle(
                 fontWeight: FontWeight.w900,
                 color: Colors.white,
                 fontSize: 11,
