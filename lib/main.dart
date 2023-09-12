@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:io' show Platform;
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -14,11 +15,11 @@ import 'package:openlib/services/files.dart'
     show moveFilesToAndroidInternalStorage;
 import 'package:openlib/state/state.dart'
     show
-    selectedIndexProvider,
-    themeModeProvider,
-    openPdfWithExternalAppProvider,
-    openEpubWithExternalAppProvider,
-    dbProvider;
+        selectedIndexProvider,
+        themeModeProvider,
+        openPdfWithExternalAppProvider,
+        openEpubWithExternalAppProvider,
+        dbProvider;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,11 +33,15 @@ void main() async {
   MyLibraryDb dataBase = MyLibraryDb(dbInstance: initDb);
   bool isDarkMode = await dataBase.getPreference('darkMode');
   bool openPdfwithExternalapp =
-  await dataBase.getPreference('openPdfwithExternalApp');
+      await dataBase.getPreference('openPdfwithExternalApp');
   bool openEpubwithExternalapp =
-  await dataBase.getPreference('openEpubwithExternalApp');
+      await dataBase.getPreference('openEpubwithExternalApp');
 
   if (Platform.isAndroid) {
+    //[SystemChrome] Also change colors in settings page Theme colors if any change
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        systemNavigationBarColor:
+            isDarkMode ? Colors.black : Colors.grey.shade200));
     await moveFilesToAndroidInternalStorage();
   }
 
@@ -45,7 +50,7 @@ void main() async {
       overrides: [
         dbProvider.overrideWithValue(dataBase),
         themeModeProvider.overrideWith(
-                (ref) => isDarkMode ? ThemeMode.dark : ThemeMode.light),
+            (ref) => isDarkMode ? ThemeMode.dark : ThemeMode.light),
         openPdfWithExternalAppProvider
             .overrideWith((ref) => openPdfwithExternalapp),
         openEpubWithExternalAppProvider
@@ -110,7 +115,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       bottomNavigationBar: SafeArea(
         child: GNav(
           rippleColor: Colors.redAccent,
-          backgroundColor: isDarkMode ? Colors.black : Colors.grey.shade300,
+          backgroundColor: isDarkMode ? Colors.black : Colors.grey.shade200,
           haptic: true,
           tabBorderRadius: 50,
           tabActiveBorder: Border.all(
@@ -129,7 +134,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             GButton(
               icon: Icons.trending_up,
               text: 'Trending',
-              iconColor:  isDarkMode ? Colors.white : Colors.black,
+              iconColor: isDarkMode ? Colors.white : Colors.black,
               textStyle: const TextStyle(
                 fontWeight: FontWeight.w900,
                 color: Colors.white,

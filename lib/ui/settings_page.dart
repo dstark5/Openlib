@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:openlib/ui/components/page_title_widget.dart';
@@ -42,6 +44,12 @@ class SettingsPage extends ConsumerWidget {
                     ref.read(themeModeProvider.notifier).state =
                         value == true ? ThemeMode.dark : ThemeMode.light;
                     ref.read(dbProvider).savePreference('darkMode', value);
+
+                    if (Platform.isAndroid) {
+                      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+                          systemNavigationBarColor:
+                              value ? Colors.black : Colors.grey.shade200));
+                    }
                   },
                 )
               ],
