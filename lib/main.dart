@@ -114,7 +114,6 @@ class _HomePageState extends ConsumerState<HomePage> {
       body: _widgetOptions.elementAt(selectedIndex),
       bottomNavigationBar: SafeArea(
         child: GNav(
-          rippleColor: Colors.redAccent,
           backgroundColor: isDarkMode ? Colors.black : Colors.grey.shade200,
           haptic: true,
           tabBorderRadius: 50,
@@ -122,8 +121,8 @@ class _HomePageState extends ConsumerState<HomePage> {
             color: Theme.of(context).colorScheme.secondary,
           ),
           tabMargin: const EdgeInsets.fromLTRB(13, 6, 13, 2.5),
-          curve: Curves.easeIn,
-          duration: const Duration(milliseconds: 125),
+          curve: Curves.fastLinearToSlowEaseIn,
+          duration: const Duration(milliseconds: 25),
           gap: 5,
           color: const Color.fromARGB(255, 255, 255, 255),
           activeColor: const Color.fromARGB(255, 255, 255, 255),
