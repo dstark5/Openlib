@@ -46,6 +46,7 @@ class ResultPage extends ConsumerWidget {
                                 author: i.author ?? "unknown",
                                 publisher: i.publisher ?? "unknown",
                                 thumbnail: i.thumbnail!,
+                                info: i.info,
                                 link: i.link,
                                 onClick: () {
                                   Navigator.push(context, MaterialPageRoute(

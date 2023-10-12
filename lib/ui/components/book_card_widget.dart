@@ -9,6 +9,7 @@ class BookInfoCard extends StatelessWidget {
       required this.author,
       required this.publisher,
       required this.thumbnail,
+      required this.info,
       required this.link,
       required this.onClick})
       : super(key: key);
@@ -17,6 +18,7 @@ class BookInfoCard extends StatelessWidget {
   final String author;
   final String publisher;
   final String? thumbnail;
+  final String? info;
   final String link;
   final VoidCallback onClick;
 
@@ -100,15 +102,50 @@ class BookInfoCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                     ),
-                    Text(
-                      author,
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).textTheme.headlineSmall?.color,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        if (info != null && info!.isNotEmpty)
+                          Container(
+                            decoration: BoxDecoration(
+                              color: "#767b91".toColor(),
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(3, 2, 3, 2),
+                              child: Text(
+                                info!.contains('pdf') ? "PDF" : "Epub",
+                                style: const TextStyle(
+                                  fontSize: 8.5,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  letterSpacing: 0.5,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ),
+                          ),
+                        if (info != null && info!.isNotEmpty)
+                          const SizedBox(
+                            width: 3,
+                          ),
+                        Expanded(
+                          child: Text(
+                            author,
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.color,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

@@ -35,6 +35,7 @@ class MyLibraryPage extends ConsumerWidget {
                             author: i.author ?? "",
                             publisher: i.publisher ?? "",
                             thumbnail: i.thumbnail,
+                            info: i.info,
                             link: i.link,
                             onClick: () {
                               Navigator.push(context, MaterialPageRoute(
