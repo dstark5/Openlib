@@ -2,6 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:openlib/ui/extensions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+String? getFileType(String? info) {
+  if (info != null && info.isNotEmpty) {
+    info = info.toLowerCase();
+    if (info.contains('pdf')) return "PDF";
+    if (info.contains('epub')) return "Epub";
+    return null;
+  }
+  return null;
+}
+
 class BookInfoCard extends StatelessWidget {
   const BookInfoCard(
       {Key? key,
@@ -24,6 +34,8 @@ class BookInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String? fileType = getFileType(info);
+
     return InkWell(
       onTap: onClick,
       child: Container(
@@ -105,16 +117,16 @@ class BookInfoCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        if (info != null && info!.isNotEmpty)
+                        if (fileType != null)
                           Container(
                             decoration: BoxDecoration(
-                              color: "#767b91".toColor(),
-                              borderRadius: BorderRadius.circular(3),
+                              color: "#a5a5a5".toColor(),
+                              borderRadius: BorderRadius.circular(2.5),
                             ),
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(3, 2, 3, 2),
                               child: Text(
-                                info!.contains('pdf') ? "PDF" : "Epub",
+                                fileType,
                                 style: const TextStyle(
                                   fontSize: 8.5,
                                   fontWeight: FontWeight.bold,
@@ -126,7 +138,7 @@ class BookInfoCard extends StatelessWidget {
                               ),
                             ),
                           ),
-                        if (info != null && info!.isNotEmpty)
+                        if (fileType != null)
                           const SizedBox(
                             width: 3,
                           ),
