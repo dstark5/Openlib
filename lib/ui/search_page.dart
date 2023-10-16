@@ -7,7 +7,9 @@ import 'package:openlib/state/state.dart'
         searchQueryProvider,
         selectedTypeState,
         selectedSortState,
+        selectedFileTypeState,
         typeValues,
+        fileType,
         sortValues;
 
 import 'components/snack_bar_widget.dart';
@@ -16,16 +18,14 @@ class SearchPage extends ConsumerWidget {
   const SearchPage({Key? key}) : super(key: key);
 
   void onSubmit(BuildContext context, WidgetRef ref) {
-    if(ref.read(searchQueryProvider).isNotEmpty) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (BuildContext context) {
+    if (ref.read(searchQueryProvider).isNotEmpty) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (BuildContext context) {
         return ResultPage(
           searchQuery: ref.read(searchQueryProvider),
         );
-      }
-      ));
-    }
-    else{
+      }));
+    } else {
       showSnackBar(context: context, message: 'Search field is empty');
     }
   }
@@ -34,6 +34,7 @@ class SearchPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dropdownTypeValue = ref.watch(selectedTypeState);
     final dropdownSortValue = ref.watch(selectedSortState);
+    final dropDownFileTypeValue = ref.watch(selectedFileTypeState);
 
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
@@ -167,6 +168,47 @@ class SearchPage extends ConsumerWidget {
                   }).toList(),
                   onChanged: (String? val) {
                     ref.read(selectedSortState.notifier).state = val ?? '';
+                  },
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 7, right: 7, top: 19),
+              child: SizedBox(
+                width: 165,
+                child: DropdownButtonFormField(
+                  decoration: InputDecoration(
+                    labelText: 'File type',
+                    labelStyle: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                    enabledBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 2),
+                      borderRadius: BorderRadius.all(Radius.circular(50)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.tertiary,
+                          width: 2),
+                      borderRadius: const BorderRadius.all(Radius.circular(50)),
+                    ),
+                  ),
+                  value: dropDownFileTypeValue,
+                  items: fileType.map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(
+                        value,
+                        style: const TextStyle(
+                            fontSize: 12, fontWeight: FontWeight.bold),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (String? val) {
+                    ref.read(selectedFileTypeState.notifier).state =
+                        val ?? 'All';
                   },
                 ),
               ),

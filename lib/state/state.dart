@@ -30,6 +30,8 @@ Map<String, String> sortValues = {
   'Smallest': 'smallest',
 };
 
+List<String> fileType = ["All", "PDF", "Epub", "Cbr", "Cbz"];
+
 final selectedIndexProvider = StateProvider<int>((ref) => 0);
 
 final themeModeProvider = StateProvider<ThemeMode>((ref) => ThemeMode.light);
@@ -44,6 +46,15 @@ final selectedSortState = StateProvider<String>((ref) => "Most Relevant");
 
 final getSortValue = Provider.autoDispose<String>((ref) {
   return sortValues[ref.read(selectedSortState)] ?? '';
+});
+
+final selectedFileTypeState = StateProvider<String>((ref) => "All");
+
+final getFileTypeValue = Provider.autoDispose<String>((ref) {
+  if (ref.read(selectedFileTypeState) == "All") {
+    return '';
+  }
+  return ref.read(selectedFileTypeState).toLowerCase();
 });
 
 //searchQueryProvider
@@ -64,7 +75,8 @@ final searchProvider = FutureProvider.family
   List<BookData> data = await annasArchieve.searchBooks(
       searchQuery: searchQuery,
       content: ref.watch(getTypeValue),
-      sort: ref.watch(getSortValue));
+      sort: ref.watch(getSortValue),
+      fileType: ref.watch(getFileTypeValue));
   return data;
 });
 

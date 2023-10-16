@@ -48,7 +48,7 @@ class BookInfoData extends BookData {
 }
 
 class AnnasArchieve {
-  String baseUrl = "https://annas-archive.gs";
+  String baseUrl = "https://annas-archive.se";
 
   final Dio dio = Dio(BaseOptions(headers: {
     'User-Agent':
@@ -60,7 +60,7 @@ class AnnasArchieve {
     return md5;
   }
 
-  List<BookData> _parser(resData) {
+  List<BookData> _parser(resData, String fileType) {
     var document =
         parse(resData.toString().replaceAll(RegExp(r"<!--|-->"), ''));
     var books = document.querySelectorAll(
@@ -86,8 +86,12 @@ class AnnasArchieve {
       if ((data['title'] != null && data['title'] != '') &&
           (data['link'] != null && data['link'] != '') &&
           (data['info'] != null &&
-              (data['info']!.contains('pdf') ||
-                  data['info']!.contains('epub')))) {
+              ((fileType == "") &&
+                      (data['info']!.contains('pdf') ||
+                          data['info']!.contains('epub') ||
+                          data['info']!.contains('cbr') ||
+                          data['info']!.contains('cbz')) ||
+                  ((fileType != "") && data['info']!.contains(fileType))))) {
         String link = baseUrl + data['link']!;
         String publisher = ((data['publisher']?.contains('0') == true &&
                         data['publisher']!.length < 2) ||
@@ -115,7 +119,9 @@ class AnnasArchieve {
     if (info.contains('pdf') == true) {
       return 'pdf';
     } else {
-      return 'epub';
+      if (info.contains('cbr')) return "cbr";
+      if (info.contains('cbz')) return "cbz";
+      return "epub";
     }
   }
 
@@ -215,12 +221,15 @@ class AnnasArchieve {
   Future<List<BookData>> searchBooks(
       {required String searchQuery,
       String content = "",
-      String sort = ""}) async {
+      String sort = "",
+      String fileType = ""}) async {
     try {
-      final response = await dio.get(
-        '$baseUrl/search?lang=&content=$content&ext=&sort=$sort&q=$searchQuery',
-      );
-      return _parser(response.data);
+      final String encodedURL = content == ""
+          ? '$baseUrl/search?index=&q=$searchQuery&ext=$fileType&sort=$sort'
+          : '$baseUrl/search?index=&q=$searchQuery&content=$content&ext=$fileType&sort=$sort';
+
+      final response = await dio.get(encodedURL);
+      return _parser(response.data, fileType);
     } on DioException catch (e) {
       if (e.type == DioExceptionType.unknown) {
         throw "socketException";

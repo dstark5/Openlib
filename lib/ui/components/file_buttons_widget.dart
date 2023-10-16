@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:open_file/open_file.dart';
 
+import 'package:openlib/services/files.dart' show getFilePath;
+import 'package:openlib/ui/components/snack_bar_widget.dart';
 import 'package:openlib/ui/components/delete_dialog_widget.dart';
 import 'package:openlib/ui/epub_viewer.dart' show launchEpubViewer;
 import 'package:openlib/ui/pdf_viewer.dart' show launchPdfViewer;
@@ -37,9 +40,11 @@ class FileOpenAndDeleteButtons extends ConsumerWidget {
               if (format == 'pdf') {
                 await launchPdfViewer(
                     fileName: '$id.$format', context: context, ref: ref);
-              } else {
+              } else if (format == 'epub') {
                 await launchEpubViewer(
                     fileName: '$id.$format', context: context, ref: ref);
+              } else {
+                await openCbrAndCbz(fileName: '$id.$format', context: context);
               }
             },
             child: const Padding(
@@ -87,5 +92,18 @@ class FileOpenAndDeleteButtons extends ConsumerWidget {
         ],
       ),
     );
+  }
+}
+
+Future<void> openCbrAndCbz(
+    {required String fileName, required BuildContext context}) async {
+  try {
+    String path = await getFilePath(fileName);
+    await OpenFile.open(path);
+  } catch (e) {
+    // ignore: avoid_print
+    // print(e);
+    // ignore: use_build_context_synchronously
+    showSnackBar(context: context, message: 'Unable to open pdf!');
   }
 }

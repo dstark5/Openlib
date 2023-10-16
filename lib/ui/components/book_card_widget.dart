@@ -7,6 +7,8 @@ String? getFileType(String? info) {
     info = info.toLowerCase();
     if (info.contains('pdf')) return "PDF";
     if (info.contains('epub')) return "Epub";
+    if (info.contains('cbr')) return "Cbr";
+    if (info.contains('cbz')) return "Cbz";
     return null;
   }
   return null;
