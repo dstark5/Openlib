@@ -50,7 +50,7 @@
 
 ## Roadmap
 
-- Additing More Book Format supports (cbz,cbr,azw3,etc...)
+- Adding More Book Format supports (cbz,cbr,azw3,etc...)
 - Adding Support For Background Downloads
 - Adding Support For Multiple Downloads
 
