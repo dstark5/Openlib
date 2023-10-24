@@ -53,9 +53,7 @@ class BookInfoPage extends ConsumerWidget {
             var errJson = jsonDecode(err.toString());
             if (SchedulerBinding.instance.schedulerPhase ==
                 SchedulerPhase.persistentCallbacks) {
-              SchedulerBinding.instance.addPostFrameCallback((_) async {
-                await Future.delayed(const Duration(seconds: 2));
-                // ignore: use_build_context_synchronously
+              SchedulerBinding.instance.addPostFrameCallback((_) {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (BuildContext context) {
                   return Webview(url: errJson["url"]);

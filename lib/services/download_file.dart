@@ -82,9 +82,8 @@ Future<void> downloadFile(
         throw err;
       });
 
-      Future.delayed(const Duration(seconds: 5), () {
-        mirrorStatus(true);
-      });
+      mirrorStatus(true);
+
       cancelDownlaod(cancelToken);
     } catch (e) {
       onDownlaodFailed();
