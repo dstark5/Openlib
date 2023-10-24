@@ -19,6 +19,8 @@ import 'package:openlib/state/state.dart'
         themeModeProvider,
         openPdfWithExternalAppProvider,
         openEpubWithExternalAppProvider,
+        userAgentProvider,
+        cookieProvider,
         dbProvider;
 
 void main() async {
@@ -37,6 +39,9 @@ void main() async {
   bool openEpubwithExternalapp =
       await dataBase.getPreference('openEpubwithExternalApp');
 
+  String browserUserAgent = await dataBase.getBrowserOptions('userAgent');
+  String browserCookie = await dataBase.getBrowserOptions('cookie');
+
   if (Platform.isAndroid) {
     //[SystemChrome] Also change colors in settings page Theme colors if any change
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -54,7 +59,9 @@ void main() async {
         openPdfWithExternalAppProvider
             .overrideWith((ref) => openPdfwithExternalapp),
         openEpubWithExternalAppProvider
-            .overrideWith((ref) => openEpubwithExternalapp)
+            .overrideWith((ref) => openEpubwithExternalapp),
+        userAgentProvider.overrideWith((ref) => browserUserAgent),
+        cookieProvider.overrideWith((ref) => browserCookie),
       ],
       child: const MyApp(),
     ),

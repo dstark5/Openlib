@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:http/http.dart' as http;
 import 'files.dart';
 
 Future<String> _getFilePath(String fileName) async {
@@ -14,13 +15,29 @@ List<String> _reorderMirrors(List<String> mirrors) {
     if (element.contains('ipfs') == true) {
       ipfsMirrors.add(element);
     } else {
-      if (element.startsWith('https://annas-archive.se') != true &&
+      if (element.startsWith('https://annas-archive.org') != true &&
           element.startsWith('https://1lib.sk') != true) {
         httpsMirrors.add(element);
       }
     }
   }
   return [...ipfsMirrors, ...httpsMirrors];
+}
+
+Future<String?> _getAliveMirror(List<String> mirrors) async {
+  for (var url in mirrors) {
+    try {
+      final response =
+          await http.head(Uri.parse(url)).timeout(const Duration(seconds: 2));
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        return url;
+      }
+    } catch (e) {
+      print("timeOut");
+    }
+  }
+  return null;
 }
 
 Future<void> downloadFile(
@@ -34,34 +51,42 @@ Future<void> downloadFile(
   String path = await _getFilePath('$md5.$format');
   List<String> orderedMirrors = _reorderMirrors(mirrors);
 
+  String? workingMirror = await _getAliveMirror(orderedMirrors);
+  print(workingMirror);
+
   // print(path);
   // print(orderedMirrors);
+  // print(orderedMirrors[0]);
 
-  try {
-    CancelToken cancelToken = CancelToken();
+  if (workingMirror != null) {
+    try {
+      CancelToken cancelToken = CancelToken();
 
-    dio.download(
-      orderedMirrors[0],
-      path,
-      options: Options(headers: {
-        'Connection': 'Keep-Alive',
-        'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'
-      }),
-      onReceiveProgress: (rcv, total) {
-        onProgress(rcv, total);
-      },
-      deleteOnError: true,
-      cancelToken: cancelToken,
-    ).catchError((err) {
-      if (err.type != DioExceptionType.cancel) {
-        onDownlaodFailed();
-      }
-      throw err;
-    });
+      dio.download(
+        workingMirror,
+        path,
+        options: Options(headers: {
+          'Connection': 'Keep-Alive',
+          'User-Agent':
+              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'
+        }),
+        onReceiveProgress: (rcv, total) {
+          onProgress(rcv, total);
+        },
+        deleteOnError: true,
+        cancelToken: cancelToken,
+      ).catchError((err) {
+        if (err.type != DioExceptionType.cancel) {
+          onDownlaodFailed();
+        }
+        throw err;
+      });
 
-    cancelDownlaod(cancelToken);
-  } catch (e) {
+      cancelDownlaod(cancelToken);
+    } catch (e) {
+      onDownlaodFailed();
+    }
+  } else {
     onDownlaodFailed();
   }
 }

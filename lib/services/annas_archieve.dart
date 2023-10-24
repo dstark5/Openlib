@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart' show parse;
+import 'package:http/http.dart' as http;
 
 class BookData {
   final String title;
@@ -48,11 +50,11 @@ class BookInfoData extends BookData {
 }
 
 class AnnasArchieve {
-  String baseUrl = "https://annas-archive.se";
+  String baseUrl = "https://annas-archive.org";
 
   final Dio dio = Dio(BaseOptions(headers: {
-    'User-Agent':
-        'Mozilla/5.0 (iPhone; CPU iPhone OS 12_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) FxiOS/7.0.4 Mobile/16B91 Safari/605.1.15'
+    "user-agent":
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/118.0",
   }));
 
   String getMd5(String url) {
@@ -125,20 +127,29 @@ class AnnasArchieve {
     }
   }
 
-  Future<String?> _getMirrorLink(String url) async {
+  Future<String?> _getMirrorLink(
+      String url, String userAgent, String cookie) async {
     try {
-      final response = await dio.get(url);
-      var document = parse(response.toString());
+      // final response = await dio.get(url);
+      final response = await http.get(Uri.parse(url),
+          headers: {"Cookie": cookie, "User-Agent": userAgent});
+      if (response.statusCode == 403) {
+        throw jsonEncode({"code": "403", "url": url});
+      }
+      var document = parse(response.body.toString());
       var pTag = document.querySelector('p[class="mb-4"]');
       String? link = pTag?.querySelector('a')?.attributes['href'];
       return link;
     } catch (e) {
       // print(e);
+      if (e.toString().contains("403")) {
+        rethrow;
+      }
       return null;
     }
   }
 
-  Future<BookInfoData?> _bookInfoParser(resData, url) async {
+  Future<BookInfoData?> _bookInfoParser(resData, url, userAgent, cookie) async {
     var document = parse(resData.toString());
     var main = document.querySelector('main[class="main"]');
     var ul = main?.querySelectorAll('ul[class="mb-4"]');
@@ -155,14 +166,17 @@ class AnnasArchieve {
 
       for (var element in anchorTags) {
         if (element.attributes['href']!.startsWith('https://')) {
-          if (element.attributes['href'] != null) {
+          if (element.attributes['href'] != null &&
+              element.attributes['href'].startsWith('https://1lib.sk') !=
+                  true) {
             mirrors.add(element.attributes['href']!);
           }
         } else if (element.attributes['href'] != null &&
             element.attributes['href']!.startsWith('/slow_download')) {
-          if (element.text.contains('Slow Partner Server #1') != true) {
-            String? url =
-                await _getMirrorLink('$baseUrl${element.attributes['href']!}');
+          if (element.text.contains('Slow Partner Server #1') == true ||
+              true == true) {
+            String? url = await _getMirrorLink(
+                '$baseUrl${element.attributes['href']!}', userAgent, cookie);
             if (url != null && url.isNotEmpty) {
               mirrors.add(url);
             }
@@ -238,10 +252,14 @@ class AnnasArchieve {
     }
   }
 
-  Future<BookInfoData> bookInfo({required String url}) async {
+  Future<BookInfoData> bookInfo(
+      {required String url,
+      required String userAgent,
+      required String cookie}) async {
     try {
       final response = await dio.get(url);
-      BookInfoData? data = await _bookInfoParser(response.data, url);
+      BookInfoData? data =
+          await _bookInfoParser(response.data, url, userAgent, cookie);
       if (data != null) {
         return data;
       } else {

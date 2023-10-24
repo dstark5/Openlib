@@ -11,7 +11,6 @@ import 'package:openlib/state/state.dart'
         typeValues,
         fileType,
         sortValues;
-
 import 'components/snack_bar_widget.dart';
 
 class SearchPage extends ConsumerWidget {
@@ -212,7 +211,7 @@ class SearchPage extends ConsumerWidget {
                   },
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

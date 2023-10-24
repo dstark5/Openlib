@@ -80,11 +80,19 @@ final searchProvider = FutureProvider.family
   return data;
 });
 
+final cookieProvider = StateProvider<String>((ref) => "");
+final userAgentProvider = StateProvider<String>((ref) => "");
+
 //Provider for Book Info
 final bookInfoProvider =
     FutureProvider.family<BookInfoData, String>((ref, url) async {
+  print(ref.read(userAgentProvider));
+  print(ref.read(cookieProvider));
   AnnasArchieve annasArchieve = AnnasArchieve();
-  BookInfoData data = await annasArchieve.bookInfo(url: url);
+  BookInfoData data = await annasArchieve.bookInfo(
+      url: url,
+      userAgent: ref.read(userAgentProvider),
+      cookie: ref.read(cookieProvider));
   return data;
 });
 

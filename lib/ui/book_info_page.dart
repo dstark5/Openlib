@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'package:openlib/services/database.dart';
 import 'package:openlib/ui/components/error_widget.dart';
@@ -21,6 +23,8 @@ import 'package:openlib/state/state.dart'
 import 'package:openlib/ui/components/book_info_widget.dart';
 import 'package:openlib/ui/components/file_buttons_widget.dart';
 import 'package:openlib/ui/components/snack_bar_widget.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:openlib/ui/webview_page.dart';
 
 class BookInfoPage extends ConsumerWidget {
   const BookInfoPage({Key? key, required this.url}) : super(key: key);
@@ -37,19 +41,101 @@ class BookInfoPage extends ConsumerWidget {
         titleTextStyle: Theme.of(context).textTheme.displayLarge,
       ),
       body: bookInfo.when(
+        skipLoadingOnRefresh: false,
         data: (data) {
           return BookInfoWidget(
               data: data, child: ActionButtonWidget(data: data));
         },
         error: (err, _) {
-          return CustomErrorWidget(
-            error: err,
-            stackTrace: _,
-            onRefresh: () {
-              // ignore: unused_result
-              ref.refresh(bookInfoProvider(url));
-            },
-          );
+          // print(err);
+          if (err.toString().contains("403")) {
+            var errJson = jsonDecode(err.toString());
+            if (SchedulerBinding.instance.schedulerPhase ==
+                SchedulerPhase.persistentCallbacks) {
+              SchedulerBinding.instance.addPostFrameCallback((_) async {
+                await Future.delayed(const Duration(seconds: 2));
+                // ignore: use_build_context_synchronously
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (BuildContext context) {
+                  return Webview(url: errJson["url"]);
+                })).then((value) {
+                  // print("got Cf Clearance");
+                  // ignore: unused_result
+                  ref.refresh(bookInfoProvider(url));
+                  // });
+                });
+              });
+            }
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(
+                  width: 210,
+                  child: SvgPicture.asset(
+                    'assets/captcha.svg',
+                    width: 210,
+                  ),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                Text(
+                  "Captcha required",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).textTheme.headlineMedium?.color,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "you will be redirected to solve captcha",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).textTheme.headlineSmall?.color,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(30, 15, 30, 10),
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 255, 186, 186),
+                        borderRadius: BorderRadius.circular(5)),
+                    child: const Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Text(
+                        "If you have solved the captcha then you will be automatically redirected to the book page",
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            );
+          } else {
+            return CustomErrorWidget(
+              error: err,
+              stackTrace: _,
+              onRefresh: () {
+                // ignore: unused_result
+                ref.refresh(bookInfoProvider(url));
+              },
+            );
+          }
         },
         loading: () {
           return Center(
