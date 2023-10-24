@@ -29,12 +29,11 @@ Future<String?> _getAliveMirror(List<String> mirrors) async {
     try {
       final response =
           await http.head(Uri.parse(url)).timeout(const Duration(seconds: 2));
-      print(response.statusCode);
       if (response.statusCode == 200) {
         return url;
       }
     } catch (e) {
-      print("timeOut");
+      // print("timeOut");
     }
   }
   return null;
@@ -46,14 +45,15 @@ Future<void> downloadFile(
     required String format,
     required Function onProgress,
     required Function cancelDownlaod,
+    required Function mirrorStatus,
     required Function onDownlaodFailed}) async {
   Dio dio = Dio();
   String path = await _getFilePath('$md5.$format');
   List<String> orderedMirrors = _reorderMirrors(mirrors);
 
   String? workingMirror = await _getAliveMirror(orderedMirrors);
-  print(workingMirror);
 
+  // print(workingMirror);
   // print(path);
   // print(orderedMirrors);
   // print(orderedMirrors[0]);
@@ -82,6 +82,9 @@ Future<void> downloadFile(
         throw err;
       });
 
+      Future.delayed(const Duration(seconds: 5), () {
+        mirrorStatus(true);
+      });
       cancelDownlaod(cancelToken);
     } catch (e) {
       onDownlaodFailed();

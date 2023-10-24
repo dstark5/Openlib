@@ -86,8 +86,6 @@ final userAgentProvider = StateProvider<String>((ref) => "");
 //Provider for Book Info
 final bookInfoProvider =
     FutureProvider.family<BookInfoData, String>((ref, url) async {
-  print(ref.read(userAgentProvider));
-  print(ref.read(cookieProvider));
   AnnasArchieve annasArchieve = AnnasArchieve();
   BookInfoData data = await annasArchieve.bookInfo(
       url: url,
@@ -98,6 +96,8 @@ final bookInfoProvider =
 
 final downloadProgressProvider =
     StateProvider.autoDispose<double>((ref) => 0.0);
+
+final mirrorStatusProvider = StateProvider.autoDispose<bool>((ref) => false);
 
 final totalFileSizeInBytes = StateProvider.autoDispose<int>((ref) => 0);
 final downloadedFileSizeInBytes = StateProvider.autoDispose<int>((ref) => 0);

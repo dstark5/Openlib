@@ -43,7 +43,7 @@ class AboutPage extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(left: 7, right: 7, top: 5),
                 child: Text(
-                  "1.0.2",
+                  "1.0.3",
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,

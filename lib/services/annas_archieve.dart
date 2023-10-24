@@ -54,7 +54,7 @@ class AnnasArchieve {
 
   final Dio dio = Dio(BaseOptions(headers: {
     "user-agent":
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/118.0",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
   }));
 
   String getMd5(String url) {
@@ -130,7 +130,6 @@ class AnnasArchieve {
   Future<String?> _getMirrorLink(
       String url, String userAgent, String cookie) async {
     try {
-      // final response = await dio.get(url);
       final response = await http.get(Uri.parse(url),
           headers: {"Cookie": cookie, "User-Agent": userAgent});
       if (response.statusCode == 403) {
@@ -173,13 +172,10 @@ class AnnasArchieve {
           }
         } else if (element.attributes['href'] != null &&
             element.attributes['href']!.startsWith('/slow_download')) {
-          if (element.text.contains('Slow Partner Server #1') == true ||
-              true == true) {
-            String? url = await _getMirrorLink(
-                '$baseUrl${element.attributes['href']!}', userAgent, cookie);
-            if (url != null && url.isNotEmpty) {
-              mirrors.add(url);
-            }
+          String? url = await _getMirrorLink(
+              '$baseUrl${element.attributes['href']!}', userAgent, cookie);
+          if (url != null && url.isNotEmpty) {
+            mirrors.add(url);
           }
         }
       }

@@ -17,6 +17,7 @@ import 'package:openlib/state/state.dart'
         getTotalFileSize,
         getDownloadedFileSize,
         cancelCurrentDownload,
+        mirrorStatusProvider,
         dbProvider,
         checkIdExists,
         myLibraryProvider;
@@ -247,6 +248,9 @@ Future<void> downloadFileWidget(
       cancelDownlaod: (CancelToken downloadToken) {
         ref.read(cancelCurrentDownload.notifier).state = downloadToken;
       },
+      mirrorStatus: (val) {
+        ref.read(mirrorStatusProvider.notifier).state = val;
+      },
       onDownlaodFailed: () {
         Navigator.of(context).pop();
         showSnackBar(
@@ -271,6 +275,7 @@ class _ShowDialog extends ConsumerWidget {
     final downloadProgress = ref.watch(downloadProgressProvider);
     final fileSize = ref.watch(getTotalFileSize);
     final downloadedFileSize = ref.watch(getDownloadedFileSize);
+    final mirrorStatus = ref.watch(mirrorStatusProvider);
 
     if (downloadProgress == 1.0) {
       Navigator.of(context).pop();
@@ -283,7 +288,7 @@ class _ShowDialog extends ConsumerWidget {
           padding: const EdgeInsets.all(15.0),
           child: Container(
             width: double.infinity,
-            height: 255,
+            height: 285,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: Theme.of(context).colorScheme.tertiaryContainer,
@@ -321,6 +326,45 @@ class _ShowDialog extends ConsumerWidget {
                       maxLines: 2,
                       textAlign: TextAlign.start,
                     ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          mirrorStatus
+                              ? const Icon(
+                                  Icons.check_circle,
+                                  size: 15,
+                                  color: Colors.green,
+                                )
+                              : SizedBox(
+                                  width: 9,
+                                  height: 9,
+                                  child: CircularProgressIndicator(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                    strokeWidth: 2.5,
+                                  ),
+                                ),
+                          const SizedBox(
+                            width: 3,
+                          ),
+                          Text(
+                            "Checking mirror availability",
+                            style: TextStyle(
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .tertiary
+                                    .withAlpha(140),
+                                decoration: TextDecoration.none),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            textAlign: TextAlign.start,
+                          ),
+                        ]),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
