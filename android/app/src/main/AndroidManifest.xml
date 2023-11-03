@@ -19,14 +19,16 @@
             <data android:scheme="https" />
         </intent>
     </queries>
+    
     <application
         android:label="Openlib"
         android:name="${applicationName}"
-        android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true"
+        android:usesCleartextTraffic="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:icon="@mipmap/launcher_icon">
-        <activity
+        
+        <activity 
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
@@ -38,6 +40,7 @@
                  the Android process has started. This theme is visible to the user
                  while the Flutter UI initializes. After that, this theme continues
                  to determine the Window background behind the Flutter UI. -->
+
             <meta-data
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"

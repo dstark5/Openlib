@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:http/http.dart' as http;
 import 'files.dart';
 
 Future<String> _getFilePath(String fileName) async {
@@ -24,11 +23,11 @@ List<String> _reorderMirrors(List<String> mirrors) {
   return [...ipfsMirrors, ...httpsMirrors];
 }
 
-Future<String?> _getAliveMirror(List<String> mirrors) async {
+Future<String?> _getAliveMirror(List<String> mirrors, Dio dio) async {
   for (var url in mirrors) {
     try {
-      final response =
-          await http.head(Uri.parse(url)).timeout(const Duration(seconds: 2));
+      final response = await dio.head(url,
+          options: Options(receiveTimeout: const Duration(seconds: 5)));
       if (response.statusCode == 200) {
         return url;
       }
@@ -48,10 +47,11 @@ Future<void> downloadFile(
     required Function mirrorStatus,
     required Function onDownlaodFailed}) async {
   Dio dio = Dio();
+
   String path = await _getFilePath('$md5.$format');
   List<String> orderedMirrors = _reorderMirrors(mirrors);
 
-  String? workingMirror = await _getAliveMirror(orderedMirrors);
+  String? workingMirror = await _getAliveMirror(orderedMirrors, dio);
 
   // print(workingMirror);
   // print(path);

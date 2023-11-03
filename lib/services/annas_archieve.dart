@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart' show parse;
-import 'package:http/http.dart' as http;
 
 class BookData {
   final String title;
@@ -52,10 +51,12 @@ class BookInfoData extends BookData {
 class AnnasArchieve {
   String baseUrl = "https://annas-archive.org";
 
-  final Dio dio = Dio(BaseOptions(headers: {
+  final Dio dio = Dio();
+
+  Map<String, dynamic> defaultDioHeaders = {
     "user-agent":
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
-  }));
+  };
 
   String getMd5(String url) {
     String md5 = url.toString().split('/').last;
@@ -66,7 +67,7 @@ class AnnasArchieve {
     var document =
         parse(resData.toString().replaceAll(RegExp(r"<!--|-->"), ''));
     var books = document.querySelectorAll(
-        'a[class="js-vim-focus custom-a flex items-center relative left-[-10px] w-[calc(100%+20px)] px-[10px] py-2 outline-offset-[-2px] outline-2 rounded-[3px] hover:bg-[#00000011] focus:outline "]');
+        'a[class="js-vim-focus custom-a flex items-center relative left-[-10px] w-[calc(100%+20px)] px-[10px] outline-offset-[-2px] outline-2 rounded-[3px] hover:bg-[#00000011] focus:outline "]');
 
     List<BookData> bookList = [];
 
@@ -75,16 +76,23 @@ class AnnasArchieve {
         'title': element.querySelector('h3')?.text,
         'thumbnail': element.querySelector('img')?.attributes['src'],
         'link': element.attributes['href'],
-        'author': element.querySelector('div[class="truncate italic"]')?.text ??
+        'author': element
+                .querySelector(
+                    'div[class="max-lg:line-clamp-[2] lg:truncate leading-[1.2] lg:leading-[1.35] max-lg:text-sm italic"]')
+                ?.text ??
             'unknown',
-        'publisher':
-            element.querySelector('div[class="truncate text-sm"]')?.text ??
-                "unknown",
+        'publisher': element
+                .querySelector(
+                    'div[class="truncate leading-[1.2] lg:leading-[1.35] max-lg:text-xs"]')
+                ?.text ??
+            "unknown",
         'info': element
-                .querySelector('div[class="truncate text-xs text-gray-500"]')
+                .querySelector(
+                    'div[class="line-clamp-[2] leading-[1.2] text-[10px] lg:text-xs text-gray-500"]')
                 ?.text ??
             ''
       };
+
       if ((data['title'] != null && data['title'] != '') &&
           (data['link'] != null && data['link'] != '') &&
           (data['info'] != null &&
@@ -130,19 +138,29 @@ class AnnasArchieve {
   Future<String?> _getMirrorLink(
       String url, String userAgent, String cookie) async {
     try {
-      final response = await http.get(Uri.parse(url),
-          headers: {"Cookie": cookie, "User-Agent": userAgent});
-      if (response.statusCode == 403) {
-        throw jsonEncode({"code": "403", "url": url});
-      }
-      var document = parse(response.body.toString());
+      final response = await dio.get(url,
+          options: Options(extra: {
+            'withCredentials': true
+          }, headers: {
+            "Host": "annas-archive.org",
+            "Origin": "https://annas-archive.org",
+            "Upgrade-Insecure-Requests": "1",
+            "Sec-Fetch-Dest": "secure",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "same-site",
+            "Cookie": cookie,
+            "User-Agent": userAgent
+          }));
+
+      var document = parse(response.data.toString());
+
       var pTag = document.querySelector('p[class="mb-4"]');
       String? link = pTag?.querySelector('a')?.attributes['href'];
       return link;
     } catch (e) {
-      // print(e);
+      // print('${url} ${e}');
       if (e.toString().contains("403")) {
-        rethrow;
+        throw jsonEncode({"code": "403", "url": url});
       }
       return null;
     }
@@ -238,7 +256,8 @@ class AnnasArchieve {
           ? '$baseUrl/search?index=&q=$searchQuery&ext=$fileType&sort=$sort'
           : '$baseUrl/search?index=&q=$searchQuery&content=$content&ext=$fileType&sort=$sort';
 
-      final response = await dio.get(encodedURL);
+      final response = await dio.get(encodedURL,
+          options: Options(headers: defaultDioHeaders));
       return _parser(response.data, fileType);
     } on DioException catch (e) {
       if (e.type == DioExceptionType.unknown) {
@@ -253,7 +272,8 @@ class AnnasArchieve {
       required String userAgent,
       required String cookie}) async {
     try {
-      final response = await dio.get(url);
+      final response =
+          await dio.get(url, options: Options(headers: defaultDioHeaders));
       BookInfoData? data =
           await _bookInfoParser(response.data, url, userAgent, cookie);
       if (data != null) {

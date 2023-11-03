@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:openlib/services/database.dart';
 import 'package:openlib/ui/components/error_widget.dart';
@@ -48,23 +48,21 @@ class BookInfoPage extends ConsumerWidget {
               data: data, child: ActionButtonWidget(data: data));
         },
         error: (err, _) {
-          // print(err);
           if (err.toString().contains("403")) {
             var errJson = jsonDecode(err.toString());
+
             if (SchedulerBinding.instance.schedulerPhase ==
                 SchedulerPhase.persistentCallbacks) {
               SchedulerBinding.instance.addPostFrameCallback((_) {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (BuildContext context) {
-                  return Webview(url: errJson["url"]);
-                })).then((value) {
-                  // print("got Cf Clearance");
-                  // ignore: unused_result
-                  ref.refresh(bookInfoProvider(url));
-                  // });
-                });
+                Future.delayed(
+                    const Duration(seconds: 3),
+                    () => Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (BuildContext context) {
+                          return Webview(url: errJson["url"]);
+                        })));
               });
             }
+
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -112,7 +110,7 @@ class BookInfoPage extends ConsumerWidget {
                     child: const Padding(
                       padding: EdgeInsets.all(10.0),
                       child: Text(
-                        "If you have solved the captcha then you will be automatically redirected to the book page",
+                        "If you have solved the captcha then you will be automatically redirected to the results page . In case you seeing this page even after completing try using a VPN .",
                         textAlign: TextAlign.start,
                         style: TextStyle(
                           fontSize: 13,

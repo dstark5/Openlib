@@ -47,7 +47,6 @@ dependencies:
   path_provider: ^2.0.15
   permission_handler: ^10.4.3
   open_file: ^3.3.2
-  http: ^1.1.0
   webview_flutter: ^4.4.1
   webview_cookie_manager: ^2.0.6
 

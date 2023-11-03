@@ -5,7 +5,7 @@ import 'package:webview_cookie_manager/webview_cookie_manager.dart'
     as cookiejar;
 
 import 'package:openlib/state/state.dart'
-    show cookieProvider, userAgentProvider, dbProvider;
+    show cookieProvider, userAgentProvider, dbProvider, bookInfoProvider;
 
 class Webview extends ConsumerStatefulWidget {
   const Webview({Key? key, required this.url}) : super(key: key);
@@ -38,12 +38,13 @@ class _WebviewState extends ConsumerState<Webview> {
             })
             ..setNavigationDelegate(NavigationDelegate(
               onPageStarted: (url) async {
-                var x = await controller.runJavaScriptReturningResult(
+                var urlStatusCode = await controller.runJavaScriptReturningResult(
                     "var xhr = new XMLHttpRequest();xhr.open('GET', window.location.href, false);xhr.send(null);xhr.status;");
 
-                if (x.toString().contains('200')) {
+                if (urlStatusCode.toString().contains('200')) {
                   final cookies = await cookieManager
                       .getCookies("https://annas-archive.org");
+
                   List<String> cookie = [];
                   for (var element in cookies) {
                     if (element.name == 'cf_clearance' ||
@@ -51,10 +52,17 @@ class _WebviewState extends ConsumerState<Webview> {
                       cookie.add(element.toString().split(';')[0]);
                     }
                   }
-                  ref.read(cookieProvider.notifier).state = cookie.join('; ');
-                  ref
+
+                  String cfClearance = cookie.join('; ');
+
+                  ref.read(cookieProvider.notifier).state = cfClearance;
+
+                  await ref
                       .read(dbProvider)
-                      .setBrowserOptions('cookie', cookie.join('; '));
+                      .setBrowserOptions('cookie', cfClearance);
+
+                  ref.invalidate(bookInfoProvider);
+
                   // ignore: use_build_context_synchronously
                   Navigator.pop(context);
                 }
