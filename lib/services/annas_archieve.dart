@@ -154,8 +154,8 @@ class AnnasArchieve {
 
       var document = parse(response.data.toString());
 
-      var pTag = document.querySelector('p[class="mb-4"]');
-      String? link = pTag?.querySelector('a')?.attributes['href'];
+      var pTag = document.querySelectorAll('p[class="mb-4"]');
+      String? link = pTag[1].querySelector('a')?.attributes['href'];
       return link;
     } catch (e) {
       // print('${url} ${e}');

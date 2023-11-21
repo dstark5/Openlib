@@ -40,7 +40,7 @@
 ##### As [Anna’s Archive](https://annas-archive.org/) Doesn't Have An API.The App Works By Sending Request To Anna’s Archive And Parses The Response To objects.The App Extracts The Mirrors From Response And Downloads The Book.
 
 ## Features
--  Trending Books
+- Trending Books
 - Download And Read Books With In-Built Viewer
 - Supports Epub And Pdf Formats
 - Open Books In Your Favourite Ebook Reader
@@ -50,7 +50,7 @@
 
 ## Roadmap
 
-- Additing More Book Format supports (cbz,cbr,azw3,etc...)
+- Adding More Book Format supports (cbz,cbr,azw3,etc...)
 - Adding Support For Background Downloads
 - Adding Support For Multiple Downloads
 
