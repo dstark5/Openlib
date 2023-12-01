@@ -35,9 +35,9 @@
 [<img src="screenshots/Screenshot_8.png" width=160>](screenshots/Screenshot_8.png)
 
 ## Description
-##### Openlib Is An Open Source App To Download And Read Books From Shadow Library ([Anna’s Archive](https://annas-archive.org/)) . The App Has Built In Reader to Read Books.
+##### Openlib Is An Open Source App To Download And Read Books From Shadow Library ([Anna’s Archive](https://annas-archive.org/)). The App Has Built In Reader to Read Books.
 
-##### As [Anna’s Archive](https://annas-archive.org/) Doesn't Have An API.The App Works By Sending Request To Anna’s Archive And Parses The Response To objects.The App Extracts The Mirrors From Response And Downloads The Book.
+##### As [Anna’s Archive](https://annas-archive.org/) Doesn't Have An API. The App Works By Sending Request To Anna’s Archive And Parses The Response To objects. The App Extracts The Mirrors From Response And Downloads The Book.
 
 ## Features
 - Trending Books
