@@ -97,4 +97,4 @@ Openlib is a free software licensed under GPL v3.0 It is distributed in the hope
 
 ## Disclaimer
 
-Openlib does not own or have any affiliation with the books available through the app.All books are the property of their respective owners and are protected by copyright law.Openlib is not responsible for any infringement of copyright or other intellectual property rights that may result from the use of the books available through the app.By using the app, you agree to use the books only for personal, non-commercial purposes and in compliance with all applicable laws and regulations.
+Openlib does not own or have any affiliation with the books available through the app. All books are the property of their respective owners and are protected by copyright law. Openlib is not responsible for any infringement of copyright or other intellectual property rights that may result from the use of the books available through the app. By using the app, you agree to use the books only for personal, non-commercial purposes and in compliance with all applicable laws and regulations.
