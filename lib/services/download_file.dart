@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:chunked_downloader/chunked_downloader.dart';
 import 'files.dart';
 
 Future<String> _getFilePath(String fileName) async {
@@ -60,31 +61,21 @@ Future<void> downloadFile(
 
   if (workingMirror != null) {
     try {
-      CancelToken cancelToken = CancelToken();
-
-      dio.download(
-        workingMirror,
-        path,
-        options: Options(headers: {
-          'Connection': 'Keep-Alive',
-          'User-Agent':
-              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'
-        }),
-        onReceiveProgress: (rcv, total) {
-          onProgress(rcv, total);
-        },
-        deleteOnError: true,
-        cancelToken: cancelToken,
-      ).catchError((err) {
-        if (err.type != DioExceptionType.cancel) {
-          onDownlaodFailed();
-        }
-        throw err;
-      });
+      var chunkedDownloader = await ChunkedDownloader(
+              url: workingMirror,
+              saveFilePath: path,
+              chunkSize: 32 * 1024,
+              onError: (error) {
+                onDownlaodFailed();
+              },
+              onProgress: (received, total, speed) {
+                onProgress(received, total);
+              },
+              onDone: (file) {})
+          .start();
 
       mirrorStatus(true);
-
-      cancelDownlaod(cancelToken);
+      cancelDownlaod(chunkedDownloader);
     } catch (e) {
       onDownlaodFailed();
     }

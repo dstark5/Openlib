@@ -6,7 +6,8 @@ import 'extensions.dart';
 import 'package:openlib/ui/components/page_title_widget.dart';
 import 'package:openlib/ui/components/error_widget.dart';
 import 'package:openlib/ui/results_page.dart';
-import 'package:openlib/state/state.dart' show getTrendingBooks;
+import 'package:openlib/state/state.dart'
+    show getTrendingBooks, enableFiltersState;
 
 class TrendingPage extends ConsumerWidget {
   const TrendingPage({super.key});
@@ -42,11 +43,11 @@ class TrendingPage extends ConsumerWidget {
                       (BuildContext context, int index) {
                         return InkWell(
                           onTap: () {
+                            ref.read(enableFiltersState.notifier).state = false;
                             Navigator.push(context, MaterialPageRoute(
                                 builder: (BuildContext context) {
                               return ResultPage(
-                                searchQuery: data[index].title!,
-                              );
+                                  searchQuery: data[index].title!);
                             }));
                           },
                           child: SizedBox(
@@ -142,6 +143,7 @@ class TrendingPage extends ConsumerWidget {
             height: 25,
             child: CircularProgressIndicator(
               color: Theme.of(context).colorScheme.secondary,
+              strokeCap: StrokeCap.round,
             ),
           ));
         });

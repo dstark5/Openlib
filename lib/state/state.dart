@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:openlib/services/database.dart';
-import 'package:dio/dio.dart';
+import 'package:chunked_downloader/chunked_downloader.dart';
 
 import 'package:openlib/services/open_library.dart';
 import 'package:openlib/services/annas_archieve.dart';
@@ -65,8 +65,21 @@ final searchQueryProvider = StateProvider<String>((ref) => "");
 
 final getTrendingBooks = FutureProvider<List<TrendingBookData>>((ref) async {
   OpenLibrary openLibrary = OpenLibrary();
-  return await openLibrary.trendingBooks();
+  GoodReads goodReads = GoodReads();
+  PenguinRandomHouse penguinTrending = PenguinRandomHouse();
+  List<TrendingBookData> trendingBooks =
+      await Future.wait<List<TrendingBookData>>([
+    openLibrary.trendingBooks(),
+    goodReads.trendingBooks(),
+    penguinTrending.trendingBooks()
+  ]).then((List<List<TrendingBookData>> listOfData) =>
+          listOfData.expand((element) => element).toList());
+
+  trendingBooks.shuffle();
+  return trendingBooks;
 });
+
+final enableFiltersState = StateProvider<bool>((ref) => true);
 
 //Provider for Trending Books
 final searchProvider = FutureProvider.family
@@ -76,7 +89,8 @@ final searchProvider = FutureProvider.family
       searchQuery: searchQuery,
       content: ref.watch(getTypeValue),
       sort: ref.watch(getSortValue),
-      fileType: ref.watch(getFileTypeValue));
+      fileType: ref.watch(getFileTypeValue),
+      enableFilters: ref.watch(enableFiltersState));
   return data;
 });
 
@@ -118,8 +132,8 @@ final getDownloadedFileSize = StateProvider.autoDispose<String>((ref) {
   return bytesToFileSize(ref.watch(downloadedFileSizeInBytes));
 });
 
-final cancelCurrentDownload = StateProvider<CancelToken>((ref) {
-  return CancelToken();
+final cancelCurrentDownload = StateProvider<ChunkedDownloader>((ref) {
+  return ChunkedDownloader(saveFilePath: "", url: "");
 });
 
 final dbProvider = Provider<MyLibraryDb>((ref) => throw UnimplementedError());

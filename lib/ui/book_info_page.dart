@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -21,6 +20,9 @@ import 'package:openlib/state/state.dart'
         dbProvider,
         checkIdExists,
         myLibraryProvider;
+
+import 'package:chunked_downloader/chunked_downloader.dart';
+
 import 'package:openlib/ui/components/book_info_widget.dart';
 import 'package:openlib/ui/components/file_buttons_widget.dart';
 import 'package:openlib/ui/components/snack_bar_widget.dart';
@@ -141,6 +143,7 @@ class BookInfoPage extends ConsumerWidget {
             height: 25,
             child: CircularProgressIndicator(
               color: Theme.of(context).colorScheme.secondary,
+              strokeCap: StrokeCap.round,
             ),
           ));
         },
@@ -203,6 +206,7 @@ class _ActionButtonWidgetState extends ConsumerState<ActionButtonWidget> {
       loading: () {
         return CircularProgressIndicator(
           color: Theme.of(context).colorScheme.secondary,
+          strokeCap: StrokeCap.round,
         );
       },
     );
@@ -241,7 +245,7 @@ Future<void> downloadFileWidget(
           showSnackBar(context: context, message: 'Book has been downloaded!');
         }
       },
-      cancelDownlaod: (CancelToken downloadToken) {
+      cancelDownlaod: (ChunkedDownloader downloadToken) {
         ref.read(cancelCurrentDownload.notifier).state = downloadToken;
       },
       mirrorStatus: (val) {
@@ -412,7 +416,7 @@ class _ShowDialog extends ConsumerWidget {
                                 color: Colors.white,
                               )),
                           onPressed: () {
-                            ref.read(cancelCurrentDownload).cancel();
+                            ref.read(cancelCurrentDownload).stop();
                             Navigator.of(context).pop();
                           },
                           child: const Padding(

@@ -10,10 +10,7 @@ import 'package:openlib/ui/components/book_card_widget.dart';
 import 'package:openlib/state/state.dart' show searchProvider;
 
 class ResultPage extends ConsumerWidget {
-  const ResultPage({
-    super.key,
-    required this.searchQuery,
-  });
+  const ResultPage({super.key, required this.searchQuery});
 
   final String searchQuery;
 
@@ -119,6 +116,7 @@ class ResultPage extends ConsumerWidget {
                       height: 25,
                       child: CircularProgressIndicator(
                         color: Theme.of(context).colorScheme.secondary,
+                        strokeCap: StrokeCap.round,
                       ),
                     ))
                   ],

@@ -67,7 +67,7 @@ class AnnasArchieve {
     var document =
         parse(resData.toString().replaceAll(RegExp(r"<!--|-->"), ''));
     var books = document.querySelectorAll(
-        'a[class="js-vim-focus custom-a flex items-center relative left-[-10px] w-[calc(100%+20px)] px-[10px] outline-offset-[-2px] outline-2 rounded-[3px] hover:bg-[#00000011] focus:outline "]');
+        'a[class="js-vim-focus custom-a flex items-center relative left-[-10px] w-[calc(100%+20px)] px-[10px] outline-offset-[-2px] outline-2 rounded-[3px] hover:bg-black/6.7 focus:outline "]');
 
     List<BookData> bookList = [];
 
@@ -246,18 +246,39 @@ class AnnasArchieve {
     }
   }
 
+  String urlEncoder(
+      {required String searchQuery,
+      required String content,
+      required String sort,
+      required String fileType,
+      required bool enableFilters}) {
+    searchQuery = searchQuery.replaceAll(" ", "+");
+    if (enableFilters == false) return '$baseUrl/search?q=$searchQuery';
+    if (content == "" && sort == "" && fileType == "") {
+      return '$baseUrl/search?q=$searchQuery';
+    }
+    return '$baseUrl/search?index=&q=$searchQuery&content=$content&ext=$fileType&sort=$sort';
+  }
+
   Future<List<BookData>> searchBooks(
       {required String searchQuery,
       String content = "",
       String sort = "",
-      String fileType = ""}) async {
+      String fileType = "",
+      bool enableFilters = true}) async {
     try {
-      final String encodedURL = content == ""
-          ? '$baseUrl/search?index=&q=$searchQuery&ext=$fileType&sort=$sort'
-          : '$baseUrl/search?index=&q=$searchQuery&content=$content&ext=$fileType&sort=$sort';
+      final String encodedURL = urlEncoder(
+          searchQuery: searchQuery,
+          content: content,
+          sort: sort,
+          fileType: fileType,
+          enableFilters: enableFilters);
 
       final response = await dio.get(encodedURL,
           options: Options(headers: defaultDioHeaders));
+      if (!enableFilters) {
+        return _parser(response.data, "");
+      }
       return _parser(response.data, fileType);
     } on DioException catch (e) {
       if (e.type == DioExceptionType.unknown) {

@@ -10,7 +10,8 @@ import 'package:openlib/state/state.dart'
         selectedFileTypeState,
         typeValues,
         fileType,
-        sortValues;
+        sortValues,
+        enableFiltersState;
 import 'components/snack_bar_widget.dart';
 
 class SearchPage extends ConsumerWidget {
@@ -18,11 +19,10 @@ class SearchPage extends ConsumerWidget {
 
   void onSubmit(BuildContext context, WidgetRef ref) {
     if (ref.read(searchQueryProvider).isNotEmpty) {
+      ref.read(enableFiltersState.notifier).state = true;
       Navigator.push(context,
           MaterialPageRoute(builder: (BuildContext context) {
-        return ResultPage(
-          searchQuery: ref.read(searchQueryProvider),
-        );
+        return ResultPage(searchQuery: ref.read(searchQueryProvider));
       }));
     } else {
       showSnackBar(context: context, message: 'Search field is empty');
