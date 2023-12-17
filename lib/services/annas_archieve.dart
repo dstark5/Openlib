@@ -66,8 +66,7 @@ class AnnasArchieve {
   List<BookData> _parser(resData, String fileType) {
     var document =
         parse(resData.toString().replaceAll(RegExp(r"<!--|-->"), ''));
-    var books = document.querySelectorAll(
-        'a[class="js-vim-focus custom-a flex items-center relative left-[-10px] w-[calc(100%+20px)] px-[10px] outline-offset-[-2px] outline-2 rounded-[3px] hover:bg-black/6.7 focus:outline "]');
+    var books = document.querySelectorAll('a');
 
     List<BookData> bookList = [];
 

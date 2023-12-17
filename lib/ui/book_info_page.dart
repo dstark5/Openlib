@@ -345,6 +345,7 @@ class _ShowDialog extends ConsumerWidget {
                                     color:
                                         Theme.of(context).colorScheme.secondary,
                                     strokeWidth: 2.5,
+                                    strokeCap: StrokeCap.round,
                                   ),
                                 ),
                           const SizedBox(
