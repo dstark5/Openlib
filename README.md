@@ -13,7 +13,8 @@
      height="60">](https://github.com/dstark5/Openlib/releases)[<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png"
      alt="Get it on IzzyDroid"
      height="60">](https://android.izzysoft.de/repo/apk/com.app.openlib)
-     </div>
+     
+</div>
 
 ## Note
 
