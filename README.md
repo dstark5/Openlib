@@ -1,27 +1,26 @@
-<p align="center"><img src="assets/icons/appIcon.png" width="150"></p>
-<h1 align="center"><b>Openlib</b></h1>
+<div align="center">
+
+<img src="assets/icons/appIcon.png" width="150">
+
+# Openlib
 
 #### An Open source app to download and read books from shadow library ([Anna’s Archive](https://annas-archive.org/)).
 
 [![made-with-flutter](https://img.shields.io/badge/Made%20with-Flutter-4361ee.svg)](https://flutter.dev/)  [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-e63946.svg)](https://opensource.org/licenses/) [![Latest release](https://img.shields.io/github/release/dstark5/Openlib.svg?style=flat)](https://github.com/dstark5/Openlib/releases)
 
  [<img src="github_releases.png"
-     alt="Download from GitHub"
+     alt="Get it on GitHub"
      height="60">](https://github.com/dstark5/Openlib/releases) [<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png"
      alt="Get it on IzzyDroid"
      height="60">](https://android.izzysoft.de/repo/apk/com.app.openlib)
-
+     
+</div>
 
 ## Note
 
 **WARNING:** This App Is In Beta Stage, So You May Encounter Bugs. If You Do, Open An Issue In Github Repository.
 
 #### Publishing Openlib, Or Any Fork Of It In The Google Play Store Violates Their Terms And Conditions.
-
-## Download
- -  Download and install APK from [GitHub Releases](https://github.com/dstark5/Openlib/releases).
- -  Download and install APK from [ IzzyOnDroid ](https://android.izzysoft.de/repo/apk/com.app.openlib).
- 
 
 ## Screenshots
 
