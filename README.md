@@ -6,7 +6,9 @@
 
 #### An Open source app to download and read books from shadow library ([Anna’s Archive](https://annas-archive.org/)).
 
-[![made-with-flutter](https://img.shields.io/badge/Made%20with-Flutter-4361ee.svg)](https://flutter.dev/)  [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-e63946.svg)](https://opensource.org/licenses/) [![Latest release](https://img.shields.io/github/release/dstark5/Openlib.svg?style=flat)](https://github.com/dstark5/Openlib/releases)
+[![made-with-flutter](https://img.shields.io/badge/Made%20with-Flutter-4361ee.svg?style=for-the-badge)](https://flutter.dev/) 
+[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-e63946.svg?style=for-the-badge)](https://opensource.org/licenses/) 
+[![Latest release](https://img.shields.io/github/release/dstark5/Openlib.svg?style=for-the-badge)](https://github.com/dstark5/Openlib/releases)
 
  [<img src="github_releases.png"
      alt="Get it on GitHub"
