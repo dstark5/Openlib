@@ -14,11 +14,10 @@ class FileOpenAndDeleteButtons extends ConsumerWidget {
   final Function onDelete;
 
   const FileOpenAndDeleteButtons(
-      {Key? key,
+      {super.key,
       required this.id,
       required this.format,
-      required this.onDelete})
-      : super(key: key);
+      required this.onDelete});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

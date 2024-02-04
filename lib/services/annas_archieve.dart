@@ -28,24 +28,16 @@ class BookInfoData extends BookData {
   final String? format;
 
   BookInfoData(
-      {required String title,
-      required String? author,
-      required String? thumbnail,
-      required String? publisher,
-      required String? info,
-      required String link,
-      required String md5,
+      {required super.title,
+      required super.author,
+      required super.thumbnail,
+      required super.publisher,
+      required super.info,
+      required super.link,
+      required super.md5,
       required this.mirrors,
       required this.format,
-      required this.description})
-      : super(
-            title: title,
-            author: author,
-            thumbnail: thumbnail,
-            publisher: publisher,
-            info: info,
-            link: link,
-            md5: md5);
+      required this.description});
 }
 
 class AnnasArchieve {

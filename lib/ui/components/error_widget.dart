@@ -9,8 +9,10 @@ class CustomErrorWidget extends StatelessWidget {
   VoidCallback? onRefresh;
 
   CustomErrorWidget(
-      {Key? key, required this.error, required this.stackTrace, this.onRefresh})
-      : super(key: key);
+      {super.key,
+      required this.error,
+      required this.stackTrace,
+      this.onRefresh});
 
   @override
   Widget build(BuildContext context) {

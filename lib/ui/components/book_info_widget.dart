@@ -5,8 +5,7 @@ class BookInfoWidget extends StatelessWidget {
   final Widget child;
   final dynamic data;
 
-  const BookInfoWidget({Key? key, required this.child, required this.data})
-      : super(key: key);
+  const BookInfoWidget({super.key, required this.child, required this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -145,9 +144,7 @@ class _TopPaddedText extends StatelessWidget {
       required this.fontSize,
       required this.topPadding,
       required this.color,
-      required this.maxLines,
-      Key? key})
-      : super(key: key);
+      required this.maxLines});
 
   @override
   Widget build(BuildContext context) {

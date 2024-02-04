@@ -5,7 +5,7 @@ import 'package:openlib/ui/components/snack_bar_widget.dart';
 import 'package:openlib/ui/components/page_title_widget.dart';
 
 class AboutPage extends StatelessWidget {
-  const AboutPage({Key? key}) : super(key: key);
+  const AboutPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -87,8 +87,7 @@ class AboutPage extends StatelessWidget {
 }
 
 class _UrlText extends StatelessWidget {
-  const _UrlText({Key? key, required this.text, required this.url})
-      : super(key: key);
+  const _UrlText({required this.text, required this.url});
 
   final String url;
   final String text;

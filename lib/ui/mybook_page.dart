@@ -7,7 +7,7 @@ import 'package:openlib/ui/components/book_info_widget.dart';
 import 'package:openlib/ui/components/file_buttons_widget.dart';
 
 class BookPage extends StatelessWidget {
-  const BookPage({Key? key, required this.id}) : super(key: key);
+  const BookPage({super.key, required this.id});
 
   final String id;
 

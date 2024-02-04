@@ -109,8 +109,7 @@ class _EpubViewState extends ConsumerState<EpubViewerWidget> {
 }
 
 class EpubViewer extends ConsumerStatefulWidget {
-  const EpubViewer({Key? key, required this.filePath, required this.fileName})
-      : super(key: key);
+  const EpubViewer({super.key, required this.filePath, required this.fileName});
 
   final String filePath;
   final String fileName;

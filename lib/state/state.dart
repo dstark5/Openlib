@@ -136,6 +136,15 @@ final cancelCurrentDownload = StateProvider<ChunkedDownloader>((ref) {
   return ChunkedDownloader(saveFilePath: "", url: "");
 });
 
+enum ProcessState { waiting, running, complete }
+
+enum CheckSumProcessState { waiting, running, failed, success }
+
+final downloadState =
+    StateProvider.autoDispose<ProcessState>((ref) => ProcessState.waiting);
+final checkSumState = StateProvider.autoDispose<CheckSumProcessState>(
+    (ref) => CheckSumProcessState.waiting);
+
 final dbProvider = Provider<MyLibraryDb>((ref) => throw UnimplementedError());
 
 final myLibraryProvider = FutureProvider((ref) async {

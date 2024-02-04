@@ -77,8 +77,7 @@ class _PdfViewState extends ConsumerState<PdfView> {
 }
 
 class PdfViewer extends ConsumerStatefulWidget {
-  const PdfViewer({Key? key, required this.filePath, required this.fileName})
-      : super(key: key);
+  const PdfViewer({super.key, required this.filePath, required this.fileName});
 
   final String filePath;
   final String fileName;

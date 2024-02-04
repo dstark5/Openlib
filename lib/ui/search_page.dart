@@ -15,7 +15,7 @@ import 'package:openlib/state/state.dart'
 import 'components/snack_bar_widget.dart';
 
 class SearchPage extends ConsumerWidget {
-  const SearchPage({Key? key}) : super(key: key);
+  const SearchPage({super.key});
 
   void onSubmit(BuildContext context, WidgetRef ref) {
     if (ref.read(searchQueryProvider).isNotEmpty) {

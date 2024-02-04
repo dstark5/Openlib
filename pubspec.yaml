@@ -45,13 +45,13 @@ dependencies:
 
   sqflite: ^2.3.0
   path_provider: ^2.0.15
-  permission_handler: ^10.4.3
+  permission_handler: ^11.2.0
   open_file: ^3.3.2
   webview_flutter: ^4.4.1
   webview_cookie_manager: ^2.0.6
 
   flutter_svg: ^2.0.7
-  google_fonts:
+  google_fonts: ^4.0.4
 
   cached_network_image: ^3.2.3
   chunked_downloader: ^0.0.2
@@ -62,6 +62,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   dev: ^1.0.0
+  crypto: ^3.0.3
 
 dev_dependencies:
   flutter_test:
@@ -73,7 +74,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.1
 
 
 flutter_icons:

@@ -16,15 +16,14 @@ String? getFileType(String? info) {
 
 class BookInfoCard extends StatelessWidget {
   const BookInfoCard(
-      {Key? key,
+      {super.key,
       required this.title,
       required this.author,
       required this.publisher,
       required this.thumbnail,
       required this.info,
       required this.link,
-      required this.onClick})
-      : super(key: key);
+      required this.onClick});
 
   final String title;
   final String author;

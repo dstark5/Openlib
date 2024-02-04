@@ -13,7 +13,7 @@ import 'package:openlib/state/state.dart'
         dbProvider;
 
 class SettingsPage extends ConsumerWidget {
-  const SettingsPage({Key? key}) : super(key: key);
+  const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -130,8 +130,7 @@ class SettingsPage extends ConsumerWidget {
 }
 
 class _PaddedContainer extends StatelessWidget {
-  const _PaddedContainer({Key? key, this.onClick, required this.children})
-      : super(key: key);
+  const _PaddedContainer({this.onClick, required this.children});
 
   final VoidCallback? onClick;
   final List<Widget> children;

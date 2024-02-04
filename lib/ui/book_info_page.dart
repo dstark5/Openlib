@@ -17,6 +17,10 @@ import 'package:openlib/state/state.dart'
         getDownloadedFileSize,
         cancelCurrentDownload,
         mirrorStatusProvider,
+        ProcessState,
+        CheckSumProcessState,
+        downloadState,
+        checkSumState,
         dbProvider,
         checkIdExists,
         myLibraryProvider;
@@ -30,7 +34,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:openlib/ui/webview_page.dart';
 
 class BookInfoPage extends ConsumerWidget {
-  const BookInfoPage({Key? key, required this.url}) : super(key: key);
+  const BookInfoPage({super.key, required this.url});
 
   final String url;
 
@@ -219,30 +223,55 @@ Future<void> downloadFileWidget(
       mirrors: data.mirrors!,
       md5: data.md5,
       format: data.format!,
+      onStart: () {
+        ref.read(downloadState.notifier).state = ProcessState.running;
+      },
       onProgress: (int rcv, int total) async {
         if (ref.read(totalFileSizeInBytes) != total) {
           ref.read(totalFileSizeInBytes.notifier).state = total;
         }
-        ref.read(downloadedFileSizeInBytes.notifier).state = rcv;
-        ref.read(downloadProgressProvider.notifier).state = rcv / total;
-        if (rcv / total == 1.0) {
-          await ref.read(dbProvider).insert(MyBook(
-              id: data.md5,
-              title: data.title,
-              author: data.author,
-              thumbnail: data.thumbnail,
-              link: data.link,
-              publisher: data.publisher,
-              info: data.info,
-              format: data.format,
-              description: data.description));
+        if (!rcv.isNaN && !total.isNaN) {
+          ref.read(downloadedFileSizeInBytes.notifier).state = rcv;
+          ref.read(downloadProgressProvider.notifier).state = rcv / total;
 
-          // ignore: unused_result
-          ref.refresh(checkIdExists(data.md5));
-          // ignore: unused_result
-          ref.refresh(myLibraryProvider);
-          // ignore: use_build_context_synchronously
-          showSnackBar(context: context, message: 'Book has been downloaded!');
+          if (rcv / total == 1.0) {
+            await ref.read(dbProvider).insert(MyBook(
+                id: data.md5,
+                title: data.title,
+                author: data.author,
+                thumbnail: data.thumbnail,
+                link: data.link,
+                publisher: data.publisher,
+                info: data.info,
+                format: data.format,
+                description: data.description));
+
+            ref.read(downloadState.notifier).state = ProcessState.complete;
+            ref.read(checkSumState.notifier).state =
+                CheckSumProcessState.running;
+
+            try {
+              final checkSum = await verifyFileCheckSum(
+                  md5Hash: data.md5, format: data.format);
+              if (checkSum == true) {
+                ref.read(checkSumState.notifier).state =
+                    CheckSumProcessState.success;
+              } else {
+                ref.read(checkSumState.notifier).state =
+                    CheckSumProcessState.failed;
+              }
+            } catch (_) {
+              ref.read(checkSumState.notifier).state =
+                  CheckSumProcessState.failed;
+            }
+            // ignore: unused_result
+            ref.refresh(checkIdExists(data.md5));
+            // ignore: unused_result
+            ref.refresh(myLibraryProvider);
+            // ignore: use_build_context_synchronously
+            showSnackBar(
+                context: context, message: 'Book has been downloaded!');
+          }
         }
       },
       cancelDownlaod: (ChunkedDownloader downloadToken) {
@@ -276,9 +305,15 @@ class _ShowDialog extends ConsumerWidget {
     final fileSize = ref.watch(getTotalFileSize);
     final downloadedFileSize = ref.watch(getDownloadedFileSize);
     final mirrorStatus = ref.watch(mirrorStatusProvider);
+    final downloadProcessState = ref.watch(downloadState);
+    final checkSumVerifyState = ref.watch(checkSumState);
 
-    if (downloadProgress == 1.0) {
-      Navigator.of(context).pop();
+    if (downloadProgress == 1.0 &&
+        (checkSumVerifyState == CheckSumProcessState.failed ||
+            checkSumVerifyState == CheckSumProcessState.success)) {
+      Future.delayed(const Duration(seconds: 3), () {
+        Navigator.of(context).pop();
+      });
     }
 
     return Stack(
@@ -288,7 +323,7 @@ class _ShowDialog extends ConsumerWidget {
           padding: const EdgeInsets.all(15.0),
           child: Container(
             width: double.infinity,
-            height: 285,
+            height: 345,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: Theme.of(context).colorScheme.tertiaryContainer,
@@ -353,6 +388,109 @@ class _ShowDialog extends ConsumerWidget {
                           ),
                           Text(
                             "Checking mirror availability",
+                            style: TextStyle(
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .tertiary
+                                    .withAlpha(140),
+                                decoration: TextDecoration.none),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            textAlign: TextAlign.start,
+                          ),
+                        ]),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          switch (downloadProcessState) {
+                            ProcessState.waiting => Icon(
+                                Icons.timer,
+                                size: 15,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .tertiary
+                                    .withAlpha(140),
+                              ),
+                            ProcessState.running => SizedBox(
+                                width: 9,
+                                height: 9,
+                                child: CircularProgressIndicator(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                  strokeWidth: 2.5,
+                                  strokeCap: StrokeCap.round,
+                                ),
+                              ),
+                            ProcessState.complete => const Icon(
+                                Icons.check_circle,
+                                size: 15,
+                                color: Colors.green,
+                              ),
+                          },
+                          const SizedBox(
+                            width: 3,
+                          ),
+                          Text(
+                            "Downloading",
+                            style: TextStyle(
+                                fontSize: 11.5,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .tertiary
+                                    .withAlpha(140),
+                                decoration: TextDecoration.none),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            textAlign: TextAlign.start,
+                          ),
+                        ]),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          switch (checkSumVerifyState) {
+                            CheckSumProcessState.waiting => Icon(
+                                Icons.timer,
+                                size: 15,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .tertiary
+                                    .withAlpha(140),
+                              ),
+                            CheckSumProcessState.running => SizedBox(
+                                width: 9,
+                                height: 9,
+                                child: CircularProgressIndicator(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                  strokeWidth: 2.5,
+                                  strokeCap: StrokeCap.round,
+                                ),
+                              ),
+                            CheckSumProcessState.failed => const Icon(
+                                Icons.close,
+                                size: 15,
+                                color: Colors.red,
+                              ),
+                            CheckSumProcessState.success => const Icon(
+                                Icons.check_circle,
+                                size: 15,
+                                color: Colors.green,
+                              ),
+                          },
+                          const SizedBox(
+                            width: 3,
+                          ),
+                          Text(
+                            "Verifying file checksum",
                             style: TextStyle(
                                 fontSize: 11.5,
                                 fontWeight: FontWeight.bold,

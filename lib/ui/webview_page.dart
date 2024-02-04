@@ -8,7 +8,7 @@ import 'package:openlib/state/state.dart'
     show cookieProvider, userAgentProvider, dbProvider, bookInfoProvider;
 
 class Webview extends ConsumerStatefulWidget {
-  const Webview({Key? key, required this.url}) : super(key: key);
+  const Webview({super.key, required this.url});
   final String url;
   @override
   // ignore: library_private_types_in_public_api

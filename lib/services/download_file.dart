@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:chunked_downloader/chunked_downloader.dart';
 import 'files.dart';
@@ -28,8 +30,9 @@ Future<String?> _getAliveMirror(List<String> mirrors, Dio dio) async {
   for (var url in mirrors) {
     try {
       final response = await dio.head(url,
-          options: Options(receiveTimeout: const Duration(seconds: 5)));
+          options: Options(receiveTimeout: const Duration(seconds: 10)));
       if (response.statusCode == 200) {
+        dio.close();
         return url;
       }
     } catch (e) {
@@ -43,6 +46,7 @@ Future<void> downloadFile(
     {required List<String> mirrors,
     required String md5,
     required String format,
+    required Function onStart,
     required Function onProgress,
     required Function cancelDownlaod,
     required Function mirrorStatus,
@@ -60,6 +64,7 @@ Future<void> downloadFile(
   // print(orderedMirrors[0]);
 
   if (workingMirror != null) {
+    onStart();
     try {
       var chunkedDownloader = await ChunkedDownloader(
               url: workingMirror,
@@ -81,5 +86,25 @@ Future<void> downloadFile(
     }
   } else {
     onDownlaodFailed();
+  }
+}
+
+Future<bool> verifyFileCheckSum(
+    {required String md5Hash, required String format}) async {
+  try {
+    final path = await getAppDirectoryPath;
+    final filePath = '$path/$md5Hash.$format';
+    final file = File(filePath);
+    final stream = file.openRead();
+    final hash = await md5.bind(stream).first;
+    print('md5 Checksum $md5Hash');
+    print('file hash ${hash.toString()}');
+    if (md5Hash == hash.toString()) {
+      return true;
+    }
+    return false;
+  } catch (e) {
+    print(e);
+    return false;
   }
 }
