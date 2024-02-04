@@ -74,8 +74,10 @@ class GoodReads {
                   ?.attributes['title']
                   .toString()
                   .trim(),
-              thumbnail:
-                  thumbnail.toString().replaceAll("._SY75_.", "._SY225_.")),
+              thumbnail: thumbnail
+                  .toString()
+                  .replaceAll("._SY75_.", "._SY225_.")
+                  .replaceAll("._SX50_.", "._SX148_.")),
         );
       }
     }

@@ -35,7 +35,7 @@ Future<String?> _getAliveMirror(List<String> mirrors, Dio dio) async {
         dio.close();
         return url;
       }
-    } catch (e) {
+    } catch (_) {
       // print("timeOut");
     }
   }
@@ -81,7 +81,7 @@ Future<void> downloadFile(
 
       mirrorStatus(true);
       cancelDownlaod(chunkedDownloader);
-    } catch (e) {
+    } catch (_) {
       onDownlaodFailed();
     }
   } else {
@@ -97,14 +97,11 @@ Future<bool> verifyFileCheckSum(
     final file = File(filePath);
     final stream = file.openRead();
     final hash = await md5.bind(stream).first;
-    print('md5 Checksum $md5Hash');
-    print('file hash ${hash.toString()}');
     if (md5Hash == hash.toString()) {
       return true;
     }
     return false;
-  } catch (e) {
-    print(e);
+  } catch (_) {
     return false;
   }
 }

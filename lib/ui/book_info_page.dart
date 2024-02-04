@@ -43,7 +43,7 @@ class BookInfoPage extends ConsumerWidget {
     final bookInfo = ref.watch(bookInfoProvider(url));
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: Theme.of(context).colorScheme.background,
         title: const Text("Openlib"),
         titleTextStyle: Theme.of(context).textTheme.displayLarge,
       ),
@@ -311,8 +311,11 @@ class _ShowDialog extends ConsumerWidget {
     if (downloadProgress == 1.0 &&
         (checkSumVerifyState == CheckSumProcessState.failed ||
             checkSumVerifyState == CheckSumProcessState.success)) {
-      Future.delayed(const Duration(seconds: 3), () {
+      Future.delayed(const Duration(seconds: 2), () {
         Navigator.of(context).pop();
+        if (checkSumVerifyState == CheckSumProcessState.failed) {
+          _showWarningFileDialog(context);
+        }
       });
     }
 
@@ -409,7 +412,7 @@ class _ShowDialog extends ConsumerWidget {
                         children: [
                           switch (downloadProcessState) {
                             ProcessState.waiting => Icon(
-                                Icons.timer,
+                                Icons.timer_sharp,
                                 size: 15,
                                 color: Theme.of(context)
                                     .colorScheme
@@ -458,7 +461,7 @@ class _ShowDialog extends ConsumerWidget {
                         children: [
                           switch (checkSumVerifyState) {
                             CheckSumProcessState.waiting => Icon(
-                                Icons.timer,
+                                Icons.timer_sharp,
                                 size: 15,
                                 color: Theme.of(context)
                                     .colorScheme
@@ -574,4 +577,53 @@ class _ShowDialog extends ConsumerWidget {
       ],
     );
   }
+}
+
+Future<void> _showWarningFileDialog(BuildContext context) async {
+  return showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(
+          'Checksum failed!',
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.secondary,
+              decoration: TextDecoration.none,
+              letterSpacing: 1),
+        ),
+        content: SingleChildScrollView(
+          child: ListBody(
+            children: <Widget>[
+              Text(
+                'The downloaded book may be malicious. Delete it and get the same book from another source, or use the book at your own risk.',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.tertiary.withAlpha(170),
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text(
+              'Okay',
+              style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.secondary,
+                  decoration: TextDecoration.none,
+                  letterSpacing: 1),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
 }
