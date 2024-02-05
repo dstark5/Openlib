@@ -4,6 +4,10 @@
 <p>
 As <i>Anna’s Archive</i> doesn't have an API, the app works by sending requests to <i>Anna’s Archive</i> and parses the response to objects. The app extracts the mirrors from the responses, downloads the book and stores it in the application's document directory.
 </p>
+<p>
+<b>Note :</b>
+This Version of app requires VPN to function properly . Without VPN the might show the captcha required page even after completing the captcha
+</p>
 <p>Main Features:</p>
 <ul>
 <li>Trending Books</li>
