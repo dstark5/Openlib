@@ -233,51 +233,47 @@ Future<void> downloadFileWidget(
         ref.read(downloadState.notifier).state = ProcessState.running;
       },
       onProgress: (int rcv, int total) async {
-        if (!rcv.isNaN && !total.isNaN) {
-          if (ref.read(totalFileSizeInBytes) != total) {
-            ref.read(totalFileSizeInBytes.notifier).state = total;
-          }
-          ref.read(downloadedFileSizeInBytes.notifier).state = rcv;
-          ref.read(downloadProgressProvider.notifier).state = rcv / total;
+        if (ref.read(totalFileSizeInBytes) != total) {
+          ref.read(totalFileSizeInBytes.notifier).state = total;
+        }
+        ref.read(downloadedFileSizeInBytes.notifier).state = rcv;
+        ref.read(downloadProgressProvider.notifier).state = rcv / total;
 
-          if (rcv / total == 1.0) {
-            await ref.read(dbProvider).insert(MyBook(
-                id: data.md5,
-                title: data.title,
-                author: data.author,
-                thumbnail: data.thumbnail,
-                link: data.link,
-                publisher: data.publisher,
-                info: data.info,
-                format: data.format,
-                description: data.description));
+        if (rcv / total == 1.0) {
+          await ref.read(dbProvider).insert(MyBook(
+              id: data.md5,
+              title: data.title,
+              author: data.author,
+              thumbnail: data.thumbnail,
+              link: data.link,
+              publisher: data.publisher,
+              info: data.info,
+              format: data.format,
+              description: data.description));
 
-            ref.read(downloadState.notifier).state = ProcessState.complete;
-            ref.read(checkSumState.notifier).state =
-                CheckSumProcessState.running;
+          ref.read(downloadState.notifier).state = ProcessState.complete;
+          ref.read(checkSumState.notifier).state = CheckSumProcessState.running;
 
-            try {
-              final checkSum = await verifyFileCheckSum(
-                  md5Hash: data.md5, format: data.format);
-              if (checkSum == true) {
-                ref.read(checkSumState.notifier).state =
-                    CheckSumProcessState.success;
-              } else {
-                ref.read(checkSumState.notifier).state =
-                    CheckSumProcessState.failed;
-              }
-            } catch (_) {
+          try {
+            final checkSum = await verifyFileCheckSum(
+                md5Hash: data.md5, format: data.format);
+            if (checkSum == true) {
+              ref.read(checkSumState.notifier).state =
+                  CheckSumProcessState.success;
+            } else {
               ref.read(checkSumState.notifier).state =
                   CheckSumProcessState.failed;
             }
-            // ignore: unused_result
-            ref.refresh(checkIdExists(data.md5));
-            // ignore: unused_result
-            ref.refresh(myLibraryProvider);
-            // ignore: use_build_context_synchronously
-            showSnackBar(
-                context: context, message: 'Book has been downloaded!');
+          } catch (_) {
+            ref.read(checkSumState.notifier).state =
+                CheckSumProcessState.failed;
           }
+          // ignore: unused_result
+          ref.refresh(checkIdExists(data.md5));
+          // ignore: unused_result
+          ref.refresh(myLibraryProvider);
+          // ignore: use_build_context_synchronously
+          showSnackBar(context: context, message: 'Book has been downloaded!');
         }
       },
       cancelDownlaod: (CancelToken downloadToken) {
@@ -309,7 +305,7 @@ class _ShowDialog extends ConsumerWidget {
     if (downloadProgress == 1.0 &&
         (checkSumVerifyState == CheckSumProcessState.failed ||
             checkSumVerifyState == CheckSumProcessState.success)) {
-      Future.delayed(const Duration(seconds: 2), () {
+      Future.delayed(const Duration(seconds: 1), () {
         Navigator.of(context).pop();
         if (checkSumVerifyState == CheckSumProcessState.failed) {
           _showWarningFileDialog(context);

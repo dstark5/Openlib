@@ -79,7 +79,10 @@ Future<void> downloadFile(
                 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'
           }),
           onReceiveProgress: (rcv, total) {
-            onProgress(rcv, total);
+            if (!(rcv.isNaN || rcv.isInfinite) &&
+                !(total.isNaN || total.isInfinite)) {
+              onProgress(rcv, total);
+            }
           },
           deleteOnError: true,
           cancelToken: cancelToken,
@@ -97,7 +100,7 @@ Future<void> downloadFile(
         onDownlaodFailed('downloaded Failed! try again...');
       }
     } else {
-      onDownlaodFailed('downloaded Failed! try again...');
+      onDownlaodFailed('No working mirrors available to download book!');
     }
   }
 }

@@ -51,10 +51,9 @@ dependencies:
   webview_cookie_manager: ^2.0.6
 
   flutter_svg: ^2.0.7
-  google_fonts: ^4.0.4
+  google_fonts: ^6.1.0
 
-  cached_network_image: ^3.3.1
-  chunked_downloader: ^0.0.2
+  cached_network_image: 3.3.0
 
   sqflite_common_ffi: ^2.3.0+2
   url_launcher: ^6.1.12
