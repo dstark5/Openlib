@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:dio/dio.dart' show CancelToken;
 
 import 'package:openlib/services/database.dart';
 import 'package:openlib/ui/components/error_widget.dart';
@@ -24,8 +25,6 @@ import 'package:openlib/state/state.dart'
         dbProvider,
         checkIdExists,
         myLibraryProvider;
-
-import 'package:chunked_downloader/chunked_downloader.dart';
 
 import 'package:openlib/ui/components/book_info_widget.dart';
 import 'package:openlib/ui/components/file_buttons_widget.dart';
@@ -219,6 +218,13 @@ class _ActionButtonWidgetState extends ConsumerState<ActionButtonWidget> {
 
 Future<void> downloadFileWidget(
     WidgetRef ref, BuildContext context, dynamic data) async {
+  showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return _ShowDialog(title: data.title);
+      });
+
   downloadFile(
       mirrors: data.mirrors!,
       md5: data.md5,
@@ -227,10 +233,10 @@ Future<void> downloadFileWidget(
         ref.read(downloadState.notifier).state = ProcessState.running;
       },
       onProgress: (int rcv, int total) async {
-        if (ref.read(totalFileSizeInBytes) != total) {
-          ref.read(totalFileSizeInBytes.notifier).state = total;
-        }
         if (!rcv.isNaN && !total.isNaN) {
+          if (ref.read(totalFileSizeInBytes) != total) {
+            ref.read(totalFileSizeInBytes.notifier).state = total;
+          }
           ref.read(downloadedFileSizeInBytes.notifier).state = rcv;
           ref.read(downloadProgressProvider.notifier).state = rcv / total;
 
@@ -274,23 +280,15 @@ Future<void> downloadFileWidget(
           }
         }
       },
-      cancelDownlaod: (ChunkedDownloader downloadToken) {
+      cancelDownlaod: (CancelToken downloadToken) {
         ref.read(cancelCurrentDownload.notifier).state = downloadToken;
       },
       mirrorStatus: (val) {
         ref.read(mirrorStatusProvider.notifier).state = val;
       },
-      onDownlaodFailed: () {
+      onDownlaodFailed: (msg) {
         Navigator.of(context).pop();
-        showSnackBar(
-            context: context, message: 'downloaded Failed! try again...');
-      });
-
-  showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return _ShowDialog(title: data.title);
+        showSnackBar(context: context, message: msg.toString());
       });
 }
 
@@ -558,7 +556,7 @@ class _ShowDialog extends ConsumerWidget {
                                 color: Colors.white,
                               )),
                           onPressed: () {
-                            ref.read(cancelCurrentDownload).stop();
+                            ref.read(cancelCurrentDownload).cancel();
                             Navigator.of(context).pop();
                           },
                           child: const Padding(

@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
-import 'package:chunked_downloader/chunked_downloader.dart';
 import 'files.dart';
 
 Future<String> _getFilePath(String fileName) async {
@@ -26,7 +25,8 @@ List<String> _reorderMirrors(List<String> mirrors) {
   return [...ipfsMirrors, ...httpsMirrors];
 }
 
-Future<String?> _getAliveMirror(List<String> mirrors, Dio dio) async {
+Future<String?> _getAliveMirror(List<String> mirrors) async {
+  Dio dio = Dio();
   for (var url in mirrors) {
     try {
       final response = await dio.head(url,
@@ -51,41 +51,54 @@ Future<void> downloadFile(
     required Function cancelDownlaod,
     required Function mirrorStatus,
     required Function onDownlaodFailed}) async {
-  Dio dio = Dio();
-
-  String path = await _getFilePath('$md5.$format');
-  List<String> orderedMirrors = _reorderMirrors(mirrors);
-
-  String? workingMirror = await _getAliveMirror(orderedMirrors, dio);
-
-  // print(workingMirror);
-  // print(path);
-  // print(orderedMirrors);
-  // print(orderedMirrors[0]);
-
-  if (workingMirror != null) {
-    onStart();
-    try {
-      var chunkedDownloader = await ChunkedDownloader(
-              url: workingMirror,
-              saveFilePath: path,
-              chunkSize: 32 * 1024,
-              onError: (error) {
-                onDownlaodFailed();
-              },
-              onProgress: (received, total, speed) {
-                onProgress(received, total);
-              },
-              onDone: (file) {})
-          .start();
-
-      mirrorStatus(true);
-      cancelDownlaod(chunkedDownloader);
-    } catch (_) {
-      onDownlaodFailed();
-    }
+  if (mirrors.isEmpty) {
+    onDownlaodFailed('No mirrors available!');
   } else {
-    onDownlaodFailed();
+    Dio dio = Dio();
+
+    String path = await _getFilePath('$md5.$format');
+    List<String> orderedMirrors = _reorderMirrors(mirrors);
+
+    String? workingMirror = await _getAliveMirror(orderedMirrors);
+
+    // print(workingMirror);
+    // print(path);
+    // print(orderedMirrors);
+    // print(orderedMirrors[0]);
+
+    if (workingMirror != null) {
+      onStart();
+      try {
+        CancelToken cancelToken = CancelToken();
+        dio.download(
+          workingMirror,
+          path,
+          options: Options(headers: {
+            'Connection': 'Keep-Alive',
+            'User-Agent':
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'
+          }),
+          onReceiveProgress: (rcv, total) {
+            onProgress(rcv, total);
+          },
+          deleteOnError: true,
+          cancelToken: cancelToken,
+        ).catchError((err) {
+          if (err.type != DioExceptionType.cancel) {
+            onDownlaodFailed('downloaded Failed! try again...');
+          }
+          throw err;
+        });
+
+        mirrorStatus(true);
+
+        cancelDownlaod(cancelToken);
+      } catch (_) {
+        onDownlaodFailed('downloaded Failed! try again...');
+      }
+    } else {
+      onDownlaodFailed('downloaded Failed! try again...');
+    }
   }
 }
 

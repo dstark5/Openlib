@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:openlib/services/database.dart';
-import 'package:chunked_downloader/chunked_downloader.dart';
+import 'package:dio/dio.dart';
 
 import 'package:openlib/services/open_library.dart';
 import 'package:openlib/services/annas_archieve.dart';
@@ -132,8 +132,8 @@ final getDownloadedFileSize = StateProvider.autoDispose<String>((ref) {
   return bytesToFileSize(ref.watch(downloadedFileSizeInBytes));
 });
 
-final cancelCurrentDownload = StateProvider<ChunkedDownloader>((ref) {
-  return ChunkedDownloader(saveFilePath: "", url: "");
+final cancelCurrentDownload = StateProvider<CancelToken>((ref) {
+  return CancelToken();
 });
 
 enum ProcessState { waiting, running, complete }
