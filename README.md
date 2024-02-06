@@ -97,7 +97,7 @@ Please report bugs via the [issue tracker](https://github.com/dstark5/Openlib/is
 
 If you like Openlib, you're welcome to send a donation.
 
-#### [Donate To Anna’s Archive](https://annas-archive.org/donate?tier=1).
+#### [Donate To Anna’s Archive.](https://annas-archive.org/donate?tier=1)
 
 ## License
 
