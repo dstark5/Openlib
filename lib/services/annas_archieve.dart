@@ -166,25 +166,23 @@ class AnnasArchieve {
 
     if (ul != null) {
       var anchorTags = [];
-      if (ul.length == 2) {
-        anchorTags = ul[1].querySelectorAll('a');
-      } else {
-        anchorTags = ul[0].querySelectorAll('a');
+
+      for (var e in ul) {
+        anchorTags.insertAll(0, e.querySelectorAll('a'));
       }
 
       for (var element in anchorTags) {
-        if (element.attributes['href']!.startsWith('https://')) {
-          if (element.attributes['href'] != null &&
-              element.attributes['href'].startsWith('https://1lib.sk') !=
-                  true) {
-            mirrors.add(element.attributes['href']!);
-          }
-        } else if (element.attributes['href'] != null &&
+        if (element.attributes['href'] != null &&
             element.attributes['href']!.startsWith('/slow_download')) {
           String? url = await _getMirrorLink(
               '$baseUrl${element.attributes['href']!}', userAgent, cookie);
           if (url != null && url.isNotEmpty) {
             mirrors.add(url);
+          }
+        } else if (element.attributes['href']!.startsWith('https://')) {
+          if (element.attributes['href'] != null &&
+              element.attributes['href'].contains('ipfs') == true) {
+            mirrors.add(element.attributes['href']!);
           }
         }
       }
