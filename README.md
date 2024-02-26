@@ -10,14 +10,15 @@
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-e63946.svg?style=for-the-badge)](https://opensource.org/licenses/) 
 [![Latest release](https://img.shields.io/github/release/dstark5/Openlib.svg?style=for-the-badge)](https://github.com/dstark5/Openlib/releases)
 
- [<img src="github_releases.png"
+[<img src="github_releases.png"
      alt="Get it on GitHub"
-     height="60">](https://github.com/dstark5/Openlib/releases) [<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png"
-     alt="Get it on IzzyDroid"
-     height="60">](https://android.izzysoft.de/repo/apk/com.app.openlib)
-     [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
-    alt="Get it on F-Droid"
-    height="60">](https://f-droid.org/en/packages/com.app.openlib/)
+     height="60">](https://github.com/dstark5/Openlib/releases) 
+[<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png"
+     alt="Get it on IzzyOnDroid"
+     height="60">](https://android.izzysoft.de/repo/apk/com.app.openlib) 
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="60">](https://f-droid.org/en/packages/com.app.openlib/)
      
 </div>
 
