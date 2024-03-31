@@ -84,6 +84,10 @@ flutter build
 ```
 - The Build Will Be In './build/app/outputs/flutter-apk/app-release.apk'
 
+## Contributor required 🚧
+
+We are actively seeking contributors. Whether you're a seasoned developer or just starting out, we welcome your contributions to help make this project even better!
+
 ## Contribution
 
 Whether you have ideas, design changes or even major code changes, help is always welcome. The app gets better and better with each contribution, no matter how big or small!
