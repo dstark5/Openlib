@@ -26,7 +26,7 @@ height="60">](https://f-droid.org/en/packages/com.app.openlib/)
 
 **WARNING:** This app is in beta stage, so you may encounter bugs. If you do, open an issue in the GitHub repository.
 
-#### Publishing Openlib, or any fork of it in the Google Play Store violates their terms And conditions.
+#### Publishing Openlib, or any fork of it in the Google Play Store violates their terms and conditions.
 
 ## Screenshots 🖼️
 
@@ -41,9 +41,9 @@ height="60">](https://f-droid.org/en/packages/com.app.openlib/)
 
 ## Description 📖
 
-##### Openlib is an open-source app to download and read books from shadow library ([Anna’s Archive](https://annas-archive.org/)). The app has a built-in reader to read books.
+##### Openlib is an open-source app to download and read books from shadow library ([Anna’s Archive](https://annas-archive.org)). The app has a built-in reader to read books.
 
-##### As [Anna’s Archive](https://annas-archive.org/) doesn't have an API, the app works by sending requests to Anna’s Archive and parsing the response to objects. The app extracts the mirrors from response and downloads the book.
+##### As [Anna’s Archive](https://annas-archive.org) doesn't have an API, the app works by sending requests to Anna’s Archive and parsing the response to objects. The app extracts the mirrors from response and downloads the book.
 
 ## Features ✨
 
