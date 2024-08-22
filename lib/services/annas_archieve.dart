@@ -160,7 +160,7 @@ class AnnasArchieve {
   Future<BookInfoData?> _bookInfoParser(resData, url, userAgent, cookie) async {
     var document = parse(resData.toString());
     var main = document.querySelector('main[class="main"]');
-    var ul = main?.querySelectorAll('ul[class="mb-4"]');
+    var ul = main?.querySelectorAll('ul[class="list-inside mb-4 ml-1"]');
 
     List<String> mirrors = [];
 
