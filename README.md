@@ -84,6 +84,10 @@ flutter build
 ```
 - The Build Will Be In './build/app/outputs/flutter-apk/app-release.apk'
 
+### Android
+
+Make sure that `android/local.properties` has `flutter.minSdkVersion=19` or above
+
 ## Contributor required 🚧
 
 We are actively seeking contributors. Whether you're a seasoned developer or just starting out, we welcome your contributions to help make this project even better!
