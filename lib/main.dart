@@ -18,7 +18,6 @@ import 'package:openlib/state/state.dart'
         selectedIndexProvider,
         themeModeProvider,
         openPdfWithExternalAppProvider,
-        openEpubWithExternalAppProvider,
         userAgentProvider,
         cookieProvider,
         dbProvider;
@@ -58,8 +57,6 @@ void main() async {
             (ref) => isDarkMode ? ThemeMode.dark : ThemeMode.light),
         openPdfWithExternalAppProvider
             .overrideWith((ref) => openPdfwithExternalapp),
-        openEpubWithExternalAppProvider
-            .overrideWith((ref) => openEpubwithExternalapp),
         userAgentProvider.overrideWith((ref) => browserUserAgent),
         cookieProvider.overrideWith((ref) => browserCookie),
       ],

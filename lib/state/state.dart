@@ -188,7 +188,6 @@ final getBookPosition =
 });
 
 final openPdfWithExternalAppProvider = StateProvider<bool>((ref) => false);
-final openEpubWithExternalAppProvider = StateProvider<bool>((ref) => false);
 
 final filePathProvider =
     FutureProvider.family<String, String>((ref, fileName) async {
