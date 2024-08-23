@@ -1,12 +1,20 @@
-import 'dart:io';
+// Dart imports:
 import 'dart:convert';
+import 'dart:io';
+
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:epub_view/epub_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_file/open_file.dart';
 
+// Project imports:
+import 'package:openlib/services/database.dart';
 import 'package:openlib/services/files.dart' show getFilePath;
 import 'package:openlib/ui/components/snack_bar_widget.dart';
+
 import 'package:openlib/state/state.dart'
     show filePathProvider, saveEpubState, dbProvider, getBookPosition;
 

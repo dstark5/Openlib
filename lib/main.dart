@@ -1,16 +1,23 @@
+// Dart imports:
 import 'dart:io' show Platform;
+
+// Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+// Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
+// Project imports:
+import 'package:openlib/services/database.dart' show MyLibraryDb;
+import 'package:openlib/ui/mylibrary_page.dart';
+import 'package:openlib/ui/search_page.dart';
+import 'package:openlib/ui/settings_page.dart';
 import 'package:openlib/ui/themes.dart';
 import 'package:openlib/ui/trending_page.dart';
-import 'package:openlib/ui/search_page.dart';
-import 'package:openlib/ui/mylibrary_page.dart';
-import 'package:openlib/ui/settings_page.dart';
-import 'package:openlib/services/database.dart' show Sqlite, MyLibraryDb;
+
 import 'package:openlib/services/files.dart'
     show moveFilesToAndroidInternalStorage;
 import 'package:openlib/state/state.dart'

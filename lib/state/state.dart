@@ -1,12 +1,18 @@
+// Dart imports:
 import 'dart:math';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:openlib/services/database.dart';
-import 'package:dio/dio.dart';
 
-import 'package:openlib/services/open_library.dart';
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// Project imports:
 import 'package:openlib/services/annas_archieve.dart';
+import 'package:openlib/services/database.dart';
 import 'package:openlib/services/files.dart';
+import 'package:openlib/services/open_library.dart';
 
 //Provider for dropdownbutton in search page
 

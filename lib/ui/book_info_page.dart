@@ -1,13 +1,25 @@
+// Dart imports:
 import 'dart:convert';
+
+// Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:dio/dio.dart' show CancelToken;
 
-import 'package:openlib/services/database.dart';
-import 'package:openlib/ui/components/error_widget.dart';
-import 'package:openlib/services/download_file.dart';
+// Package imports:
+import 'package:dio/dio.dart' show CancelToken;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/svg.dart';
+
+// Project imports:
 import 'package:openlib/services/annas_archieve.dart' show BookInfoData;
+import 'package:openlib/services/database.dart';
+import 'package:openlib/services/download_file.dart';
+import 'package:openlib/ui/components/book_info_widget.dart';
+import 'package:openlib/ui/components/error_widget.dart';
+import 'package:openlib/ui/components/file_buttons_widget.dart';
+import 'package:openlib/ui/components/snack_bar_widget.dart';
+import 'package:openlib/ui/webview_page.dart';
+
 import 'package:openlib/state/state.dart'
     show
         bookInfoProvider,
@@ -25,12 +37,6 @@ import 'package:openlib/state/state.dart'
         dbProvider,
         checkIdExists,
         myLibraryProvider;
-
-import 'package:openlib/ui/components/book_info_widget.dart';
-import 'package:openlib/ui/components/file_buttons_widget.dart';
-import 'package:openlib/ui/components/snack_bar_widget.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:openlib/ui/webview_page.dart';
 
 class BookInfoPage extends ConsumerWidget {
   const BookInfoPage({super.key, required this.url});

@@ -1,11 +1,16 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
-import 'extensions.dart';
-import 'package:openlib/ui/components/page_title_widget.dart';
+// Package imports:
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// Project imports:
 import 'package:openlib/ui/components/error_widget.dart';
+import 'package:openlib/ui/components/page_title_widget.dart';
 import 'package:openlib/ui/results_page.dart';
+import 'extensions.dart';
+
 import 'package:openlib/state/state.dart'
     show getTrendingBooks, enableFiltersState;
 

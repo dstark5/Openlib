@@ -61,8 +61,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   dev: ^1.0.0
   crypto: ^3.0.3
+  file_picker: ^8.1.2
 
 dev_dependencies:
+  import_sorter: ^4.6.0
   flutter_test:
     sdk: flutter
 

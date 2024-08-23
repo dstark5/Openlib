@@ -1,6 +1,11 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:openlib/ui/extensions.dart';
+
+// Package imports:
 import 'package:flutter_svg/svg.dart';
+
+// Project imports:
+import 'package:openlib/ui/extensions.dart';
 
 // ignore: must_be_immutable
 class CustomErrorWidget extends StatelessWidget {

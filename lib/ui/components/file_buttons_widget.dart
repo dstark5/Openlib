@@ -1,10 +1,14 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_file/open_file.dart';
 
+// Project imports:
 import 'package:openlib/services/files.dart' show getFilePath;
-import 'package:openlib/ui/components/snack_bar_widget.dart';
 import 'package:openlib/ui/components/delete_dialog_widget.dart';
+import 'package:openlib/ui/components/snack_bar_widget.dart';
 import 'package:openlib/ui/epub_viewer.dart' show launchEpubViewer;
 import 'package:openlib/ui/pdf_viewer.dart' show launchPdfViewer;
 

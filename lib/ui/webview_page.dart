@@ -1,6 +1,13 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+// Project imports:
+import 'package:openlib/services/database.dart';
+
 import 'package:webview_cookie_manager/webview_cookie_manager.dart'
     as cookiejar;
 

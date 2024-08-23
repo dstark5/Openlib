@@ -97,6 +97,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.18.0"
+  cross_file:
+    dependency: transitive
+    description:
+      name: cross_file
+      sha256: "7caf6a750a0c04effbb52a676dce9a4a592e10ad35c34d6d2d0e4811160d5670"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.4+2"
   crypto:
     dependency: "direct main"
     description:
@@ -193,6 +201,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.0"
+  file_picker:
+    dependency: "direct main"
+    description:
+      name: file_picker
+      sha256: "167bb619cdddaa10ef2907609feb8a79c16dfa479d3afaf960f8e223f754bf12"
+      url: "https://pub.dev"
+    source: hosted
+    version: "8.1.2"
   fixnum:
     dependency: transitive
     description:
@@ -246,6 +262,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.2"
+  flutter_plugin_android_lifecycle:
+    dependency: transitive
+    description:
+      name: flutter_plugin_android_lifecycle
+      sha256: "9d98bd47ef9d34e803d438f17fd32b116d31009f534a6fa5ce3a1167f189a6de"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.21"
   flutter_riverpod:
     dependency: "direct main"
     description:
@@ -328,6 +352,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.0"
+  import_sorter:
+    dependency: "direct dev"
+    description:
+      name: import_sorter
+      sha256: eb15738ccead84e62c31e0208ea4e3104415efcd4972b86906ca64a1187d0836
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.6.0"
   json_annotation:
     dependency: transitive
     description:
@@ -693,6 +725,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.2"
+  tint:
+    dependency: transitive
+    description:
+      name: tint
+      sha256: "9652d9a589f4536d5e392cf790263d120474f15da3cf1bee7f1fdb31b4de5f46"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   typed_data:
     dependency: transitive
     description:
@@ -869,6 +909,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.15.0"
+  win32:
+    dependency: transitive
+    description:
+      name: win32
+      sha256: "68d1e89a91ed61ad9c370f9f8b6effed9ae5e0ede22a270bdfa6daf79fc2290a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.5.4"
   xdg_directories:
     dependency: transitive
     description:

@@ -1,51 +1,11 @@
+// Dart imports:
 import 'dart:io';
+
+// Package imports:
 import 'package:sqflite/sqflite.dart';
 
-class Sqlite {
-  static Future<Database> initDb() async {
-    var databasesPath = await getDatabasesPath();
-    String path = '$databasesPath/mylibrary.db';
-    bool isMobile = Platform.isAndroid || Platform.isIOS;
-
-    Database dbInstance = await openDatabase(
-      path,
-      version: 5,
-      onCreate: (Database db, int version) async {
-        await db.execute(
-            'CREATE TABLE mybooks (id TEXT PRIMARY KEY, title TEXT,author TEXT,thumbnail TEXT,link TEXT,publisher TEXT,info TEXT,format TEXT,description TEXT)');
-        await db.execute(
-            'CREATE TABLE preferences (name TEXT PRIMARY KEY,value BOOLEAN)');
-        if (isMobile) {
-          await db.execute(
-              'CREATE TABLE bookposition (fileName TEXT PRIMARY KEY,position TEXT)');
-          await db.execute(
-              'CREATE TABLE browserOptions (name TEXT PRIMARY KEY,value TEXT)');
-        }
-      },
-      onUpgrade: (db, oldVersion, newVersion) async {
-        List<dynamic> isTableExist = await db.query('sqlite_master',
-            where: 'name = ?', whereArgs: ['bookposition']);
-        List<dynamic> isPreferenceTableExist = await db.query('sqlite_master',
-            where: 'name = ?', whereArgs: ['preferences']);
-        List<dynamic> isbrowserOptionsExist = await db.query('sqlite_master',
-            where: 'name = ?', whereArgs: ['browserOptions']);
-        if (isPreferenceTableExist.isEmpty) {
-          await db.execute(
-              'CREATE TABLE preferences (name TEXT PRIMARY KEY,value BOOLEAN)');
-        }
-        if (isMobile && isTableExist.isEmpty) {
-          await db.execute(
-              'CREATE TABLE bookposition (fileName TEXT PRIMARY KEY,position TEXT)');
-        }
-        if (isMobile && isbrowserOptionsExist.isEmpty) {
-          await db.execute(
-              'CREATE TABLE browserOptions (name TEXT PRIMARY KEY,value TEXT)');
-        }
-      },
-    );
-    return dbInstance;
-  }
-}
+// Project imports:
+import 'package:openlib/services/files.dart';
 
 class MyBook {
   final String id;

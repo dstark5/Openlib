@@ -1,6 +1,12 @@
+// Dart imports:
 import 'dart:io';
+
+// Package imports:
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
+
+// Project imports:
+import 'package:openlib/services/database.dart' show MyLibraryDb;
 import 'files.dart';
 
 Future<String> _getFilePath(String fileName) async {
