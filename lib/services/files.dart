@@ -6,8 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
 // Project imports:
+import 'package:openlib/services/database.dart';
+import 'package:openlib/state/state.dart' show myLibraryProvider;
 
-Future<String> get getAppDirectoryPath async {
+MyLibraryDb dataBase = MyLibraryDb.instance;
+
+Future<String> get getBookStorageDefaultDirectory async {
   if (Platform.isAndroid) {
     final directory = await getExternalStorageDirectory();
     return directory!.path;
@@ -47,8 +51,9 @@ Future<void> deleteFile(String filePath) async {
 }
 
 Future<String> getFilePath(String fileName) async {
-  String appDirPath = await getAppDirectoryPath;
-  String filePath = '$appDirPath/$fileName';
+  final bookStorageDirectory =
+      await dataBase.getPreference('bookStorageDirectory');
+  String filePath = '$bookStorageDirectory/$fileName';
   bool isExists = await isFileExists(filePath);
   if (isExists == true) {
     return filePath;
@@ -60,10 +65,11 @@ Future<void> deleteFileWithDbData(
     FutureProviderRef ref, String md5, String format) async {
   try {
     String fileName = '$md5.$format';
-    String appDirPath = await getAppDirectoryPath;
-    await deleteFile('$appDirPath/$fileName');
-    await ref.read(dbProvider).delete(md5);
-    await ref.read(dbProvider).deleteBookState(fileName);
+    final bookStorageDirectory =
+        await dataBase.getPreference('bookStorageDirectory');
+    await deleteFile('$bookStorageDirectory/$fileName');
+    await dataBase.delete(md5);
+    await dataBase.deleteBookState(fileName);
     // ignore: unused_result
     ref.refresh(myLibraryProvider);
   } catch (e) {

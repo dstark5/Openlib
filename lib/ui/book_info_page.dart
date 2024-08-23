@@ -34,7 +34,6 @@ import 'package:openlib/state/state.dart'
         CheckSumProcessState,
         downloadState,
         checkSumState,
-        dbProvider,
         checkIdExists,
         myLibraryProvider;
 
@@ -246,7 +245,9 @@ Future<void> downloadFileWidget(
         ref.read(downloadProgressProvider.notifier).state = rcv / total;
 
         if (rcv / total == 1.0) {
-          await ref.read(dbProvider).insert(MyBook(
+          MyLibraryDb dataBase = MyLibraryDb.instance;
+
+          await dataBase.insert(MyBook(
               id: data.md5,
               title: data.title,
               author: data.author,

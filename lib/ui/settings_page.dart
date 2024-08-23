@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -16,13 +17,42 @@ import 'package:openlib/ui/about_page.dart';
 import 'package:openlib/ui/components/page_title_widget.dart';
 
 import 'package:openlib/state/state.dart'
-    show themeModeProvider, openPdfWithExternalAppProvider, dbProvider;
+    show themeModeProvider, openPdfWithExternalAppProvider;
+
+Future<void> requestStoragePermission() async {
+  bool permissionGranted = false;
+  // Check whether the device is running Android 11 or higher
+  DeviceInfoPlugin plugin = DeviceInfoPlugin();
+  AndroidDeviceInfo android = await plugin.androidInfo;
+  // Android < 11
+  if (android.version.sdkInt < 33) {
+    if (await Permission.storage.request().isGranted) {
+      permissionGranted = true;
+    } else if (await Permission.storage.request().isPermanentlyDenied) {
+      await openAppSettings();
+    }
+  }
+  // Android > 11
+  else {
+    if (await Permission.manageExternalStorage.request().isGranted) {
+      permissionGranted = true;
+    } else if (await Permission.manageExternalStorage
+        .request()
+        .isPermanentlyDenied) {
+      await openAppSettings();
+    } else if (await Permission.manageExternalStorage.request().isDenied) {
+      permissionGranted = false;
+    }
+  }
+  print("Storage permission status: $permissionGranted");
+}
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    MyLibraryDb dataBase = MyLibraryDb.instance;
     return Padding(
       padding: const EdgeInsets.only(left: 5, right: 5, top: 10),
       child: SingleChildScrollView(
@@ -49,8 +79,7 @@ class SettingsPage extends ConsumerWidget {
                   onChanged: (bool value) {
                     ref.read(themeModeProvider.notifier).state =
                         value == true ? ThemeMode.dark : ThemeMode.light;
-                    ref.read(dbProvider).savePreference('darkMode', value);
-
+                    dataBase.savePreference('darkMode', value);
                     if (Platform.isAndroid) {
                       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
                           systemNavigationBarColor:
@@ -77,13 +106,31 @@ class SettingsPage extends ConsumerWidget {
                   onChanged: (bool value) {
                     ref.read(openPdfWithExternalAppProvider.notifier).state =
                         value;
-                    ref
-                        .read(dbProvider)
-                        .savePreference('openPdfwithExternalApp', value);
+                    dataBase.savePreference('openPdfwithExternalApp', value);
                   },
                 )
               ],
             ),
+            _PaddedContainer(
+                onClick: () async {
+                  String? pickedDirectory =
+                      await FilePicker.platform.getDirectoryPath();
+                  // TODO: Attempt moving existing books to the new directory
+                  await requestStoragePermission();
+                  dataBase.savePreference(
+                      'bookStorageDirectory', pickedDirectory);
+                },
+                children: [
+                  Text(
+                    "Change storage path",
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.tertiary,
+                    ),
+                  ),
+                  Icon(Icons.folder),
+                ]),
             _PaddedContainer(
               onClick: () {
                 Navigator.push(context,

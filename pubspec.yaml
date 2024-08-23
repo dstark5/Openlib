@@ -62,6 +62,7 @@ dependencies:
   dev: ^1.0.0
   crypto: ^3.0.3
   file_picker: ^8.1.2
+  device_info_plus: ^10.1.2
 
 dev_dependencies:
   import_sorter: ^4.6.0

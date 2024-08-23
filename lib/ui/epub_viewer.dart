@@ -16,7 +16,7 @@ import 'package:openlib/services/files.dart' show getFilePath;
 import 'package:openlib/ui/components/snack_bar_widget.dart';
 
 import 'package:openlib/state/state.dart'
-    show filePathProvider, saveEpubState, dbProvider, getBookPosition;
+    show filePathProvider, saveEpubState, getBookPosition;
 
 Future<void> launchEpubViewer(
     {required String fileName,
@@ -24,7 +24,9 @@ Future<void> launchEpubViewer(
     required WidgetRef ref}) async {
   if (Platform.isAndroid || Platform.isIOS) {
     String path = await getFilePath(fileName);
-    String? epubConfig = await ref.read(dbProvider).getBookState(fileName);
+    MyLibraryDb dataBase = MyLibraryDb.instance;
+
+    String? epubConfig = await dataBase.getBookState(fileName);
     await OpenFile.open(path);
   } else {
     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {

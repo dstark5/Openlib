@@ -12,7 +12,7 @@ import 'package:webview_cookie_manager/webview_cookie_manager.dart'
     as cookiejar;
 
 import 'package:openlib/state/state.dart'
-    show cookieProvider, userAgentProvider, dbProvider, bookInfoProvider;
+    show cookieProvider, userAgentProvider, bookInfoProvider;
 
 class Webview extends ConsumerStatefulWidget {
   const Webview({super.key, required this.url});
@@ -28,6 +28,7 @@ class _WebviewState extends ConsumerState<Webview> {
   final cookieManager = cookiejar.WebviewCookieManager();
   @override
   Widget build(BuildContext context) {
+    MyLibraryDb dataBase = MyLibraryDb.instance;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -37,11 +38,12 @@ class _WebviewState extends ConsumerState<Webview> {
         child: WebViewWidget(
           controller: controller
             ..setJavaScriptMode(JavaScriptMode.unrestricted)
-            ..setBackgroundColor(const Color(0x00000000))
+            // ..setBackgroundColor(const Color(
+            //     0x00000000)) // TODO: Crashes macOS app. https://github.com/flutter/flutter/issues/153773
             ..loadRequest(Uri.parse(widget.url))
             ..getUserAgent().then((value) {
               ref.read(userAgentProvider.notifier).state = value!;
-              ref.read(dbProvider).setBrowserOptions('userAgent', value);
+              dataBase.setBrowserOptions('userAgent', value);
             })
             ..setNavigationDelegate(NavigationDelegate(
               onPageStarted: (url) async {
@@ -64,9 +66,7 @@ class _WebviewState extends ConsumerState<Webview> {
 
                   ref.read(cookieProvider.notifier).state = cfClearance;
 
-                  await ref
-                      .read(dbProvider)
-                      .setBrowserOptions('cookie', cfClearance);
+                  await dataBase.setBrowserOptions('cookie', cfClearance);
 
                   ref.invalidate(bookInfoProvider);
 

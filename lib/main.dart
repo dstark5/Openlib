@@ -26,8 +26,7 @@ import 'package:openlib/state/state.dart'
         themeModeProvider,
         openPdfWithExternalAppProvider,
         userAgentProvider,
-        cookieProvider,
-        dbProvider;
+        cookieProvider;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,13 +36,15 @@ void main() async {
     databaseFactory = databaseFactoryFfi;
   }
 
-  Database initDb = await Sqlite.initDb();
-  MyLibraryDb dataBase = MyLibraryDb(dbInstance: initDb);
-  bool isDarkMode = await dataBase.getPreference('darkMode');
-  bool openPdfwithExternalapp =
-      await dataBase.getPreference('openPdfwithExternalApp');
-  bool openEpubwithExternalapp =
-      await dataBase.getPreference('openEpubwithExternalApp');
+  MyLibraryDb dataBase = MyLibraryDb.instance;
+  bool isDarkMode =
+      await dataBase.getPreference('darkMode') == 0 ? false : true;
+  bool openPdfwithExternalapp = await dataBase
+              .getPreference('openPdfwithExternalApp')
+              .catchError((e) => print(e)) ==
+          0
+      ? false
+      : true;
 
   String browserUserAgent = await dataBase.getBrowserOptions('userAgent');
   String browserCookie = await dataBase.getBrowserOptions('cookie');
@@ -59,7 +60,6 @@ void main() async {
   runApp(
     ProviderScope(
       overrides: [
-        dbProvider.overrideWithValue(dataBase),
         themeModeProvider.overrideWith(
             (ref) => isDarkMode ? ThemeMode.dark : ThemeMode.light),
         openPdfWithExternalAppProvider
