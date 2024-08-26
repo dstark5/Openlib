@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:openlib/services/files.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
@@ -113,10 +114,16 @@ class SettingsPage extends ConsumerWidget {
             ),
             _PaddedContainer(
                 onClick: () async {
+                  final currentDirectory =
+                      await dataBase.getPreference('bookStorageDirectory');
                   String? pickedDirectory =
                       await FilePicker.platform.getDirectoryPath();
-                  // TODO: Attempt moving existing books to the new directory
+                  if (pickedDirectory == null) {
+                    return;
+                  }
                   await requestStoragePermission();
+                  // Attempt moving existing books to the new directory
+                  moveFolderContents(currentDirectory, pickedDirectory);
                   dataBase.savePreference(
                       'bookStorageDirectory', pickedDirectory);
                 },
