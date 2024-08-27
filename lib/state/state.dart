@@ -1,12 +1,20 @@
+// Dart imports:
 import 'dart:math';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:openlib/services/database.dart';
-import 'package:dio/dio.dart';
 
-import 'package:openlib/services/open_library.dart';
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// Project imports:
 import 'package:openlib/services/annas_archieve.dart';
+import 'package:openlib/services/database.dart';
 import 'package:openlib/services/files.dart';
+import 'package:openlib/services/open_library.dart';
+
+MyLibraryDb dataBase = MyLibraryDb.instance;
 
 //Provider for dropdownbutton in search page
 
@@ -145,15 +153,13 @@ final downloadState =
 final checkSumState = StateProvider.autoDispose<CheckSumProcessState>(
     (ref) => CheckSumProcessState.waiting);
 
-final dbProvider = Provider<MyLibraryDb>((ref) => throw UnimplementedError());
-
 final myLibraryProvider = FutureProvider((ref) async {
-  return await ref.read(dbProvider).getAll();
+  return dataBase.getAll();
 });
 
 final checkIdExists =
     FutureProvider.family.autoDispose<bool, String>((ref, id) async {
-  return await ref.read(dbProvider).checkIdExists(id);
+  return await dataBase.checkIdExists(id);
 });
 
 class FileName {
@@ -173,22 +179,21 @@ final totalPdfPage = StateProvider.autoDispose<int>((ref) => 0);
 
 Future<void> savePdfState(String fileName, WidgetRef ref) async {
   String position = ref.watch(pdfCurrentPage).toString();
-  await ref.watch(dbProvider).saveBookState(fileName, position);
+  await dataBase.saveBookState(fileName, position);
 }
 
 Future<void> saveEpubState(
     String fileName, String? position, WidgetRef ref) async {
   String pos = position ?? '';
-  await ref.watch(dbProvider).saveBookState(fileName, pos);
+  await dataBase.saveBookState(fileName, pos);
 }
 
 final getBookPosition =
     FutureProvider.family.autoDispose<String?, String>((ref, fileName) async {
-  return await ref.read(dbProvider).getBookState(fileName);
+  return await dataBase.getBookState(fileName);
 });
 
 final openPdfWithExternalAppProvider = StateProvider<bool>((ref) => false);
-final openEpubWithExternalAppProvider = StateProvider<bool>((ref) => false);
 
 final filePathProvider =
     FutureProvider.family<String, String>((ref, fileName) async {

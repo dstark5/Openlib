@@ -1,8 +1,12 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:openlib/ui/components/snack_bar_widget.dart';
+// Project imports:
 import 'package:openlib/ui/components/page_title_widget.dart';
+import 'package:openlib/ui/components/snack_bar_widget.dart';
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});

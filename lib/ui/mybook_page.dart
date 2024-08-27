@@ -1,8 +1,11 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:openlib/services/database.dart';
-import 'package:openlib/state/state.dart' show dbProvider;
 
+// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// Project imports:
+import 'package:openlib/services/database.dart';
 import 'package:openlib/ui/components/book_info_widget.dart';
 import 'package:openlib/ui/components/file_buttons_widget.dart';
 
@@ -21,7 +24,9 @@ class BookPage extends StatelessWidget {
       ),
       body: Consumer(
         builder: (BuildContext context, WidgetRef ref, _) {
-          final bookInfo = ref.read(dbProvider).getId(id);
+          MyLibraryDb dataBase = MyLibraryDb.instance;
+
+          final bookInfo = dataBase.getId(id);
 
           return FutureBuilder(
               future: bookInfo,

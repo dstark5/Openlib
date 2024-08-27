@@ -1,11 +1,19 @@
+// Dart imports:
 import 'dart:io';
+
+// Package imports:
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
-import 'files.dart';
+
+// Project imports:
+import 'package:openlib/services/database.dart' show MyLibraryDb;
+
+MyLibraryDb dataBase = MyLibraryDb.instance;
 
 Future<String> _getFilePath(String fileName) async {
-  final path = await getAppDirectoryPath;
-  return '$path/$fileName';
+  String bookStorageDirectory =
+      await dataBase.getPreference('bookStorageDirectory');
+  return '$bookStorageDirectory/$fileName';
 }
 
 List<String> _reorderMirrors(List<String> mirrors) {
@@ -108,8 +116,9 @@ Future<void> downloadFile(
 Future<bool> verifyFileCheckSum(
     {required String md5Hash, required String format}) async {
   try {
-    final path = await getAppDirectoryPath;
-    final filePath = '$path/$md5Hash.$format';
+    final bookStorageDirectory =
+        await dataBase.getPreference('bookStorageDirectory');
+    final filePath = '$bookStorageDirectory/$md5Hash.$format';
     final file = File(filePath);
     final stream = file.openRead();
     final hash = await md5.bind(stream).first;

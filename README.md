@@ -4,29 +4,29 @@
 
 # Openlib
 
-#### An Open source app to download and read books from shadow library ([Anna’s Archive](https://annas-archive.org/)).
+An Open source app to download and read books from shadow library ([Anna’s Archive](https://annas-archive.org/))
 
-[![made-with-flutter](https://img.shields.io/badge/Made%20with-Flutter-4361ee.svg?style=for-the-badge)](https://flutter.dev/) 
-[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-e63946.svg?style=for-the-badge)](https://opensource.org/licenses/) 
+[![made-with-flutter](https://img.shields.io/badge/Made%20with-Flutter-4361ee.svg?style=for-the-badge)](https://flutter.dev/)
+[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-e63946.svg?style=for-the-badge)](https://opensource.org/licenses/)
 [![Latest release](https://img.shields.io/github/release/dstark5/Openlib.svg?style=for-the-badge)](https://github.com/dstark5/Openlib/releases)
 
 [<img src="github_releases.png"
      alt="Get it on GitHub"
-     height="60">](https://github.com/dstark5/Openlib/releases) 
+     height="60">](https://github.com/dstark5/Openlib/releases)
 [<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png"
      alt="Get it on IzzyOnDroid"
-     height="60">](https://android.izzysoft.de/repo/apk/com.app.openlib) 
+     height="60">](https://android.izzysoft.de/repo/apk/com.app.openlib)
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
      alt="Get it on F-Droid"
      height="60">](https://f-droid.org/en/packages/com.app.openlib/)
-     
+
 </div>
 
 ## Note 📝
 
 **WARNING:** This App Is In Beta Stage, So You May Encounter Bugs. If You Do, Open An Issue In Github Repository.
 
-#### Publishing Openlib, Or Any Fork Of It In The Google Play Store Violates Their Terms And Conditions.
+**Publishing Openlib, Or Any Fork Of It In The Google Play Store Violates Their Terms And Conditions**
 
 ## Screenshots 🖼️
 
@@ -41,9 +41,9 @@
 
 ## Description 📖
 
-##### Openlib Is An Open Source App To Download And Read Books From Shadow Library ([Anna’s Archive](https://annas-archive.org/)). The App Has Built In Reader to Read Books.
+Openlib Is An Open Source App To Download And Read Books From Shadow Library ([Anna’s Archive](https://annas-archive.org/)). The App Has Built In Reader to Read Books
 
-##### As [Anna’s Archive](https://annas-archive.org/) Doesn't Have An API. The App Works By Sending Request To Anna’s Archive And Parses The Response To objects. The App Extracts The Mirrors From Response And Downloads The Book.
+As [Anna’s Archive](https://annas-archive.org/) Doesn't Have An API. The App Works By Sending Request To Anna’s Archive And Parses The Response To objects. The App Extracts The Mirrors From Response And Downloads The Book
 
 ## Features ✨
 
@@ -54,12 +54,12 @@
 - Filter Books
 - Sort Books
 
-
 ## Roadmap 🎯
 
 - Adding More Book Format supports (cbz,cbr,azw3,etc...)
 - Adding Support For Background Downloads
 - Adding Support For Multiple Downloads
+- Move existing books when changing the storage path
 
 ## Building from Source
 
@@ -67,22 +67,28 @@
 
 - Git Clone The Repo
 
-```
-git clone https://github.com/dstark5/Openlib.git
-```
+     ```sh
+     git clone https://github.com/dstark5/Openlib.git
+     ```
 
 - Run the app with Android Studio or VS Code. Or the command line:
 
-```
-flutter pub get
-flutter run
-```
+     ```sh
+     flutter pub get
+     flutter run
+     ```
 
 - To Build App Run:
-```
-flutter build
-```
+
+     ```sh
+     flutter build
+     ```
+
 - The Build Will Be In './build/app/outputs/flutter-apk/app-release.apk'
+
+### Android
+
+Make sure that `android/local.properties` has `flutter.minSdkVersion=21` or above
 
 ## Contributor required 🚧
 
@@ -102,7 +108,7 @@ Please report bugs via the [issue tracker](https://github.com/dstark5/Openlib/is
 
 If you like Openlib, you're welcome to send a donation.
 
-#### [Donate To Anna’s Archive.](https://annas-archive.org/donate?tier=1)
+[Donate To Anna’s Archive.](https://annas-archive.org/donate?tier=1)
 
 ## License 📜
 

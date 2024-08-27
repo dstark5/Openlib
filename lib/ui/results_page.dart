@@ -1,13 +1,17 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:openlib/ui/extensions.dart';
+// Project imports:
+import 'package:openlib/state/state.dart' show searchProvider;
 import 'package:openlib/ui/book_info_page.dart';
+import 'package:openlib/ui/components/book_card_widget.dart';
 import 'package:openlib/ui/components/error_widget.dart';
 import 'package:openlib/ui/components/page_title_widget.dart';
-import 'package:openlib/ui/components/book_card_widget.dart';
-import 'package:openlib/state/state.dart' show searchProvider;
+import 'package:openlib/ui/extensions.dart';
 
 class ResultPage extends ConsumerWidget {
   const ResultPage({super.key, required this.searchQuery});

@@ -1,6 +1,18 @@
+// Dart imports:
+import 'dart:io' show Platform;
+
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:open_file/open_file.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+// Project imports:
+import 'package:openlib/services/files.dart' show getFilePath;
+
 import 'package:openlib/state/state.dart'
     show
         filePathProvider,
@@ -9,11 +21,7 @@ import 'package:openlib/state/state.dart'
         savePdfState,
         openPdfWithExternalAppProvider,
         getBookPosition;
-import 'package:url_launcher/url_launcher.dart';
-import 'package:open_file/open_file.dart';
-import 'dart:io' show Platform;
 
-import 'package:openlib/services/files.dart' show getFilePath;
 
 Future<void> launchPdfViewer(
     {required String fileName,

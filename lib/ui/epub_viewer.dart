@@ -1,20 +1,22 @@
-import 'dart:io';
+// Dart imports:
 import 'dart:convert';
+import 'dart:io';
+
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:epub_view/epub_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:vocsy_epub_viewer/epub_viewer.dart';
 import 'package:open_file/open_file.dart';
 
+// Project imports:
+import 'package:openlib/services/database.dart';
 import 'package:openlib/services/files.dart' show getFilePath;
 import 'package:openlib/ui/components/snack_bar_widget.dart';
+
 import 'package:openlib/state/state.dart'
-    show
-        filePathProvider,
-        saveEpubState,
-        dbProvider,
-        getBookPosition,
-        openEpubWithExternalAppProvider;
+    show filePathProvider, saveEpubState, getBookPosition;
 
 Future<void> launchEpubViewer(
     {required String fileName,
@@ -22,38 +24,10 @@ Future<void> launchEpubViewer(
     required WidgetRef ref}) async {
   if (Platform.isAndroid || Platform.isIOS) {
     String path = await getFilePath(fileName);
-    String? epubConfig = await ref.read(dbProvider).getBookState(fileName);
-    bool openWithExternalApp = ref.watch(openEpubWithExternalAppProvider);
+    MyLibraryDb dataBase = MyLibraryDb.instance;
 
-    if (openWithExternalApp) {
-      await OpenFile.open(path);
-    } else {
-      try {
-        VocsyEpub.setConfig(
-          // ignore: use_build_context_synchronously
-          themeColor: const Color.fromARGB(255, 210, 15, 1),
-          identifier: "iosBook",
-          scrollDirection: EpubScrollDirection.HORIZONTAL,
-        );
-
-        if ((epubConfig?.isNotEmpty ?? true) &&
-            (epubConfig != null) &&
-            (!(epubConfig.startsWith('epubcfi')))) {
-          VocsyEpub.open(path,
-              lastLocation: EpubLocator.fromJson(json.decode(epubConfig)));
-        } else {
-          VocsyEpub.open(path);
-        }
-
-        VocsyEpub.locatorStream.listen((locator) async {
-          await saveEpubState(fileName, locator, ref);
-          // convert locator from string to json and save to your database to be retrieved later
-        });
-      } catch (e) {
-        // ignore: use_build_context_synchronously
-        showSnackBar(context: context, message: 'Unable to open pdf!');
-      }
-    }
+    String? epubConfig = await dataBase.getBookState(fileName);
+    await OpenFile.open(path);
   } else {
     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
       return EpubViewerWidget(

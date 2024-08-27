@@ -1,16 +1,23 @@
+// Dart imports:
 import 'dart:io' show Platform;
+
+// Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+// Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
+// Project imports:
+import 'package:openlib/services/database.dart' show MyLibraryDb;
+import 'package:openlib/ui/mylibrary_page.dart';
+import 'package:openlib/ui/search_page.dart';
+import 'package:openlib/ui/settings_page.dart';
 import 'package:openlib/ui/themes.dart';
 import 'package:openlib/ui/trending_page.dart';
-import 'package:openlib/ui/search_page.dart';
-import 'package:openlib/ui/mylibrary_page.dart';
-import 'package:openlib/ui/settings_page.dart';
-import 'package:openlib/services/database.dart' show Sqlite, MyLibraryDb;
+
 import 'package:openlib/services/files.dart'
     show moveFilesToAndroidInternalStorage;
 import 'package:openlib/state/state.dart'
@@ -18,10 +25,8 @@ import 'package:openlib/state/state.dart'
         selectedIndexProvider,
         themeModeProvider,
         openPdfWithExternalAppProvider,
-        openEpubWithExternalAppProvider,
         userAgentProvider,
-        cookieProvider,
-        dbProvider;
+        cookieProvider;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,13 +36,15 @@ void main() async {
     databaseFactory = databaseFactoryFfi;
   }
 
-  Database initDb = await Sqlite.initDb();
-  MyLibraryDb dataBase = MyLibraryDb(dbInstance: initDb);
-  bool isDarkMode = await dataBase.getPreference('darkMode');
-  bool openPdfwithExternalapp =
-      await dataBase.getPreference('openPdfwithExternalApp');
-  bool openEpubwithExternalapp =
-      await dataBase.getPreference('openEpubwithExternalApp');
+  MyLibraryDb dataBase = MyLibraryDb.instance;
+  bool isDarkMode =
+      await dataBase.getPreference('darkMode') == 0 ? false : true;
+  bool openPdfwithExternalapp = await dataBase
+              .getPreference('openPdfwithExternalApp')
+              .catchError((e) => print(e)) ==
+          0
+      ? false
+      : true;
 
   String browserUserAgent = await dataBase.getBrowserOptions('userAgent');
   String browserCookie = await dataBase.getBrowserOptions('cookie');
@@ -53,13 +60,10 @@ void main() async {
   runApp(
     ProviderScope(
       overrides: [
-        dbProvider.overrideWithValue(dataBase),
         themeModeProvider.overrideWith(
             (ref) => isDarkMode ? ThemeMode.dark : ThemeMode.light),
         openPdfWithExternalAppProvider
             .overrideWith((ref) => openPdfwithExternalapp),
-        openEpubWithExternalAppProvider
-            .overrideWith((ref) => openEpubwithExternalapp),
         userAgentProvider.overrideWith((ref) => browserUserAgent),
         cookieProvider.overrideWith((ref) => browserCookie),
       ],

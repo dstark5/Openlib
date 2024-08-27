@@ -1,7 +1,14 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:openlib/ui/results_page.dart';
+
+// Project imports:
 import 'package:openlib/ui/components/page_title_widget.dart';
+import 'package:openlib/ui/results_page.dart';
+import 'components/snack_bar_widget.dart';
+
 import 'package:openlib/state/state.dart'
     show
         searchQueryProvider,
@@ -12,7 +19,6 @@ import 'package:openlib/state/state.dart'
         fileType,
         sortValues,
         enableFiltersState;
-import 'components/snack_bar_widget.dart';
 
 class SearchPage extends ConsumerWidget {
   const SearchPage({super.key});
