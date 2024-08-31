@@ -105,14 +105,13 @@ final searchProvider = FutureProvider.family
 final cookieProvider = StateProvider<String>((ref) => "");
 final userAgentProvider = StateProvider<String>((ref) => "");
 
+final webViewLoadingState = StateProvider.autoDispose<bool>((ref) => true);
+
 //Provider for Book Info
 final bookInfoProvider =
     FutureProvider.family<BookInfoData, String>((ref, url) async {
   AnnasArchieve annasArchieve = AnnasArchieve();
-  BookInfoData data = await annasArchieve.bookInfo(
-      url: url,
-      userAgent: ref.read(userAgentProvider),
-      cookie: ref.read(cookieProvider));
+  BookInfoData data = await annasArchieve.bookInfo(url: url);
   return data;
 });
 
@@ -194,6 +193,7 @@ final getBookPosition =
 });
 
 final openPdfWithExternalAppProvider = StateProvider<bool>((ref) => false);
+final openEpubWithExternalAppProvider = StateProvider<bool>((ref) => false);
 
 final filePathProvider =
     FutureProvider.family<String, String>((ref, fileName) async {

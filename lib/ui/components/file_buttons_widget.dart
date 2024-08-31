@@ -102,11 +102,11 @@ Future<void> openCbrAndCbz(
     {required String fileName, required BuildContext context}) async {
   try {
     String path = await getFilePath(fileName);
-    await OpenFile.open(path);
+    await OpenFile.open(path, linuxByProcess: true);
   } catch (e) {
     // ignore: avoid_print
     // print(e);
     // ignore: use_build_context_synchronously
-    showSnackBar(context: context, message: 'Unable to open pdf!');
+    showSnackBar(context: context, message: 'Unable to open file!');
   }
 }

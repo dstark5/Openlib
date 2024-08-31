@@ -22,7 +22,6 @@ import 'package:openlib/state/state.dart'
         openPdfWithExternalAppProvider,
         getBookPosition;
 
-
 Future<void> launchPdfViewer(
     {required String fileName,
     required BuildContext context,
@@ -30,7 +29,7 @@ Future<void> launchPdfViewer(
   bool openWithExternalApp = ref.watch(openPdfWithExternalAppProvider);
   if (openWithExternalApp) {
     String path = await getFilePath(fileName);
-    await OpenFile.open(path);
+    await OpenFile.open(path, linuxByProcess: true);
   } else {
     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
       return PdfView(

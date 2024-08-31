@@ -18,7 +18,10 @@ import 'package:openlib/ui/about_page.dart';
 import 'package:openlib/ui/components/page_title_widget.dart';
 
 import 'package:openlib/state/state.dart'
-    show themeModeProvider, openPdfWithExternalAppProvider;
+    show
+        themeModeProvider,
+        openPdfWithExternalAppProvider,
+        openEpubWithExternalAppProvider;
 
 Future<void> requestStoragePermission() async {
   bool permissionGranted = false;
@@ -108,6 +111,30 @@ class SettingsPage extends ConsumerWidget {
                     ref.read(openPdfWithExternalAppProvider.notifier).state =
                         value;
                     dataBase.savePreference('openPdfwithExternalApp', value);
+                  },
+                )
+              ],
+            ),
+            _PaddedContainer(
+              children: [
+                Text(
+                  "Open Epub with External Reader",
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
+                ),
+                Switch(
+                  // This bool value toggles the switch.
+                  value: ref.watch(
+                    openEpubWithExternalAppProvider,
+                  ),
+                  activeColor: Colors.red,
+                  onChanged: (bool value) {
+                    ref.read(openEpubWithExternalAppProvider.notifier).state =
+                        value;
+                    dataBase.savePreference('openEpubwithExternalApp', value);
                   },
                 )
               ],

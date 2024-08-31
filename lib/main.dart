@@ -25,6 +25,7 @@ import 'package:openlib/state/state.dart'
         selectedIndexProvider,
         themeModeProvider,
         openPdfWithExternalAppProvider,
+        openEpubWithExternalAppProvider,
         userAgentProvider,
         cookieProvider;
 
@@ -41,6 +42,13 @@ void main() async {
       await dataBase.getPreference('darkMode') == 0 ? false : true;
   bool openPdfwithExternalapp = await dataBase
               .getPreference('openPdfwithExternalApp')
+              .catchError((e) => print(e)) ==
+          0
+      ? false
+      : true;
+
+  bool openEpubwithExternalapp = await dataBase
+              .getPreference('openEpubwithExternalApp')
               .catchError((e) => print(e)) ==
           0
       ? false
@@ -64,6 +72,8 @@ void main() async {
             (ref) => isDarkMode ? ThemeMode.dark : ThemeMode.light),
         openPdfWithExternalAppProvider
             .overrideWith((ref) => openPdfwithExternalapp),
+        openEpubWithExternalAppProvider
+            .overrideWith((ref) => openEpubwithExternalapp),
         userAgentProvider.overrideWith((ref) => browserUserAgent),
         cookieProvider.overrideWith((ref) => browserCookie),
       ],

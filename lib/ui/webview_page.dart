@@ -3,16 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-
-// Project imports:
-import 'package:openlib/services/database.dart';
-
-import 'package:webview_cookie_manager/webview_cookie_manager.dart'
-    as cookiejar;
-
-import 'package:openlib/state/state.dart'
-    show cookieProvider, userAgentProvider, bookInfoProvider;
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 class Webview extends ConsumerStatefulWidget {
   const Webview({super.key, required this.url});
@@ -23,58 +14,67 @@ class Webview extends ConsumerStatefulWidget {
 }
 
 class _WebviewState extends ConsumerState<Webview> {
-  WebViewController controller = WebViewController();
+  final GlobalKey webViewKey = GlobalKey();
 
-  final cookieManager = cookiejar.WebviewCookieManager();
+  InAppWebViewController? webViewController;
+
+  final urlController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    MyLibraryDb dataBase = MyLibraryDb.instance;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text("Solve Captcha"),
       ),
       body: SafeArea(
-        child: WebViewWidget(
-          controller: controller
-            ..setJavaScriptMode(JavaScriptMode.unrestricted)
-            // ..setBackgroundColor(const Color(
-            //     0x00000000)) // TODO: Crashes macOS app. https://github.com/flutter/flutter/issues/153773
-            ..loadRequest(Uri.parse(widget.url))
-            ..getUserAgent().then((value) {
-              ref.read(userAgentProvider.notifier).state = value!;
-              dataBase.setBrowserOptions('userAgent', value);
-            })
-            ..setNavigationDelegate(NavigationDelegate(
-              onPageStarted: (url) async {
-                var urlStatusCode = await controller.runJavaScriptReturningResult(
-                    "var xhr = new XMLHttpRequest();xhr.open('GET', window.location.href, false);xhr.send(null);xhr.status;");
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: Stack(
+                children: [
+                  InAppWebView(
+                    key: webViewKey,
+                    initialUrlRequest: URLRequest(url: WebUri(widget.url)),
+                    onWebViewCreated: (controller) {
+                      webViewController = controller;
+                    },
+                    onLoadStart: (controller, url) {},
+                    onLoadStop: (controller, url) async {
+                      String query =
+                          """document.querySelector('a[class="font-bold"]').href""";
+                      String? mirrorLink = await webViewController
+                          ?.evaluateJavascript(source: query);
+                      // final ipfsUrl = widget.url
+                      //     .replaceAll("slow_download", "ipfs_downloads")
+                      //     .replaceAll("/0/2", "");
 
-                if (urlStatusCode.toString().contains('200')) {
-                  final cookies = await cookieManager
-                      .getCookies("https://annas-archive.org");
+                      // await webViewController?.loadUrl(
+                      //     urlRequest: URLRequest(
+                      //         url: WebUri('https://example.com/new-page')));
 
-                  List<String> cookie = [];
-                  for (var element in cookies) {
-                    if (element.name == 'cf_clearance' ||
-                        element.name == 'cf_chl_2') {
-                      cookie.add(element.toString().split(';')[0]);
-                    }
-                  }
-
-                  String cfClearance = cookie.join('; ');
-
-                  ref.read(cookieProvider.notifier).state = cfClearance;
-
-                  await dataBase.setBrowserOptions('cookie', cfClearance);
-
-                  ref.invalidate(bookInfoProvider);
-
-                  // ignore: use_build_context_synchronously
-                  Navigator.pop(context);
-                }
-              },
-            )),
+                      if (mirrorLink != null) {
+                        Future.delayed(const Duration(milliseconds: 70), () {
+                          // ignore: use_build_context_synchronously
+                          Navigator.pop(context, mirrorLink);
+                        });
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

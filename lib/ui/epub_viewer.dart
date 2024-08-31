@@ -1,5 +1,4 @@
 // Dart imports:
-import 'dart:convert';
 import 'dart:io';
 
 // Flutter imports:
@@ -11,12 +10,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_file/open_file.dart';
 
 // Project imports:
-import 'package:openlib/services/database.dart';
 import 'package:openlib/services/files.dart' show getFilePath;
 import 'package:openlib/ui/components/snack_bar_widget.dart';
-
 import 'package:openlib/state/state.dart'
-    show filePathProvider, saveEpubState, getBookPosition;
+    show
+        filePathProvider,
+        saveEpubState,
+        getBookPosition,
+        openEpubWithExternalAppProvider;
 
 Future<void> launchEpubViewer(
     {required String fileName,
@@ -24,10 +25,24 @@ Future<void> launchEpubViewer(
     required WidgetRef ref}) async {
   if (Platform.isAndroid || Platform.isIOS) {
     String path = await getFilePath(fileName);
-    MyLibraryDb dataBase = MyLibraryDb.instance;
+    bool openWithExternalApp = ref.watch(openEpubWithExternalAppProvider);
 
-    String? epubConfig = await dataBase.getBookState(fileName);
-    await OpenFile.open(path);
+    if (openWithExternalApp) {
+      await OpenFile.open(path, linuxByProcess: true);
+    } else {
+      try {
+        // ignore: use_build_context_synchronously
+        Navigator.push(context,
+            MaterialPageRoute(builder: (BuildContext context) {
+          return EpubViewerWidget(
+            fileName: fileName,
+          );
+        }));
+      } catch (e) {
+        // ignore: use_build_context_synchronously
+        showSnackBar(context: context, message: 'Unable to open pdf!');
+      }
+    }
   } else {
     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
       return EpubViewerWidget(

@@ -1,5 +1,5 @@
 // Dart imports:
-import 'dart:convert';
+// import 'dart:convert';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
@@ -28,7 +28,7 @@ class BookData {
 }
 
 class BookInfoData extends BookData {
-  final List<String>? mirrors;
+  String? mirror;
   final String? description;
   final String? format;
 
@@ -40,13 +40,13 @@ class BookInfoData extends BookData {
       required super.info,
       required super.link,
       required super.md5,
-      required this.mirrors,
       required this.format,
+      required this.mirror,
       required this.description});
 }
 
 class AnnasArchieve {
-  String baseUrl = "https://annas-archive.org";
+  static const String baseUrl = "https://annas-archive.org";
 
   final Dio dio = Dio();
 
@@ -131,65 +131,82 @@ class AnnasArchieve {
     }
   }
 
-  Future<String?> _getMirrorLink(
-      String url, String userAgent, String cookie) async {
-    try {
-      final response = await dio.get(url,
-          options: Options(extra: {
-            'withCredentials': true
-          }, headers: {
-            "Host": "annas-archive.org",
-            "Origin": "https://annas-archive.org",
-            "Upgrade-Insecure-Requests": "1",
-            "Sec-Fetch-Dest": "secure",
-            "Sec-Fetch-Mode": "navigate",
-            "Sec-Fetch-Site": "same-site",
-            "Cookie": cookie,
-            "User-Agent": userAgent
-          }));
+  // Future<String?> _getMirrorLink(
+  //     String url, String userAgent, String cookie) async {
+  //   try {
+  //     final response = await dio.get(url,
+  //         options: Options(extra: {
+  //           'withCredentials': true
+  //         }, headers: {
+  //           "Host": "annas-archive.org",
+  //           "Origin": baseUrl,
+  //           "Upgrade-Insecure-Requests": "1",
+  //           "Sec-Fetch-Dest": "secure",
+  //           "Sec-Fetch-Mode": "navigate",
+  //           "Sec-Fetch-Site": "same-site",
+  //           "Cookie": cookie,
+  //           "User-Agent": userAgent
+  //         }));
 
-      var document = parse(response.data.toString());
+  //     var document = parse(response.data.toString());
 
-      var pTag = document.querySelectorAll('p[class="mb-4"]');
-      String? link = pTag[1].querySelector('a')?.attributes['href'];
-      return link;
-    } catch (e) {
-      // print('${url} ${e}');
-      if (e.toString().contains("403")) {
-        throw jsonEncode({"code": "403", "url": url});
-      }
-      return null;
-    }
-  }
+  //     var pTag = document.querySelectorAll('p[class="mb-4"]');
+  //     String? link = pTag[1].querySelector('a')?.attributes['href'];
+  //     return link;
+  //   } catch (e) {
+  //     // print('${url} ${e}');
+  //     if (e.toString().contains("403")) {
+  //       throw jsonEncode({"code": "403", "url": url});
+  //     }
+  //     return null;
+  //   }
+  // }
 
-  Future<BookInfoData?> _bookInfoParser(resData, url, userAgent, cookie) async {
+  Future<BookInfoData?> _bookInfoParser(resData, url) async {
     var document = parse(resData.toString());
     var main = document.querySelector('main[class="main"]');
     var ul = main?.querySelectorAll('ul[class="list-inside mb-4 ml-1"]');
 
-    List<String> mirrors = [];
+    // List<String> mirrors = [];
+
+    // if (ul != null) {
+    //   var anchorTags = [];
+
+    // for (var e in ul) {
+    //   anchorTags.insertAll(0, e.querySelectorAll('a'));
+    // }
+
+    //   for (var element in anchorTags) {
+    //     if (element.attributes['href'] != null &&
+    //         element.attributes['href']!.startsWith('/slow_download') &&
+    //         element.attributes['href']!.endsWith('/2')) {
+    //       String? url =
+    //           await _getMirrorLink('$baseUrl${element.attributes['href']!}');
+    //       if (url != null && url.isNotEmpty) {
+    //         mirrors.add(url);
+    //       }
+    //     } else if (element.attributes['href']!.startsWith('https://')) {
+    //       if (element.attributes['href'] != null &&
+    //           element.attributes['href'].contains('ipfs') == true) {
+    //         mirrors.add(element.attributes['href']!);
+    //       }
+    //     }
+    //   }
+    // }
+    String? mirror;
+    var anchorTags = [];
 
     if (ul != null) {
-      var anchorTags = [];
-
       for (var e in ul) {
         anchorTags.insertAll(0, e.querySelectorAll('a'));
       }
+    }
 
-      for (var element in anchorTags) {
-        if (element.attributes['href'] != null &&
-            element.attributes['href']!.startsWith('/slow_download')) {
-          String? url = await _getMirrorLink(
-              '$baseUrl${element.attributes['href']!}', userAgent, cookie);
-          if (url != null && url.isNotEmpty) {
-            mirrors.add(url);
-          }
-        } else if (element.attributes['href']!.startsWith('https://')) {
-          if (element.attributes['href'] != null &&
-              element.attributes['href'].contains('ipfs') == true) {
-            mirrors.add(element.attributes['href']!);
-          }
-        }
+    for (var element in anchorTags) {
+      if (element.attributes['href'] != null &&
+          element.attributes['href']!.startsWith('/slow_download') &&
+          element.attributes['href']!.endsWith('/2')) {
+        mirror = '$baseUrl${element.attributes['href']}';
       }
     }
 
@@ -206,8 +223,9 @@ class AnnasArchieve {
           main?.querySelector('div[class="text-sm text-gray-500"]')?.text ?? '',
       'description': main
               ?.querySelector(
-                  'div[class="mt-4 line-clamp-[5] js-md5-top-box-description"]')
-              ?.text ??
+                  'div[class="mt-4 line-clamp-[8] js-md5-top-box-description"]')
+              ?.text
+              .replaceFirst("description", '') ??
           " "
     };
 
@@ -232,7 +250,7 @@ class AnnasArchieve {
         link: data['link'],
         md5: getMd5(data['link'].toString()),
         format: getFormat(data['info']),
-        mirrors: mirrors,
+        mirror: mirror,
         description: data['description'],
       );
     } else {
@@ -282,15 +300,11 @@ class AnnasArchieve {
     }
   }
 
-  Future<BookInfoData> bookInfo(
-      {required String url,
-      required String userAgent,
-      required String cookie}) async {
+  Future<BookInfoData> bookInfo({required String url}) async {
     try {
       final response =
           await dio.get(url, options: Options(headers: defaultDioHeaders));
-      BookInfoData? data =
-          await _bookInfoParser(response.data, url, userAgent, cookie);
+      BookInfoData? data = await _bookInfoParser(response.data, url);
       if (data != null) {
         return data;
       } else {
