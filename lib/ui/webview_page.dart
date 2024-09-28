@@ -52,7 +52,7 @@ class _WebviewState extends ConsumerState<Webview> {
                     onLoadStart: (controller, url) {},
                     onLoadStop: (controller, url) async {
                       String query =
-                          """document.querySelector('a[class="font-bold"]').href""";
+                          """var paragraphTag=document.querySelector('p[class="mb-4 text-xl font-bold"]');var anchorTagHref=paragraphTag.querySelector('a').href;var url=()=>{return anchorTagHref};url();""";
                       String? mirrorLink = await webViewController
                           ?.evaluateJavascript(source: query);
                       // final ipfsUrl = widget.url
@@ -62,7 +62,6 @@ class _WebviewState extends ConsumerState<Webview> {
                       // await webViewController?.loadUrl(
                       //     urlRequest: URLRequest(
                       //         url: WebUri('https://example.com/new-page')));
-
                       if (mirrorLink != null) {
                         Future.delayed(const Duration(milliseconds: 70), () {
                           // ignore: use_build_context_synchronously

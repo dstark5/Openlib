@@ -219,8 +219,7 @@ class AnnasArchieve {
       'info':
           main?.querySelector('div[class="text-sm text-gray-500"]')?.text ?? '',
       'description': main
-              ?.querySelector(
-                  'div[class="mt-4 line-clamp-[8] js-md5-top-box-description"]')
+              ?.querySelector('div[class="mb-1"]')
               ?.text
               .replaceFirst("description", '') ??
           " "
