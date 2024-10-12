@@ -77,12 +77,15 @@ final getTrendingBooks = FutureProvider<List<TrendingBookData>>((ref) async {
   PenguinRandomHouse penguinTrending = PenguinRandomHouse();
   List<TrendingBookData> trendingBooks =
       await Future.wait<List<TrendingBookData>>([
-    openLibrary.trendingBooks(),
     goodReads.trendingBooks(),
-    penguinTrending.trendingBooks()
+    penguinTrending.trendingBooks(),
+    openLibrary.trendingBooks(),
   ]).then((List<List<TrendingBookData>> listOfData) =>
           listOfData.expand((element) => element).toList());
 
+  if(trendingBooks.isEmpty){
+    throw 'Nothing Trending Today :(';
+  }        
   trendingBooks.shuffle();
   return trendingBooks;
 });
