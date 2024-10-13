@@ -72,20 +72,22 @@ final searchQueryProvider = StateProvider<String>((ref) => "");
 //Provider for Trending Books
 
 final getTrendingBooks = FutureProvider<List<TrendingBookData>>((ref) async {
-  OpenLibrary openLibrary = OpenLibrary();
+  // OpenLibrary openLibrary = OpenLibrary();
   GoodReads goodReads = GoodReads();
   PenguinRandomHouse penguinTrending = PenguinRandomHouse();
+  BookDigits bookDigits = BookDigits();
   List<TrendingBookData> trendingBooks =
       await Future.wait<List<TrendingBookData>>([
     goodReads.trendingBooks(),
     penguinTrending.trendingBooks(),
-    openLibrary.trendingBooks(),
+    // openLibrary.trendingBooks(),
+    bookDigits.trendingBooks(),
   ]).then((List<List<TrendingBookData>> listOfData) =>
           listOfData.expand((element) => element).toList());
 
-  if(trendingBooks.isEmpty){
+  if (trendingBooks.isEmpty) {
     throw 'Nothing Trending Today :(';
-  }        
+  }
   trendingBooks.shuffle();
   return trendingBooks;
 });
