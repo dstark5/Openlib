@@ -46,10 +46,11 @@ class OpenLibrary {
               receiveTimeout: const Duration(seconds: 20)));
       return _parser('${response.data.toString()}${response2.data.toString()}');
     } on DioException catch (e) {
-      if (e.type == DioExceptionType.unknown) {
-        throw "socketException";
-      }
-      rethrow;
+      return [];
+      // if (e.type == DioExceptionType.unknown) {
+      //   throw "socketException";
+      // }
+      // rethrow;
     }
   }
 }
@@ -94,10 +95,11 @@ class GoodReads {
               receiveTimeout: const Duration(seconds: 20)));
       return _parser(response.data.toString());
     } on DioException catch (e) {
-      if (e.type == DioExceptionType.unknown) {
-        throw "socketException";
-      }
-      rethrow;
+        return [];
+      // if (e.type == DioExceptionType.unknown) {
+      //   throw "socketException";
+      // }
+      // rethrow;
     }
   }
 }
@@ -142,10 +144,11 @@ class PenguinRandomHouse {
               receiveTimeout: const Duration(seconds: 20)));
       return _parser(response.data.toString());
     } on DioException catch (e) {
-      if (e.type == DioExceptionType.unknown) {
-        throw "socketException";
-      }
-      rethrow;
+        return [];
+      // if (e.type == DioExceptionType.unknown) {
+      //   throw "socketException";
+      // }
+      // rethrow;
     }
   }
 }
