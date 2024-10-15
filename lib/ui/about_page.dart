@@ -13,6 +13,8 @@ class AboutPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const version = "1.0.9";
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
@@ -47,7 +49,7 @@ class AboutPage extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(left: 7, right: 7, top: 5),
                 child: Text(
-                  "1.0.8",
+                  version,
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,

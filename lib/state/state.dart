@@ -83,17 +83,22 @@ final getSubCategoryTypeList = FutureProvider.family.autoDispose<List<CategoryBo
 //Provider for Trending Books
 
 final getTrendingBooks = FutureProvider<List<TrendingBookData>>((ref) async {
-  OpenLibrary openLibrary = OpenLibrary();
+  // OpenLibrary openLibrary = OpenLibrary();
   GoodReads goodReads = GoodReads();
   PenguinRandomHouse penguinTrending = PenguinRandomHouse();
+  BookDigits bookDigits = BookDigits();
   List<TrendingBookData> trendingBooks =
       await Future.wait<List<TrendingBookData>>([
-    openLibrary.trendingBooks(),
     goodReads.trendingBooks(),
-    penguinTrending.trendingBooks()
+    penguinTrending.trendingBooks(),
+    // openLibrary.trendingBooks(),
+    bookDigits.trendingBooks(),
   ]).then((List<List<TrendingBookData>> listOfData) =>
           listOfData.expand((element) => element).toList());
 
+  if (trendingBooks.isEmpty) {
+    throw 'Nothing Trending Today :(';
+  }
   trendingBooks.shuffle();
   return trendingBooks;
 });
