@@ -13,6 +13,7 @@ import 'package:openlib/services/annas_archieve.dart';
 import 'package:openlib/services/database.dart';
 import 'package:openlib/services/files.dart';
 import 'package:openlib/services/open_library.dart';
+import 'package:openlib/services/goodreads.dart';
 
 MyLibraryDb dataBase = MyLibraryDb.instance;
 
@@ -68,6 +69,16 @@ final getFileTypeValue = Provider.autoDispose<String>((ref) {
 //searchQueryProvider
 
 final searchQueryProvider = StateProvider<String>((ref) => "");
+
+// Sub category type list providers
+
+final getSubCategoryTypeList = FutureProvider.family.autoDispose<List<CategoryBookData>, String>((ref, url) async {
+  SubCategoriesTypeList subCategoriesTypeList = SubCategoriesTypeList();
+  List<CategoryBookData> subCategories =  await subCategoriesTypeList.categoriesBooks(url: url);
+  List<CategoryBookData> uniqueArray = subCategories.toSet().toList();
+  uniqueArray.shuffle();
+  return uniqueArray;
+});
 
 //Provider for Trending Books
 
