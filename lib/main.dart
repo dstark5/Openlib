@@ -17,7 +17,6 @@ import 'package:openlib/ui/mylibrary_page.dart';
 import 'package:openlib/ui/search_page.dart';
 import 'package:openlib/ui/settings_page.dart';
 import 'package:openlib/ui/themes.dart';
-import 'package:openlib/ui/trending_page.dart';
 
 import 'package:openlib/services/files.dart'
     show moveFilesToAndroidInternalStorage;
