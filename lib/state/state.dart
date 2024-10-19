@@ -42,6 +42,7 @@ Map<String, String> sortValues = {
 List<String> fileType = ["All", "PDF", "Epub", "Cbr", "Cbz"];
 
 final selectedIndexProvider = StateProvider<int>((ref) => 0);
+final homePageSelectedIndexProvider = StateProvider<int>((ref) => 0);
 
 final themeModeProvider = StateProvider<ThemeMode>((ref) => ThemeMode.light);
 
@@ -72,9 +73,11 @@ final searchQueryProvider = StateProvider<String>((ref) => "");
 
 // Sub category type list providers
 
-final getSubCategoryTypeList = FutureProvider.family.autoDispose<List<CategoryBookData>, String>((ref, url) async {
+final getSubCategoryTypeList = FutureProvider.family
+    .autoDispose<List<CategoryBookData>, String>((ref, url) async {
   SubCategoriesTypeList subCategoriesTypeList = SubCategoriesTypeList();
-  List<CategoryBookData> subCategories =  await subCategoriesTypeList.categoriesBooks(url: url);
+  List<CategoryBookData> subCategories =
+      await subCategoriesTypeList.categoriesBooks(url: url);
   List<CategoryBookData> uniqueArray = subCategories.toSet().toList();
   uniqueArray.shuffle();
   return uniqueArray;

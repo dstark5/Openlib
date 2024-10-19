@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:openlib/ui/home_page.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 // Project imports:
@@ -17,8 +18,6 @@ import 'package:openlib/ui/search_page.dart';
 import 'package:openlib/ui/settings_page.dart';
 import 'package:openlib/ui/themes.dart';
 import 'package:openlib/ui/trending_page.dart';
-import 'package:openlib/ui/categories_page.dart';
-
 
 import 'package:openlib/services/files.dart'
     show moveFilesToAndroidInternalStorage;
@@ -102,23 +101,22 @@ class MyApp extends ConsumerWidget {
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: ref.watch(themeModeProvider),
-      home: const HomePage(),
+      home: const MainScreen(),
     );
   }
 }
 
-class HomePage extends ConsumerStatefulWidget {
-  const HomePage({super.key});
+class MainScreen extends ConsumerStatefulWidget {
+  const MainScreen({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _HomePageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _MainScreenState();
 }
 
-class _HomePageState extends ConsumerState<HomePage> {
+class _MainScreenState extends ConsumerState<MainScreen> {
   static const List<Widget> _widgetOptions = <Widget>[
-    TrendingPage(),
+    HomePage(),
     SearchPage(),
-    CategoriesPage(),
     MyLibraryPage(),
     SettingsPage()
   ];
@@ -156,12 +154,12 @@ class _HomePageState extends ConsumerState<HomePage> {
           tabs: [
             GButton(
               icon: Icons.trending_up,
-              text: 'Trending',
+              text: 'Home',
               iconColor: isDarkMode ? Colors.white : Colors.black,
               textStyle: const TextStyle(
                 fontWeight: FontWeight.w900,
                 color: Colors.white,
-                fontSize: 10,
+                fontSize: 11,
               ),
             ),
             GButton(
@@ -171,27 +169,17 @@ class _HomePageState extends ConsumerState<HomePage> {
               textStyle: const TextStyle(
                 fontWeight: FontWeight.w900,
                 color: Colors.white,
-                fontSize: 10,
-              ),
-            ),
-            GButton(
-              icon: Icons.home,
-              text: 'Home',
-              iconColor: isDarkMode ? Colors.white : Colors.black,
-              textStyle: const TextStyle(
-                fontWeight: FontWeight.w900,
-                color: Colors.white,
-                fontSize: 10,
+                fontSize: 11,
               ),
             ),
             GButton(
               icon: Icons.collections_bookmark,
-              text: 'Library',
+              text: 'My Library',
               iconColor: isDarkMode ? Colors.white : Colors.black,
               textStyle: const TextStyle(
                 fontWeight: FontWeight.w900,
                 color: Colors.white,
-                fontSize: 10,
+                fontSize: 11,
               ),
             ),
             GButton(
@@ -201,7 +189,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               textStyle: const TextStyle(
                 fontWeight: FontWeight.w900,
                 color: Colors.white,
-                fontSize: 10,
+                fontSize: 11,
               ),
             ),
           ],

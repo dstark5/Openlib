@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:openlib/ui/components/error_widget.dart';
-import 'package:openlib/ui/components/page_title_widget.dart';
 import 'package:openlib/ui/results_page.dart';
 import 'extensions.dart';
 
@@ -31,9 +30,6 @@ class TrendingPage extends ConsumerWidget {
             child: CustomScrollView(
               physics: const BouncingScrollPhysics(),
               slivers: [
-                const SliverToBoxAdapter(
-                  child: TitleText("Trending"),
-                ),
                 SliverPadding(
                   padding: const EdgeInsets.all(5),
                   sliver: SliverGrid(
