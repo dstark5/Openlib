@@ -17,6 +17,8 @@ import 'package:openlib/ui/search_page.dart';
 import 'package:openlib/ui/settings_page.dart';
 import 'package:openlib/ui/themes.dart';
 import 'package:openlib/ui/trending_page.dart';
+import 'package:openlib/ui/categories_page.dart';
+
 
 import 'package:openlib/services/files.dart'
     show moveFilesToAndroidInternalStorage;
@@ -116,6 +118,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   static const List<Widget> _widgetOptions = <Widget>[
     TrendingPage(),
     SearchPage(),
+    CategoriesPage(),
     MyLibraryPage(),
     SettingsPage()
   ];
@@ -158,7 +161,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               textStyle: const TextStyle(
                 fontWeight: FontWeight.w900,
                 color: Colors.white,
-                fontSize: 11,
+                fontSize: 10,
               ),
             ),
             GButton(
@@ -168,17 +171,27 @@ class _HomePageState extends ConsumerState<HomePage> {
               textStyle: const TextStyle(
                 fontWeight: FontWeight.w900,
                 color: Colors.white,
-                fontSize: 11,
+                fontSize: 10,
               ),
             ),
             GButton(
-              icon: Icons.collections_bookmark,
-              text: 'My Library',
+              icon: Icons.home,
+              text: 'Home',
               iconColor: isDarkMode ? Colors.white : Colors.black,
               textStyle: const TextStyle(
                 fontWeight: FontWeight.w900,
                 color: Colors.white,
-                fontSize: 11,
+                fontSize: 10,
+              ),
+            ),
+            GButton(
+              icon: Icons.collections_bookmark,
+              text: 'Library',
+              iconColor: isDarkMode ? Colors.white : Colors.black,
+              textStyle: const TextStyle(
+                fontWeight: FontWeight.w900,
+                color: Colors.white,
+                fontSize: 10,
               ),
             ),
             GButton(
@@ -188,7 +201,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               textStyle: const TextStyle(
                 fontWeight: FontWeight.w900,
                 color: Colors.white,
-                fontSize: 11,
+                fontSize: 10,
               ),
             ),
           ],
