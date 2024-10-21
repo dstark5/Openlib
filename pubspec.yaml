@@ -63,6 +63,10 @@ dependencies:
   file_picker: ^8.1.2
   device_info_plus: ^10.1.2
   flutter_inappwebview: ^6.0.0
+  http: ^1.2.2
+  path: ^1.9.0
+  share_plus: ^10.1.0
+  flutter_share: ^2.0.0
 
 dev_dependencies:
   import_sorter: ^4.6.0
