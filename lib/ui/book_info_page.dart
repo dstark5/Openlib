@@ -240,7 +240,7 @@ class _ActionButtonWidgetState extends ConsumerState<ActionButtonWidget> {
                     ),
                   ),
                   onPressed: () async {
-                    await shareBook(widget.data.title, widget.data.link);
+                    await shareBook(widget.data.title, widget.data.link,widget.data.thumbnail ?? '');
                   },
                   child: const Text('Share'),
                 ),
@@ -674,10 +674,19 @@ Future<void> _showWarningFileDialog(BuildContext context) async {
 }
 
 
-Future<void> shareBook(String title, String path) async {
+Future<void> shareBook(String title, String link,String path) async {
   try {
-    String message = 'Discover this amazing book: "$title"\nView the cover here: $path';
-    await Share.share(message);
+    final url = Uri.parse(path);
+    final response = await http.get(url);
+    final bytes = response.bodyBytes;
+
+    //temp
+    final temp = await getTemporaryDirectory();
+    final dest = '${temp.path}/image.jpg';
+    File(dest).writeAsBytes(bytes);
+
+    String message = 'Discover this amazing book: "$title"\nRead more : $link';
+    await Share.shareXFiles([XFile(dest)], text: message);
   } catch (e) {
     debugPrint('Error sharing the book: $e');
   }
