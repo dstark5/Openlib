@@ -128,7 +128,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         title: const Text("Openlib"),
         titleTextStyle: Theme.of(context).textTheme.displayLarge,
       ),

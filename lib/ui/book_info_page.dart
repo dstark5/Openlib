@@ -2,18 +2,14 @@
 // import 'dart:convert';
 
 // Flutter imports:
-import 'dart:io';
 import 'package:flutter/material.dart';
 // import 'package:flutter/scheduler.dart';
 
 // Package imports:
 import 'package:dio/dio.dart' show CancelToken;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as path;
-import 'package:http/http.dart' as http;
+import 'package:openlib/services/share_book.dart';
 // import 'package:flutter_svg/svg.dart';
-import 'package:share_plus/share_plus.dart';
 
 // Project imports:
 import 'package:openlib/services/annas_archieve.dart' show BookInfoData;
@@ -24,8 +20,6 @@ import 'package:openlib/ui/components/error_widget.dart';
 import 'package:openlib/ui/components/file_buttons_widget.dart';
 import 'package:openlib/ui/components/snack_bar_widget.dart';
 import 'package:openlib/ui/webview_page.dart';
-
-
 
 import 'package:openlib/state/state.dart'
     show
@@ -43,7 +37,6 @@ import 'package:openlib/state/state.dart'
         checkSumState,
         checkIdExists,
         myLibraryProvider;
-import 'package:path_provider/path_provider.dart';
 
 class BookInfoPage extends ConsumerWidget {
   const BookInfoPage({super.key, required this.url});
@@ -55,9 +48,25 @@ class BookInfoPage extends ConsumerWidget {
     final bookInfo = ref.watch(bookInfoProvider(url));
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         title: const Text("Openlib"),
         titleTextStyle: Theme.of(context).textTheme.displayLarge,
+        actions: [
+          bookInfo.maybeWhen(data: (data) {
+            return IconButton(
+              icon: Icon(
+                Icons.share_sharp,
+                color: Theme.of(context).colorScheme.tertiary,
+              ),
+              iconSize: 19.0,
+              onPressed: () async {
+                await shareBook(data.title, data.link, data.thumbnail ?? '');
+              },
+            );
+          }, orElse: () {
+            return const SizedBox.shrink();
+          })
+        ],
       ),
       body: bookInfo.when(
         skipLoadingOnRefresh: false,
@@ -198,13 +207,15 @@ class _ActionButtonWidgetState extends ConsumerState<ActionButtonWidget> {
           return Padding(
             padding: const EdgeInsets.only(top: 21, bottom: 21),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.start, // Aligns buttons properly
+              mainAxisAlignment:
+                  MainAxisAlignment.start, // Aligns buttons properly
               children: [
                 // Button for "Add To My Library"
                 TextButton(
                   style: TextButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.secondary,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     textStyle: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w900,
@@ -214,8 +225,8 @@ class _ActionButtonWidgetState extends ConsumerState<ActionButtonWidget> {
                   onPressed: () async {
                     final result = await Navigator.push(context,
                         MaterialPageRoute(builder: (BuildContext context) {
-                          return Webview(url: widget.data.mirror ?? '');
-                        }));
+                      return Webview(url: widget.data.mirror ?? '');
+                    }));
 
                     if (result != null) {
                       widget.data.mirror = result;
@@ -223,30 +234,9 @@ class _ActionButtonWidgetState extends ConsumerState<ActionButtonWidget> {
                     }
                   },
                   child: const Text('Add To My Library'),
-                ),
-
-                // Spacing between the buttons
-                const SizedBox(width: 12),
-
-                // Button for "Share"
-                TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    textStyle: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white,
-                    ),
-                  ),
-                  onPressed: () async {
-                    await shareBook(widget.data.title, widget.data.link,widget.data.thumbnail ?? '');
-                  },
-                  child: const Text('Share'),
-                ),
+                )
               ],
             ),
-
           );
         }
       },
@@ -273,7 +263,7 @@ Future<void> downloadFileWidget(
       });
 
   List<String> mirrors = [data.mirror!];
-  print(mirrors);
+  // print(mirrors);
   downloadFile(
       mirrors: mirrors,
       md5: data.md5,
@@ -672,23 +662,3 @@ Future<void> _showWarningFileDialog(BuildContext context) async {
     },
   );
 }
-
-
-Future<void> shareBook(String title, String link,String path) async {
-  try {
-    final url = Uri.parse(path);
-    final response = await http.get(url);
-    final bytes = response.bodyBytes;
-
-    //temp
-    final temp = await getTemporaryDirectory();
-    final dest = '${temp.path}/image.jpg';
-    File(dest).writeAsBytes(bytes);
-
-    String message = 'Discover this amazing book: "$title"\nRead more : $link';
-    await Share.shareXFiles([XFile(dest)], text: message);
-  } catch (e) {
-    debugPrint('Error sharing the book: $e');
-  }
-}
-

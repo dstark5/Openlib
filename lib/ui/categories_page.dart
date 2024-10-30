@@ -387,7 +387,7 @@ class CategoryListingPage extends ConsumerWidget {
     final booksBasedOnGenre = ref.watch(getSubCategoryTypeList(url));
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.background,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           title: const Text("Openlib"),
           titleTextStyle: Theme.of(context).textTheme.displayLarge,
         ),

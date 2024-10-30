@@ -24,7 +24,7 @@ class ResultPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         title: const Text("Openlib"),
         titleTextStyle: Theme.of(context).textTheme.displayLarge,
       ),
@@ -46,8 +46,8 @@ class ResultPage extends ConsumerWidget {
                                 title: i.title,
                                 author: i.author ?? "unknown",
                                 publisher: i.publisher ?? "unknown",
-                                thumbnail: i.thumbnail!,
-                                info: i.info,
+                                thumbnail: i.thumbnail ?? '',
+                                info: i.info ?? '',
                                 link: i.link,
                                 onClick: () {
                                   Navigator.push(context, MaterialPageRoute(
