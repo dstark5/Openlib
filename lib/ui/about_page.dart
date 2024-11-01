@@ -13,7 +13,7 @@ class AboutPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const version = "1.0.9";
+    const version = "1.0.10";
 
     return Scaffold(
       appBar: AppBar(

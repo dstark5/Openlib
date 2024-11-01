@@ -65,7 +65,7 @@ class PelletContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 30,
-      width: 115,
+      width: 105,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
         color: Theme.of(context).colorScheme.secondary,

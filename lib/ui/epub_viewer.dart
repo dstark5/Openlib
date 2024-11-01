@@ -1,4 +1,5 @@
 // Dart imports:
+import 'dart:convert';
 import 'dart:io';
 
 // Flutter imports:
@@ -8,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:epub_view/epub_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:open_file/open_file.dart';
+import 'package:openlib/services/database.dart';
+import 'package:vocsy_epub_viewer/epub_viewer.dart';
 
 // Project imports:
 import 'package:openlib/services/files.dart' show getFilePath;
@@ -24,23 +27,48 @@ Future<void> launchEpubViewer(
     required BuildContext context,
     required WidgetRef ref}) async {
   if (Platform.isAndroid || Platform.isIOS) {
+    MyLibraryDb dataBase = MyLibraryDb.instance;
     String path = await getFilePath(fileName);
     bool openWithExternalApp = ref.watch(openEpubWithExternalAppProvider);
+    String? epubConfig = await dataBase.getBookState(fileName);
 
     if (openWithExternalApp) {
       await OpenFile.open(path, linuxByProcess: true);
     } else {
       try {
-        // ignore: use_build_context_synchronously
-        Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) {
-          return EpubViewerWidget(
-            fileName: fileName,
-          );
-        }));
+        VocsyEpub.setConfig(
+          // ignore: use_build_context_synchronously
+          themeColor: Theme.of(context).colorScheme.secondary,
+          identifier: "iosBook",
+          scrollDirection: EpubScrollDirection.HORIZONTAL,
+        );
+
+        if ((epubConfig?.isNotEmpty ?? true) &&
+            (epubConfig != null) &&
+            (!(epubConfig.startsWith('epubcfi')))) {
+          VocsyEpub.open(path,
+              lastLocation: EpubLocator.fromJson(json.decode(epubConfig)));
+        } else {
+          VocsyEpub.open(path);
+        }
+
+        VocsyEpub.locatorStream.listen((locator) async {
+          await saveEpubState(fileName, locator, ref);
+          // convert locator from string to json and save to your database to be retrieved later
+        });
       } catch (e) {
-        // ignore: use_build_context_synchronously
-        showSnackBar(context: context, message: 'Unable to open pdf!');
+        try {
+          // ignore: use_build_context_synchronously
+          Navigator.push(context,
+              MaterialPageRoute(builder: (BuildContext context) {
+            return EpubViewerWidget(
+              fileName: fileName,
+            );
+          }));
+        } catch (e) {
+          // ignore: use_build_context_synchronously
+          showSnackBar(context: context, message: 'Unable to open pdf!');
+        }
       }
     }
   } else {
