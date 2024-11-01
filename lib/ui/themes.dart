@@ -7,11 +7,13 @@ import 'package:google_fonts/google_fonts.dart';
 // Project imports:
 import 'package:openlib/ui/extensions.dart';
 
+final secondaryColor = '#FB0101'.toColor();
+
 ThemeData lightTheme = ThemeData(
   primaryColor: Colors.white,
   colorScheme: ColorScheme.light(
     primary: Colors.white,
-    secondary: '#FB0101'.toColor(),
+    secondary: secondaryColor,
     tertiary: Colors.black,
     tertiaryContainer: '#F2F2F2'.toColor(),
   ),
@@ -36,18 +38,20 @@ ThemeData lightTheme = ThemeData(
   fontFamily: GoogleFonts.nunito().fontFamily,
   useMaterial3: true,
   textSelectionTheme: TextSelectionThemeData(
-    selectionColor: '#FB0101'.toColor(),
-    selectionHandleColor: '#FB0101'.toColor(),
+    selectionColor: secondaryColor,
+    selectionHandleColor: secondaryColor,
   ),
 );
 
 ThemeData darkTheme = ThemeData(
   primaryColor: Colors.black,
+  scaffoldBackgroundColor: Colors.black,
   colorScheme: ColorScheme.dark(
     primary: Colors.black,
-    secondary: '#FB0101'.toColor(),
+    secondary: secondaryColor,
     tertiary: Colors.white,
-    tertiaryContainer: '#2B2B2B'.toColor(),
+    tertiaryContainer: '#141414'.toColor(),
+    surface: Colors.black,
   ),
   textTheme: TextTheme(
     displayLarge: const TextStyle(
@@ -71,7 +75,7 @@ ThemeData darkTheme = ThemeData(
   fontFamily: GoogleFonts.nunito().fontFamily,
   useMaterial3: true,
   textSelectionTheme: TextSelectionThemeData(
-    selectionColor: '#FB0101'.toColor(),
-    selectionHandleColor: '#FB0101'.toColor(),
+    selectionColor: secondaryColor,
+    selectionHandleColor: secondaryColor,
   ),
 );

@@ -35,7 +35,8 @@ class OpenLibrary extends TrendingBooksImpl {
   @override
   List<TrendingBookData> _parser(data) {
     var document = parse(data.toString());
-    var bookList = document.querySelectorAll('li[class="searchResultItem"]');
+    var bookList =
+        document.querySelectorAll('li[class="searchResultItem sri--w-main"]');
     List<TrendingBookData> trendingBooks = [];
     for (var element in bookList) {
       if (element.querySelector('h3[class="booktitle"]')?.text != null &&
