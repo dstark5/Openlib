@@ -38,7 +38,7 @@ Future<String?> _getAliveMirror(List<String> mirrors) async {
   for (var url in mirrors) {
     try {
       final response = await dio.head(url,
-          options: Options(receiveTimeout: const Duration(seconds: 10)));
+          options: Options(receiveTimeout: const Duration(seconds: 25)));
       if (response.statusCode == 200) {
         dio.close();
         return url;

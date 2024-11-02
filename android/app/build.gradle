@@ -36,6 +36,13 @@ android {
         versionName = flutter.versionName
     }
 
+    dependenciesInfo {
+        // Disables dependency metadata when building APKs.
+        includeInApk = false
+        // Disables dependency metadata when building Android App Bundles.
+        includeInBundle = false
+    }
+
     signingConfigs {
         release {
             keyAlias = keystoreProperties['keyAlias']
