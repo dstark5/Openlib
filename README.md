@@ -89,6 +89,7 @@ As [Anna’s Archive](https://annas-archive.org/) Doesn't Have An API. The App W
 ### Android
 
 Make sure that `android/local.properties` has `flutter.minSdkVersion=21` or above
+For setup guide see [SETUP.md](./SETUP.md)
 
 ## Contributor required 🚧
 
