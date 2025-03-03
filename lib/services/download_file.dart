@@ -35,17 +35,20 @@ List<String> _reorderMirrors(List<String> mirrors) {
 
 Future<String?> _getAliveMirror(List<String> mirrors) async {
   Dio dio = Dio();
+  const timeOut = 15;
+  if (mirrors.length == 1) {
+    await Future.delayed(const Duration(seconds: 2));
+    return mirrors[0];
+  }
   for (var url in mirrors) {
     try {
       final response = await dio.head(url,
-          options: Options(receiveTimeout: const Duration(seconds: 25)));
+          options: Options(receiveTimeout: const Duration(seconds: timeOut)));
       if (response.statusCode == 200) {
         dio.close();
         return url;
       }
-    } catch (_) {
-      // print("timeOut");
-    }
+    } catch (_) {}
   }
   return null;
 }

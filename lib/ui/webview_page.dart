@@ -51,21 +51,27 @@ class _WebviewState extends ConsumerState<Webview> {
                     },
                     onLoadStart: (controller, url) {},
                     onLoadStop: (controller, url) async {
-                      String query =
-                          """var paragraphTag=document.querySelector('p[class="mb-4 text-xl font-bold"]');var anchorTagHref=paragraphTag.querySelector('a').href;var url=()=>{return anchorTagHref};url();""";
-                      String? mirrorLink = await webViewController
-                          ?.evaluateJavascript(source: query);
-                      // final ipfsUrl = widget.url
-                      //     .replaceAll("slow_download", "ipfs_downloads")
-                      //     .replaceAll("/0/2", "");
+                      List<String> bookDownloadLinks = [];
+                      if (url.toString().contains("slow_download")) {
+                        String query =
+                            """var paragraphTag=document.querySelector('p[class="mb-4 text-xl font-bold"]');var anchorTagHref=paragraphTag.querySelector('a').href;var url=()=>{return anchorTagHref};url();""";
+                        String? mirrorLink = await webViewController
+                            ?.evaluateJavascript(source: query);
+                        if (mirrorLink != null) {
+                          bookDownloadLinks.add(mirrorLink);
+                        }
+                      } else {
+                        String query =
+                            """var ipfsLinkTags=document.querySelectorAll('ul>li>a');var ipfsLinks=[];var getIpfsLinks=()=>{ipfsLinkTags.forEach(e=>{ipfsLinks.push(e.href)});return ipfsLinks};getIpfsLinks();""";
+                        List<dynamic> mirrorLinks = await webViewController
+                            ?.evaluateJavascript(source: query);
+                        bookDownloadLinks = mirrorLinks.cast<String>();
+                      }
 
-                      // await webViewController?.loadUrl(
-                      //     urlRequest: URLRequest(
-                      //         url: WebUri('https://example.com/new-page')));
-                      if (mirrorLink != null) {
+                      if (bookDownloadLinks.isNotEmpty) {
                         Future.delayed(const Duration(milliseconds: 70), () {
                           // ignore: use_build_context_synchronously
-                          Navigator.pop(context, mirrorLink);
+                          Navigator.pop(context, bookDownloadLinks);
                         });
                       }
                     },

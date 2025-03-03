@@ -162,52 +162,43 @@ class AnnasArchieve {
   Future<BookInfoData?> _bookInfoParser(resData, url) async {
     var document = parse(resData.toString());
     var main = document.querySelector('main[class="main"]');
-    var ul = main?.querySelectorAll('ul[class="list-inside mb-4 ml-1"]');
+    var ul = main?.querySelectorAll('ul[class="list-inside mb-4 ml-1"]>li>a');
+    var externalUrlAnchorTags = main
+        ?.querySelector(
+            'ul[class="list-inside mb-4 ml-1 js-show-external hidden"]')
+        ?.querySelectorAll('li>a');
 
     // List<String> mirrors = [];
-
-    // if (ul != null) {
-    //   var anchorTags = [];
-
-    // for (var e in ul) {
-    //   anchorTags.insertAll(0, e.querySelectorAll('a'));
-    // }
-
-    //   for (var element in anchorTags) {
-    //     if (element.attributes['href'] != null &&
-    //         element.attributes['href']!.startsWith('/slow_download') &&
-    //         element.attributes['href']!.endsWith('/2')) {
-    //       String? url =
-    //           await _getMirrorLink('$baseUrl${element.attributes['href']!}');
-    //       if (url != null && url.isNotEmpty) {
-    //         mirrors.add(url);
-    //       }
-    //     } else if (element.attributes['href']!.startsWith('https://')) {
-    //       if (element.attributes['href'] != null &&
-    //           element.attributes['href'].contains('ipfs') == true) {
-    //         mirrors.add(element.attributes['href']!);
-    //       }
-    //     }
-    //   }
-    // }
     String? mirror;
     var anchorTags = [];
 
     if (ul != null) {
-      for (var e in ul) {
-        anchorTags.insertAll(0, e.querySelectorAll('a'));
+      for (var element in ul) {
+        if (element.attributes['href'] != null &&
+            element.attributes['href']!.startsWith('/slow_download') &&
+            element.attributes['href']!.endsWith('/2')) {
+          mirror = '$baseUrl${element.attributes['href']}';
+        }
       }
     }
 
-    for (var element in anchorTags) {
-      if (element.attributes['href'] != null &&
-          element.attributes['href']!.startsWith('/slow_download') &&
-          element.attributes['href']!.endsWith('/2')) {
-        mirror = '$baseUrl${element.attributes['href']}';
+    if (mirror == null) {
+      if (externalUrlAnchorTags != null) {
+        for (var e in externalUrlAnchorTags) {
+          if (e.attributes['href'] != null) {
+            anchorTags.add(e.attributes['href']);
+          }
+        }
+      }
+
+      for (var element in anchorTags) {
+        if (element.startsWith('/ipfs_downloads')) {
+          mirror = '$baseUrl$element';
+        }
       }
     }
 
-    // print(mirrors);
+    // print(mirror);
 
     var data = {
       'title': main?.querySelector('div[class="text-3xl font-bold"]')?.text,

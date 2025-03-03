@@ -223,14 +223,20 @@ class _ActionButtonWidgetState extends ConsumerState<ActionButtonWidget> {
                     ),
                   ),
                   onPressed: () async {
-                    final result = await Navigator.push(context,
-                        MaterialPageRoute(builder: (BuildContext context) {
-                      return Webview(url: widget.data.mirror ?? '');
-                    }));
+                    if (widget.data.mirror != null &&
+                        widget.data.mirror != '') {
+                      final result = await Navigator.push(context,
+                          MaterialPageRoute(builder: (BuildContext context) {
+                        return Webview(url: widget.data.mirror ?? '');
+                      }));
 
-                    if (result != null) {
-                      widget.data.mirror = result;
-                      await downloadFileWidget(ref, context, widget.data);
+                      if (result != null) {
+                        await downloadFileWidget(
+                            ref, context, widget.data, result);
+                      }
+                    } else {
+                      showSnackBar(
+                          context: context, message: 'No mirrors available!');
                     }
                   },
                   child: const Text('Add To My Library'),
@@ -253,16 +259,14 @@ class _ActionButtonWidgetState extends ConsumerState<ActionButtonWidget> {
   }
 }
 
-Future<void> downloadFileWidget(
-    WidgetRef ref, BuildContext context, BookInfoData data) async {
+Future<void> downloadFileWidget(WidgetRef ref, BuildContext context,
+    BookInfoData data, List<String> mirrors) async {
   showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return _ShowDialog(title: data.title);
       });
-
-  List<String> mirrors = [data.mirror!];
   // print(mirrors);
   downloadFile(
       mirrors: mirrors,
