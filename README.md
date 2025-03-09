@@ -19,7 +19,9 @@ An Open source app to download and read books from shadow library ([Anna’s Arc
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
      alt="Get it on F-Droid"
      height="60">](https://f-droid.org/en/packages/com.app.openlib/)
-
+[<img src="https://www.openapk.net/images/openapk-badge.png" 
+     alt="Get it on Openapk" 
+     height="60">](https://www.openapk.net/openlib/com.app.openlib/)
 </div>
 
 ## Note 📝
