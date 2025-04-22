@@ -33,7 +33,8 @@ Future<void> launchEpubViewer(
     String? epubConfig = await dataBase.getBookState(fileName);
 
     if (openWithExternalApp) {
-      await OpenFile.open(path, linuxByProcess: true);
+      await OpenFile.open(path,
+          linuxByProcess: true, type: "application/epub+zip");
     } else {
       try {
         VocsyEpub.setConfig(
