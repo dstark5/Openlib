@@ -30,13 +30,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  epub_view: ^3.2.0
   flutter_riverpod: ^2.3.6
 
   google_nav_bar: ^5.0.6
 
   flutter_pdfview: ^1.2.7
-  epub_view: ^3.2.0
-  vocsy_epub_viewer: ^3.0.0
+  epubx: ^4.0.0
   # syncfusion_flutter_pdfviewer: ^22.2.5
   # pdfx: ^2.4.0
 
