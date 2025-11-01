@@ -13,7 +13,7 @@ class AboutPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const version = "1.0.11";
+    const version = "1.0.12";
 
     return Scaffold(
       appBar: AppBar(
@@ -35,7 +35,7 @@ class AboutPage extends StatelessWidget {
                 padding:
                     EdgeInsets.only(left: 7, right: 7, top: 13, bottom: 10),
                 child: Text(
-                  "An Open source app to download and read books from shadow library (Anna`s Archive)",
+                  "An Open source app to download and read books from shadow library (Anna`s Archive) By --DHR-Store.",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
@@ -64,16 +64,11 @@ class AboutPage extends StatelessWidget {
                 ),
               ),
               _UrlText(
-                text: 'Open Github Page',
-                url: 'https://github.com/dstark5/Openlib',
-              ),
-              _UrlText(
-                  text: 'Contribute To Openlib',
-                  url:
-                      'https://github.com/dstark5/Openlib/blob/main/CONTRIBUTING.md'),
-              _UrlText(
                   text: 'Report An Issue',
-                  url: 'https://github.com/dstark5/Openlib/issues'),
+                  url: 'https://github.com/DHR-Store/Openlib/issues'),
+              _UrlText(
+                  text: 'Share Openlib',
+                  url: 'https://dhr-store.vercel.app/app6.html'),
               Padding(
                 padding: EdgeInsets.only(left: 7, right: 7, top: 15),
                 child: Text(

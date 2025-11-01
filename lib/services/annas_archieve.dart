@@ -4,6 +4,12 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:html/parser.dart' show parse;
+import 'package:html/dom.dart' as dom;
+import 'dart:convert';
+
+// ====================================================================
+// DATA MODELS
+// ====================================================================
 
 class BookData {
   final String title;
@@ -42,6 +48,10 @@ class BookInfoData extends BookData {
       required this.description});
 }
 
+// ====================================================================
+// ANNA'S ARCHIVE SERVICE (ALL FIXES APPLIED)
+// ====================================================================
+
 class AnnasArchieve {
   static const String baseUrl = "https://annas-archive.org";
 
@@ -49,201 +59,180 @@ class AnnasArchieve {
 
   Map<String, dynamic> defaultDioHeaders = {
     "user-agent":
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
   };
 
   String getMd5(String url) {
-    String md5 = url.toString().split('/').last;
-    return md5;
+    final uri = Uri.parse(url);
+    final pathSegments = uri.pathSegments;
+    return pathSegments.isNotEmpty ? pathSegments.last : '';
   }
 
+  String getFormat(String info) {
+    final infoLower = info.toLowerCase();
+    if (infoLower.contains('pdf')) {
+      return 'pdf';
+    } else if (infoLower.contains('cbr')) {
+      return "cbr";
+    } else if (infoLower.contains('cbz')) {
+      return "cbz";
+    }
+    return "epub";
+  }
+
+  // Helper function to safely parse potential NaN/Infinity to prevent crash
+  // This is a generic safeguard for the third type of error you received.
+  dynamic _safeParse(dynamic value) {
+    if (value is String) {
+      if (value.toLowerCase() == 'nan' || value.toLowerCase() == 'infinity') {
+        return null; // Return null or 0 instead of throwing an error
+      }
+      return value;
+    }
+    return value;
+  }
+  
+  // --------------------------------------------------------------------
+  // _parser FUNCTION (Search Results - Fixed nth-of-type issue)
+  // --------------------------------------------------------------------
   List<BookData> _parser(resData, String fileType) {
-    var document =
-        parse(resData.toString().replaceAll(RegExp(r"<!--|-->"), ''));
-    var books = document.querySelectorAll('a');
+    var document = parse(resData.toString());
+
+    var bookContainers =
+        document.querySelectorAll('div.flex.pt-3.pb-3.border-b');
 
     List<BookData> bookList = [];
 
-    for (var element in books) {
-      var data = {
-        'title': element.querySelector('h3')?.text,
-        'thumbnail': element.querySelector('img')?.attributes['src'],
-        'link': element.attributes['href'],
-        'author': element
-                .querySelector(
-                    'div[class="max-lg:line-clamp-[2] lg:truncate leading-[1.2] lg:leading-[1.35] max-lg:text-sm italic"]')
-                ?.text ??
-            'unknown',
-        'publisher': element
-                .querySelector(
-                    'div[class="truncate leading-[1.2] lg:leading-[1.35] max-lg:text-xs"]')
-                ?.text ??
-            "unknown",
-        'info': element
-                .querySelector(
-                    'div[class="line-clamp-[2] leading-[1.2] text-[10px] lg:text-xs text-gray-500"]')
-                ?.text ??
-            ''
-      };
+    for (var container in bookContainers) {
+      final mainLinkElement =
+          container.querySelector('a.line-clamp-\\[3\\].js-vim-focus');
+      final thumbnailElement = container.querySelector('a[href^="/md5/"] img');
 
-      if ((data['title'] != null && data['title'] != '') &&
-          (data['link'] != null && data['link'] != '') &&
-          (data['info'] != null &&
-              ((fileType == "") &&
-                      (data['info']!.contains('pdf') ||
-                          data['info']!.contains('epub') ||
-                          data['info']!.contains('cbr') ||
-                          data['info']!.contains('cbz')) ||
-                  ((fileType != "") && data['info']!.contains(fileType))))) {
-        String link = baseUrl + data['link']!;
-        String publisher = ((data['publisher']?.contains('0') == true &&
-                        data['publisher']!.length < 2) ||
-                    data['publisher'] == "") ==
-                true
-            ? "unknown"
-            : data['publisher'].toString();
+      if (mainLinkElement == null || mainLinkElement.attributes['href'] == null) {
+        continue;
+      }
 
-        BookData book = BookData(
-          title: data['title'].toString(),
-          author: data['author'],
-          thumbnail: data['thumbnail'],
+      final String title = mainLinkElement.text.trim();
+      final String link = baseUrl + mainLinkElement.attributes['href']!;
+      final String md5 = getMd5(mainLinkElement.attributes['href']!);
+      final String? thumbnail = thumbnailElement?.attributes['src'];
+
+      // Fix: Use sequential traversal instead of :nth-of-type
+      dom.Element? authorLinkElement = mainLinkElement.nextElementSibling;
+      dom.Element? publisherLinkElement = authorLinkElement?.nextElementSibling;
+      
+      if (authorLinkElement?.attributes['href']?.startsWith('/search?q=') != true) {
+          authorLinkElement = null;
+      }
+      if (publisherLinkElement?.attributes['href']?.startsWith('/search?q=') != true) {
+          publisherLinkElement = null;
+      }
+
+      final String? authorRaw = authorLinkElement?.text.trim();
+      final String? author = (authorRaw != null && authorRaw.contains('icon-'))
+          ? authorRaw.split(' ').skip(1).join(' ').trim()
+          : authorRaw;
+      
+      final String? publisher = publisherLinkElement?.text.trim();
+      
+      final infoElement = container.querySelector('div.text-gray-800');
+      // No need for _safeParse here if we only treat info as a string
+      final String? info = infoElement?.text.trim(); 
+      
+      final bool hasMatchingFileType = fileType.isEmpty
+          ? (info?.contains(RegExp(r'(PDF|EPUB|CBR|CBZ)', caseSensitive: false)) == true)
+          : info?.toLowerCase().contains(fileType.toLowerCase()) == true;
+
+      if (hasMatchingFileType) {
+        final BookData book = BookData(
+          title: title,
+          author: author?.isEmpty == true ? "unknown" : author,
+          thumbnail: thumbnail,
           link: link,
-          md5: getMd5(data['link'].toString()),
-          publisher: publisher,
-          info: data['info'],
+          md5: md5,
+          publisher: publisher?.isEmpty == true ? "unknown" : publisher,
+          info: info,
         );
         bookList.add(book);
       }
     }
     return bookList;
   }
+  // --------------------------------------------------------------------
 
-  String getFormat(String info) {
-    if (info.contains('pdf') == true) {
-      return 'pdf';
-    } else {
-      if (info.contains('cbr')) return "cbr";
-      if (info.contains('cbz')) return "cbz";
-      return "epub";
-    }
-  }
-
-  // Future<String?> _getMirrorLink(
-  //     String url, String userAgent, String cookie) async {
-  //   try {
-  //     final response = await dio.get(url,
-  //         options: Options(extra: {
-  //           'withCredentials': true
-  //         }, headers: {
-  //           "Host": "annas-archive.org",
-  //           "Origin": baseUrl,
-  //           "Upgrade-Insecure-Requests": "1",
-  //           "Sec-Fetch-Dest": "secure",
-  //           "Sec-Fetch-Mode": "navigate",
-  //           "Sec-Fetch-Site": "same-site",
-  //           "Cookie": cookie,
-  //           "User-Agent": userAgent
-  //         }));
-
-  //     var document = parse(response.data.toString());
-
-  //     var pTag = document.querySelectorAll('p[class="mb-4"]');
-  //     String? link = pTag[1].querySelector('a')?.attributes['href'];
-  //     return link;
-  //   } catch (e) {
-  //     // print('${url} ${e}');
-  //     if (e.toString().contains("403")) {
-  //       throw jsonEncode({"code": "403", "url": url});
-  //     }
-  //     return null;
-  //   }
-  // }
-
+  // --------------------------------------------------------------------
+  // _bookInfoParser FUNCTION (Detail Page - Fixed 'unable to get data' error)
+  // --------------------------------------------------------------------
   Future<BookInfoData?> _bookInfoParser(resData, url) async {
     var document = parse(resData.toString());
-    var main = document.querySelector('main[class="main"]');
-    var ul = main?.querySelectorAll('ul[class="list-inside mb-4 ml-1"]>li>a');
-    var externalUrlAnchorTags = main
-        ?.querySelector(
-            'ul[class="list-inside mb-4 ml-1 js-show-external hidden"]')
-        ?.querySelectorAll('li>a');
+    final main = document.querySelector('div.main-inner'); 
+    if (main == null) return null;
 
-    // List<String> mirrors = [];
+    // --- Mirror Link Extraction ---
     String? mirror;
-    var anchorTags = [];
+    final slowDownloadLinks = main.querySelectorAll('ul.list-inside a[href*="/slow_download/"]');
+    if (slowDownloadLinks.isNotEmpty && slowDownloadLinks.first.attributes['href'] != null) {
+        mirror = baseUrl + slowDownloadLinks.first.attributes['href']!;
+    }
+    // --------------------------------
 
-    if (ul != null) {
-      for (var element in ul) {
-        if (element.attributes['href'] != null &&
-            element.attributes['href']!.startsWith('/slow_download') &&
-            element.attributes['href']!.endsWith('/2')) {
-          mirror = '$baseUrl${element.attributes['href']}';
-        }
-      }
+
+    // --- Core Info Extraction ---
+    
+    // Title
+    final titleElement = main.querySelector('div.font-semibold.text-2xl'); 
+    
+    // Author
+    final authorLinkElement = main.querySelector('a[href^="/search?q="].text-base');
+    
+    // Publisher
+    dom.Element? publisherLinkElement = authorLinkElement?.nextElementSibling;
+    if (publisherLinkElement?.localName != 'a' || publisherLinkElement?.attributes['href']?.startsWith('/search?q=') != true) {
+        publisherLinkElement = null;
     }
 
-    if (mirror == null) {
-      if (externalUrlAnchorTags != null) {
-        for (var e in externalUrlAnchorTags) {
-          if (e.attributes['href'] != null) {
-            anchorTags.add(e.attributes['href']);
-          }
-        }
-      }
-
-      for (var element in anchorTags) {
-        if (element.startsWith('/ipfs_downloads')) {
-          mirror = '$baseUrl$element';
-        }
-      }
+    // Thumbnail
+    final thumbnailElement = main.querySelector('div[id^="list_cover_"] img');
+    
+    // Info/Metadata
+    final infoElement = main.querySelector('div.text-gray-800');
+    
+    // Description
+    dom.Element? descriptionElement;
+    final descriptionLabel = main.querySelector('div.js-md5-top-box-description div.text-xs.text-gray-500.uppercase');
+    
+    if (descriptionLabel?.text.trim().toLowerCase() == 'description') {
+        descriptionElement = descriptionLabel?.nextElementSibling;
     }
+    String description = descriptionElement?.text.trim() ?? " ";
 
-    // print(mirror);
-
-    var data = {
-      'title': main?.querySelector('div[class="text-3xl font-bold"]')?.text,
-      'author': main?.querySelector('div[class="italic"]')?.text ?? "unknown",
-      'thumbnail': main?.querySelector('img')?.attributes['src'],
-      'link': url,
-      'publisher':
-          main?.querySelector('div[class="text-md"]')?.text ?? "unknown",
-      'info':
-          main?.querySelector('div[class="text-sm text-gray-500"]')?.text ?? '',
-      'description': main
-              ?.querySelector('div[class="mb-1"]')
-              ?.text
-              .replaceFirst("description", '') ??
-          " "
-    };
-
-    if ((data['title'] != null && data['title'] != '') &&
-        (data['link'] != null && data['link'] != '')) {
-      String title = data['title'].toString().characters.skipLast(1).toString();
-      String author =
-          data['author'].toString().characters.skipLast(1).toString();
-      String publisher = ((data['publisher']?.contains('0') == true &&
-                      data['publisher']!.length < 2) ||
-                  data['publisher'] == "") ==
-              true
-          ? "unknown"
-          : data['publisher'].toString();
-
-      return BookInfoData(
-        title: title,
-        author: author,
-        thumbnail: main?.querySelector('img')?.attributes['src'],
-        publisher: publisher,
-        info: data['info'],
-        link: data['link'],
-        md5: getMd5(data['link'].toString()),
-        format: getFormat(data['info']),
-        mirror: mirror,
-        description: data['description'],
-      );
-    } else {
+    if (titleElement == null) {
       return null;
     }
+
+    final String title = titleElement.text.trim().split('<span')[0].trim(); 
+    final String author = authorLinkElement?.text.trim() ?? "unknown";
+    final String? thumbnail = thumbnailElement?.attributes['src'];
+    
+    final String publisher = publisherLinkElement?.text.trim() ?? "unknown";
+    // NOTE: If you extract any numeric data from the 'info' string later in your app (e.g., file size or page count)
+    // and attempt to convert it to an integer or double, that's where you should use _safeParse.
+    final String info = infoElement?.text.trim() ?? ''; 
+
+    return BookInfoData(
+      title: title,
+      author: author,
+      thumbnail: thumbnail,
+      publisher: publisher,
+      info: info,
+      link: url,
+      md5: getMd5(url),
+      format: getFormat(info),
+      mirror: mirror,
+      description: description,
+    );
   }
+  // --------------------------------------------------------------------
 
   String urlEncoder(
       {required String searchQuery,
@@ -252,8 +241,7 @@ class AnnasArchieve {
       required String fileType,
       required bool enableFilters}) {
     searchQuery = searchQuery.replaceAll(" ", "+");
-    if (enableFilters == false) return '$baseUrl/search?q=$searchQuery';
-    if (content == "" && sort == "" && fileType == "") {
+    if (!enableFilters) {
       return '$baseUrl/search?q=$searchQuery';
     }
     return '$baseUrl/search?index=&q=$searchQuery&content=$content&ext=$fileType&sort=$sort';
@@ -275,15 +263,12 @@ class AnnasArchieve {
 
       final response = await dio.get(encodedURL,
           options: Options(headers: defaultDioHeaders));
-      if (!enableFilters) {
-        return _parser(response.data, "");
-      }
       return _parser(response.data, fileType);
     } on DioException catch (e) {
-      if (e.type == DioExceptionType.unknown) {
-        throw "socketException";
-      }
-      rethrow;
+        if (e.type == DioExceptionType.unknown) {
+            throw "socketException";
+        }
+        rethrow;
     }
   }
 
@@ -293,6 +278,8 @@ class AnnasArchieve {
           await dio.get(url, options: Options(headers: defaultDioHeaders));
       BookInfoData? data = await _bookInfoParser(response.data, url);
       if (data != null) {
+        // Here's where you might use _safeParse if the API returned a numeric field
+        // E.g., int pages = _safeParse(data.pages).toInt(); 
         return data;
       } else {
         throw 'unable to get data';
