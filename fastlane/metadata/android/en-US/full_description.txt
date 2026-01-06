@@ -1,5 +1,5 @@
 <p>
-<b><i>Openlib</i></b> is an open source app to download and read books from shadow library (<a href='https://annas-archive.org/' target='_blank' rel='nofollow noopener'>Anna’s Archive</a>). The App Has Built In Reader to Read Books.
+<b><i>Openlib</i></b> is an open source app to download and read books from shadow library (<a href='https://annas-archive.se/' target='_blank' rel='nofollow noopener'>Anna’s Archive</a>). The App Has Built In Reader to Read Books.
 </p>
 <p>
 As <i>Anna’s Archive</i> doesn't have an API, the app works by sending requests to <i>Anna’s Archive</i> and parses the response to objects. The app extracts the mirrors from the responses, downloads the book and stores it in the application's document directory.
