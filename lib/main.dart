@@ -4,6 +4,7 @@ import 'dart:io' show Platform;
 // Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/rendering.dart'; // <-- REQUIRED
 
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -116,31 +117,42 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     SettingsPage(),
   ];
 
+  bool _showExpandedHeader = true; // <-- ONLY new state
+
   @override
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final selectedIndex = ref.watch(selectedIndexProvider);
 
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              backgroundColor: Theme.of(context).colorScheme.surface,
-              expandedHeight: 120,
-              pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                titlePadding:
-                    const EdgeInsets.only(left: 16, bottom: 12),
-                title: Text(
-                  "Openlib",
-                  style: Theme.of(context).textTheme.displayLarge,
-                ),
+      body: NotificationListener<UserScrollNotification>(
+        onNotification: (notification) {
+          if (notification.direction == ScrollDirection.reverse &&
+              _showExpandedHeader) {
+            setState(() => _showExpandedHeader = false);
+          } else if (notification.direction == ScrollDirection.forward &&
+              !_showExpandedHeader) {
+            setState(() => _showExpandedHeader = true);
+          }
+          return false;
+        },
+        child: Column(
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              height: _showExpandedHeader ? kToolbarHeight : 0,
+              child: AppBar(
+                backgroundColor: Theme.of(context).colorScheme.surface,
+                title: const Text("Openlib"),
+                titleTextStyle:
+                    Theme.of(context).textTheme.displayLarge,
               ),
             ),
-          ];
-        },
-        body: _widgetOptions.elementAt(selectedIndex),
+            Expanded(
+              child: _widgetOptions.elementAt(selectedIndex),
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: SafeArea(
         child: GNav(
