@@ -12,6 +12,6 @@
         <domain includeSubdomains="true">127.0.0.1</domain>
     </domain-config>
     <domain-config cleartextTrafficPermitted="false">
-        <domain includeSubdomains="true">annas-archive.org</domain>
+        <domain includeSubdomains="true">annas-archive.se</domain>
     </domain-config>
 </network-security-config>
