@@ -31,7 +31,8 @@ Future<void> launchEpubViewer({
     bool openWithExternalApp = ref.watch(openEpubWithExternalAppProvider);
 
     if (openWithExternalApp) {
-      await OpenFile.open(path, linuxByProcess: true);
+      await OpenFile.open(path,
+          linuxByProcess: true, type: "application/epub+zip");
     } else {
       try {
         // Push to internal Epub Viewer
