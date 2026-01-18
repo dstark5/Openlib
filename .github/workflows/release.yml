@@ -8,6 +8,9 @@ on:
       - 'pubspec.yaml'
   workflow_dispatch:
 
+permissions:
+  contents: write
+  
 jobs:
   check-version:
     name: Check Version Change
