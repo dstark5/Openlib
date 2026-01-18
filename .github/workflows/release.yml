@@ -1,0 +1,188 @@
+name: Build and Release APK
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'pubspec.yaml'
+  workflow_dispatch:
+
+jobs:
+  check-version:
+    name: Check Version Change
+    runs-on: ubuntu-latest
+    outputs:
+      version_changed: ${{ steps.check_version.outputs.changed }}
+      new_version: ${{ steps.check_version.outputs.version }}
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          
+      - name: Check if version changed
+        id: check_version
+        run: |
+          # Get current version from pubspec.yaml
+          CURRENT_VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: *//' | sed 's/+.*//')
+          
+          # Get previous version from last commit
+          git checkout HEAD~1 -- pubspec.yaml 2>/dev/null || echo "First commit"
+          PREVIOUS_VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: *//' | sed 's/+.*//' || echo "0.0.0")
+          
+          # Restore current pubspec.yaml
+          git checkout HEAD -- pubspec.yaml
+          
+          echo "Previous version: $PREVIOUS_VERSION"
+          echo "Current version: $CURRENT_VERSION"
+          
+          if [ "$CURRENT_VERSION" != "$PREVIOUS_VERSION" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "version=v$CURRENT_VERSION" >> $GITHUB_OUTPUT
+            echo "✅ Version changed from $PREVIOUS_VERSION to $CURRENT_VERSION"
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "❌ Version unchanged: $CURRENT_VERSION"
+          fi
+
+  build:
+    name: Build and Release APK
+    runs-on: ubuntu-latest
+    needs: check-version
+    if: needs.check-version.outputs.version_changed == 'true' || github.event_name == 'workflow_dispatch'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.5'
+          channel: 'stable'
+          cache: true
+          
+      - name: Get dependencies
+        run: flutter pub get
+        
+      - name: Decode Keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/app/keystore.jks
+          
+      - name: Create key.properties
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          cat > android/key.properties << EOF
+          storePassword=$KEYSTORE_PASSWORD
+          keyPassword=$KEY_PASSWORD
+          keyAlias=$KEY_ALIAS
+          storeFile=keystore.jks
+          EOF
+          
+      - name: Build APK splits
+        run: flutter build apk --release --split-per-abi
+        
+      - name: Build Universal APK
+        run: flutter build apk --release
+        
+      - name: Rename APK files
+        run: |
+          mv build/app/outputs/flutter-apk/app-arm64-v8a-release.apk build/app/outputs/flutter-apk/openlib-arm64-v8a-release.apk
+          mv build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk build/app/outputs/flutter-apk/openlib-armeabi-v7a-release.apk
+          mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/openlib-universal-release.apk
+          
+      - name: Get version
+        id: get_version
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: *//' | sed 's/+.*//')
+            echo "VERSION=v$VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION=${{ needs.check-version.outputs.new_version }}" >> $GITHUB_OUTPUT
+          fi
+          
+      - name: Create Git Tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a ${{ steps.get_version.outputs.VERSION }} -m "Release ${{ steps.get_version.outputs.VERSION }}"
+          git push origin ${{ steps.get_version.outputs.VERSION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Extract changelog
+        id: changelog
+        run: |
+          VERSION="${{ steps.get_version.outputs.VERSION }}"
+          VERSION_NUM="${VERSION#v}"
+          
+          # Try to extract changelog for this version from CHANGELOG.md if it exists
+          if [ -f "CHANGELOG.md" ]; then
+            CHANGELOG=$(sed -n "/## \[$VERSION_NUM\]/,/## \[/p" CHANGELOG.md | sed '$ d' | tail -n +2)
+            if [ -z "$CHANGELOG" ]; then
+              CHANGELOG="No changelog available for this version."
+            fi
+          else
+            CHANGELOG="No changelog available for this version."
+          fi
+          
+          # Use delimiter for multiline output
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.get_version.outputs.VERSION }}
+          name: Openlib ${{ steps.get_version.outputs.VERSION }}
+          draft: false
+          prerelease: false
+          files: |
+            build/app/outputs/flutter-apk/openlib-arm64-v8a-release.apk
+            build/app/outputs/flutter-apk/openlib-armeabi-v7a-release.apk
+            build/app/outputs/flutter-apk/openlib-universal-release.apk
+          body: |
+            ## 📦 Openlib ${{ steps.get_version.outputs.VERSION }}
+            
+            ${{ steps.changelog.outputs.content }}
+            
+            ---
+            
+            ### 📥 Downloads
+            
+            Choose the right APK for your device:
+            
+            | File | Size | Description |
+            |------|------|-------------|
+            | **openlib-arm64-v8a-release.apk** | ~19-20 MB | ✅ **Recommended** - For most modern Android devices (64-bit ARM) |
+            | **openlib-armeabi-v7a-release.apk** | ~19 MB | For older Android devices (32-bit ARM) |
+            | **openlib-universal-release.apk** | ~45 MB | Works on all devices (larger file size) |
+            
+            > 💡 **Not sure which one?** Download the **arm64-v8a** version - it works on 95% of modern Android devices.
+            
+            ---
+            
+            **Full Changelog**: https://github.com/${{ github.repository }}/compare/v1.0.11-beta...${{ steps.get_version.outputs.VERSION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Cleanup keystore
+        if: always()
+        run: |
+          rm -f android/app/keystore.jks
+          rm -f android/key.properties
