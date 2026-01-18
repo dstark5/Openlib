@@ -4,7 +4,7 @@
 
 # Openlib
 
-An Open source app to download and read books from shadow library ([Anna’s Archive](https://annas-archive.org/))
+An Open source app to download and read books from shadow library ([Anna’s Archive](https://annas-archive.se/))
 
 [![made-with-flutter](https://img.shields.io/badge/Made%20with-Flutter-4361ee.svg?style=for-the-badge)](https://flutter.dev/)
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-e63946.svg?style=for-the-badge)](https://opensource.org/licenses/)
@@ -43,9 +43,9 @@ An Open source app to download and read books from shadow library ([Anna’s Arc
 
 ## Description 📖
 
-Openlib Is An Open Source App To Download And Read Books From Shadow Library ([Anna’s Archive](https://annas-archive.org/)). The App Has Built In Reader to Read Books
+Openlib Is An Open Source App To Download And Read Books From Shadow Library ([Anna’s Archive](https://annas-archive.se/)). The App Has Built In Reader to Read Books
 
-As [Anna’s Archive](https://annas-archive.org/) Doesn't Have An API. The App Works By Sending Request To Anna’s Archive And Parses The Response To objects. The App Extracts The Mirrors From Response And Downloads The Book
+As [Anna’s Archive](https://annas-archive.se/) Doesn't Have An API. The App Works By Sending Request To Anna’s Archive And Parses The Response To objects. The App Extracts The Mirrors From Response And Downloads The Book
 
 ## Features ✨
 
@@ -111,7 +111,7 @@ Please report bugs via the [issue tracker](https://github.com/dstark5/Openlib/is
 
 If you like Openlib, you're welcome to send a donation.
 
-[Donate To Anna’s Archive.](https://annas-archive.org/donate?tier=1)
+[Donate To Anna’s Archive.](https://annas-archive.se/donate?tier=1)
 
 ## License 📜
 

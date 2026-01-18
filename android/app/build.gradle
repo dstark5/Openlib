@@ -1,3 +1,5 @@
+// android/app/build.gradle
+
 plugins {
     id "com.android.application"
     id "kotlin-android"
@@ -5,6 +7,7 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+// Load the Keystore Properties
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
@@ -45,20 +48,25 @@ android {
 
     signingConfigs {
         release {
+            // FIX: Use a conditional check (the Elvis operator ?: '') 
+            // to ensure 'file()' never gets a null or missing path string.
+            // This is the source of the path='null' error.
             keyAlias = keystoreProperties['keyAlias']
             keyPassword = keystoreProperties['keyPassword']
-            storeFile = keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storeFile = file(keystoreProperties['storeFile'] ?: '') // <--- CRITICAL FIX
             storePassword = keystoreProperties['storePassword']
             v1SigningEnabled = true
             v2SigningEnabled = true
         }
-    }
+    } // Line 56 is near here, depending on your exact formatting
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.release
+            // Revert to unconditional assignment. If storeFile is missing, 
+            // Gradle will now error with "storeFile is missing required property", 
+            // which is clearer than the "path='null'" error.
+            signingConfig signingConfigs.release
+            
             minifyEnabled = false
             shrinkResources = false
         }

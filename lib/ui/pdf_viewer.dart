@@ -29,7 +29,7 @@ Future<void> launchPdfViewer(
   bool openWithExternalApp = ref.watch(openPdfWithExternalAppProvider);
   if (openWithExternalApp) {
     String path = await getFilePath(fileName);
-    await OpenFile.open(path, linuxByProcess: true);
+    await OpenFile.open(path, linuxByProcess: true, type: "application/pdf");
   } else {
     Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
       return PdfView(
