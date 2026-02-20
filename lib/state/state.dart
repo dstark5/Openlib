@@ -79,13 +79,18 @@ final enableFiltersState = StateProvider<bool>((ref) => true);
 // Web/Download States
 final cookieProvider = StateProvider<String>((ref) => "");
 final userAgentProvider = StateProvider<String>((ref) => "");
+final baseUrlProvider =
+    StateProvider<String>((ref) => "https://annas-archive.li");
 final webViewLoadingState = StateProvider.autoDispose<bool>((ref) => true);
-final downloadProgressProvider = StateProvider.autoDispose<double>((ref) => 0.0);
+final downloadProgressProvider =
+    StateProvider.autoDispose<double>((ref) => 0.0);
 final mirrorStatusProvider = StateProvider.autoDispose<bool>((ref) => false);
 final totalFileSizeInBytes = StateProvider.autoDispose<int>((ref) => 0);
 final downloadedFileSizeInBytes = StateProvider.autoDispose<int>((ref) => 0);
-final downloadState = StateProvider.autoDispose<ProcessState>((ref) => ProcessState.waiting);
-final checkSumState = StateProvider.autoDispose<CheckSumProcessState>((ref) => CheckSumProcessState.waiting);
+final downloadState =
+    StateProvider.autoDispose<ProcessState>((ref) => ProcessState.waiting);
+final checkSumState = StateProvider.autoDispose<CheckSumProcessState>(
+    (ref) => CheckSumProcessState.waiting);
 final cancelCurrentDownload = StateProvider<CancelToken>((ref) {
   return CancelToken();
 });
@@ -140,20 +145,22 @@ final getTrendingBooks = FutureProvider<List<TrendingBookData>>((ref) async {
   GoodReads goodReads = GoodReads();
   // Assuming these classes are available from your project imports
   // ignore: prefer_const_constructors
-  final penguinTrending = PenguinRandomHouse(); 
+  final penguinTrending = PenguinRandomHouse();
   // ignore: prefer_const_constructors
   final bookDigits = BookDigits();
 
-  List<TrendingBookData> trendingBooks = await Future.wait<List<TrendingBookData>>([
+  List<TrendingBookData> trendingBooks =
+      await Future.wait<List<TrendingBookData>>([
     goodReads.trendingBooks(),
     penguinTrending.trendingBooks(),
     // openLibrary.trendingBooks(), // Commented out as in the original
     bookDigits.trendingBooks(),
   ]).then((List<List<TrendingBookData>> listOfData) =>
-      listOfData.expand((element) => element).toList());
+          listOfData.expand((element) => element).toList());
 
   if (trendingBooks.isEmpty) {
-    throw Exception('Nothing Trending Today :('); // Use Exception instead of String
+    throw Exception(
+        'Nothing Trending Today :('); // Use Exception instead of String
   }
   trendingBooks.shuffle();
   return trendingBooks;
@@ -175,9 +182,11 @@ final getSubCategoryTypeList = FutureProvider.family
 // Provider for Anna's Archive Search Results
 final searchProvider = FutureProvider.family
     .autoDispose<List<BookData>, String>((ref, searchQuery) async {
-  if (searchQuery.isEmpty) return []; // Return empty list if search query is empty
+  if (searchQuery.isEmpty)
+    return []; // Return empty list if search query is empty
 
-  final AnnasArchieve annasArchieve = AnnasArchieve();
+  final String baseUrl = ref.watch(baseUrlProvider);
+  final AnnasArchieve annasArchieve = AnnasArchieve(baseUrl: baseUrl);
   List<BookData> data = await annasArchieve.searchBooks(
       searchQuery: searchQuery,
       content: ref.watch(getTypeValue),
@@ -190,7 +199,8 @@ final searchProvider = FutureProvider.family
 // Provider for Book Info Details
 final bookInfoProvider =
     FutureProvider.family<BookInfoData, String>((ref, url) async {
-  final AnnasArchieve annasArchieve = AnnasArchieve();
+  final String baseUrl = ref.watch(baseUrlProvider);
+  final AnnasArchieve annasArchieve = AnnasArchieve(baseUrl: baseUrl);
   BookInfoData data = await annasArchieve.bookInfo(url: url);
   return data;
 });

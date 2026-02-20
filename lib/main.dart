@@ -28,7 +28,8 @@ import 'package:openlib/state/state.dart'
         openPdfWithExternalAppProvider,
         openEpubWithExternalAppProvider,
         userAgentProvider,
-        cookieProvider;
+        cookieProvider,
+        baseUrlProvider;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -54,6 +55,12 @@ void main() async {
 
   String browserUserAgent = await dataBase.getBrowserOptions('userAgent');
   String browserCookie = await dataBase.getBrowserOptions('cookie');
+  String annasArchiveBaseUrl;
+  try {
+    annasArchiveBaseUrl = await dataBase.getPreference('annasArchiveBaseUrl');
+  } catch (e) {
+    annasArchiveBaseUrl = 'https://annas-archive.li';
+  }
 
   if (Platform.isAndroid) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -73,6 +80,7 @@ void main() async {
             .overrideWith((ref) => openEpubwithExternalapp),
         userAgentProvider.overrideWith((ref) => browserUserAgent),
         cookieProvider.overrideWith((ref) => browserCookie),
+        baseUrlProvider.overrideWith((ref) => annasArchiveBaseUrl),
       ],
       child: const MyApp(),
     ),
@@ -144,8 +152,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
               child: AppBar(
                 backgroundColor: Theme.of(context).colorScheme.surface,
                 title: const Text("Openlib"),
-                titleTextStyle:
-                    Theme.of(context).textTheme.displayLarge,
+                titleTextStyle: Theme.of(context).textTheme.displayLarge,
               ),
             ),
             Expanded(
@@ -156,8 +163,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
       ),
       bottomNavigationBar: SafeArea(
         child: GNav(
-          backgroundColor:
-              isDarkMode ? Colors.black : Colors.grey.shade200,
+          backgroundColor: isDarkMode ? Colors.black : Colors.grey.shade200,
           haptic: true,
           tabBorderRadius: 50,
           tabActiveBorder: Border.all(
@@ -170,10 +176,8 @@ class _MainScreenState extends ConsumerState<MainScreen> {
           color: Colors.white,
           activeColor: Colors.white,
           iconSize: 19,
-          tabBackgroundColor:
-              Theme.of(context).colorScheme.secondary,
-          padding:
-              const EdgeInsets.symmetric(horizontal: 13, vertical: 6.5),
+          tabBackgroundColor: Theme.of(context).colorScheme.secondary,
+          padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 6.5),
           tabs: const [
             GButton(icon: Icons.trending_up, text: 'Home'),
             GButton(icon: Icons.search, text: 'Search'),

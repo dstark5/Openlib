@@ -53,7 +53,9 @@ class BookInfoData extends BookData {
 // ====================================================================
 
 class AnnasArchieve {
-  static const String baseUrl = "https://annas-archive.se";
+  String baseUrl;
+
+  AnnasArchieve({this.baseUrl = "https://annas-archive.li"});
 
   final Dio dio = Dio();
 
@@ -91,7 +93,7 @@ class AnnasArchieve {
     }
     return value;
   }
-  
+
   // --------------------------------------------------------------------
   // _parser FUNCTION (Search Results - Fixed nth-of-type issue)
   // --------------------------------------------------------------------
@@ -108,7 +110,8 @@ class AnnasArchieve {
           container.querySelector('a.line-clamp-\\[3\\].js-vim-focus');
       final thumbnailElement = container.querySelector('a[href^="/md5/"] img');
 
-      if (mainLinkElement == null || mainLinkElement.attributes['href'] == null) {
+      if (mainLinkElement == null ||
+          mainLinkElement.attributes['href'] == null) {
         continue;
       }
 
@@ -120,27 +123,31 @@ class AnnasArchieve {
       // Fix: Use sequential traversal instead of :nth-of-type
       dom.Element? authorLinkElement = mainLinkElement.nextElementSibling;
       dom.Element? publisherLinkElement = authorLinkElement?.nextElementSibling;
-      
-      if (authorLinkElement?.attributes['href']?.startsWith('/search?q=') != true) {
-          authorLinkElement = null;
+
+      if (authorLinkElement?.attributes['href']?.startsWith('/search?q=') !=
+          true) {
+        authorLinkElement = null;
       }
-      if (publisherLinkElement?.attributes['href']?.startsWith('/search?q=') != true) {
-          publisherLinkElement = null;
+      if (publisherLinkElement?.attributes['href']?.startsWith('/search?q=') !=
+          true) {
+        publisherLinkElement = null;
       }
 
       final String? authorRaw = authorLinkElement?.text.trim();
       final String? author = (authorRaw != null && authorRaw.contains('icon-'))
           ? authorRaw.split(' ').skip(1).join(' ').trim()
           : authorRaw;
-      
+
       final String? publisher = publisherLinkElement?.text.trim();
-      
+
       final infoElement = container.querySelector('div.text-gray-800');
       // No need for _safeParse here if we only treat info as a string
-      final String? info = infoElement?.text.trim(); 
-      
+      final String? info = infoElement?.text.trim();
+
       final bool hasMatchingFileType = fileType.isEmpty
-          ? (info?.contains(RegExp(r'(PDF|EPUB|CBR|CBZ)', caseSensitive: false)) == true)
+          ? (info?.contains(
+                  RegExp(r'(PDF|EPUB|CBR|CBZ)', caseSensitive: false)) ==
+              true)
           : info?.toLowerCase().contains(fileType.toLowerCase()) == true;
 
       if (hasMatchingFileType) {
@@ -165,44 +172,49 @@ class AnnasArchieve {
   // --------------------------------------------------------------------
   Future<BookInfoData?> _bookInfoParser(resData, url) async {
     var document = parse(resData.toString());
-    final main = document.querySelector('div.main-inner'); 
+    final main = document.querySelector('div.main-inner');
     if (main == null) return null;
 
     // --- Mirror Link Extraction ---
     String? mirror;
-    final slowDownloadLinks = main.querySelectorAll('ul.list-inside a[href*="/slow_download/"]');
-    if (slowDownloadLinks.isNotEmpty && slowDownloadLinks.first.attributes['href'] != null) {
-        mirror = baseUrl + slowDownloadLinks.first.attributes['href']!;
+    final slowDownloadLinks =
+        main.querySelectorAll('ul.list-inside a[href*="/slow_download/"]');
+    if (slowDownloadLinks.isNotEmpty &&
+        slowDownloadLinks.first.attributes['href'] != null) {
+      mirror = baseUrl + slowDownloadLinks.first.attributes['href']!;
     }
     // --------------------------------
 
-
     // --- Core Info Extraction ---
-    
+
     // Title
-    final titleElement = main.querySelector('div.font-semibold.text-2xl'); 
-    
+    final titleElement = main.querySelector('div.font-semibold.text-2xl');
+
     // Author
-    final authorLinkElement = main.querySelector('a[href^="/search?q="].text-base');
-    
+    final authorLinkElement =
+        main.querySelector('a[href^="/search?q="].text-base');
+
     // Publisher
     dom.Element? publisherLinkElement = authorLinkElement?.nextElementSibling;
-    if (publisherLinkElement?.localName != 'a' || publisherLinkElement?.attributes['href']?.startsWith('/search?q=') != true) {
-        publisherLinkElement = null;
+    if (publisherLinkElement?.localName != 'a' ||
+        publisherLinkElement?.attributes['href']?.startsWith('/search?q=') !=
+            true) {
+      publisherLinkElement = null;
     }
 
     // Thumbnail
     final thumbnailElement = main.querySelector('div[id^="list_cover_"] img');
-    
+
     // Info/Metadata
     final infoElement = main.querySelector('div.text-gray-800');
-    
+
     // Description
     dom.Element? descriptionElement;
-    final descriptionLabel = main.querySelector('div.js-md5-top-box-description div.text-xs.text-gray-500.uppercase');
-    
+    final descriptionLabel = main.querySelector(
+        'div.js-md5-top-box-description div.text-xs.text-gray-500.uppercase');
+
     if (descriptionLabel?.text.trim().toLowerCase() == 'description') {
-        descriptionElement = descriptionLabel?.nextElementSibling;
+      descriptionElement = descriptionLabel?.nextElementSibling;
     }
     String description = descriptionElement?.text.trim() ?? " ";
 
@@ -210,14 +222,14 @@ class AnnasArchieve {
       return null;
     }
 
-    final String title = titleElement.text.trim().split('<span')[0].trim(); 
+    final String title = titleElement.text.trim().split('<span')[0].trim();
     final String author = authorLinkElement?.text.trim() ?? "unknown";
     final String? thumbnail = thumbnailElement?.attributes['src'];
-    
+
     final String publisher = publisherLinkElement?.text.trim() ?? "unknown";
     // NOTE: If you extract any numeric data from the 'info' string later in your app (e.g., file size or page count)
     // and attempt to convert it to an integer or double, that's where you should use _safeParse.
-    final String info = infoElement?.text.trim() ?? ''; 
+    final String info = infoElement?.text.trim() ?? '';
 
     return BookInfoData(
       title: title,
@@ -265,10 +277,10 @@ class AnnasArchieve {
           options: Options(headers: defaultDioHeaders));
       return _parser(response.data, fileType);
     } on DioException catch (e) {
-        if (e.type == DioExceptionType.unknown) {
-            throw "socketException";
-        }
-        rethrow;
+      if (e.type == DioExceptionType.unknown) {
+        throw "socketException";
+      }
+      rethrow;
     }
   }
 
@@ -279,7 +291,7 @@ class AnnasArchieve {
       BookInfoData? data = await _bookInfoParser(response.data, url);
       if (data != null) {
         // Here's where you might use _safeParse if the API returned a numeric field
-        // E.g., int pages = _safeParse(data.pages).toInt(); 
+        // E.g., int pages = _safeParse(data.pages).toInt();
         return data;
       } else {
         throw 'unable to get data';
