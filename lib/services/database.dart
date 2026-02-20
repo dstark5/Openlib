@@ -114,6 +114,8 @@ class MyLibraryDb {
             "INSERT OR IGNORE INTO preferences (name, value) VALUES ('openEpubwithExternalApp', 0)");
         await db.execute(
             "INSERT OR IGNORE INTO preferences (name, value) VALUES ('bookStorageDirectory', '$bookStorageDefaultDirectory')");
+        await db.execute(
+            "INSERT OR IGNORE INTO preferences (name, value) VALUES ('annasArchiveBaseUrl', 'https://annas-archive.li')");
       },
     );
   }

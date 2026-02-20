@@ -21,7 +21,8 @@ import 'package:openlib/state/state.dart'
     show
         themeModeProvider,
         openPdfWithExternalAppProvider,
-        openEpubWithExternalAppProvider;
+        openEpubWithExternalAppProvider,
+        baseUrlProvider;
 
 Future<void> requestStoragePermission() async {
   bool permissionGranted = false;
@@ -49,6 +50,83 @@ Future<void> requestStoragePermission() async {
     }
   }
   print("Storage permission status: $permissionGranted");
+}
+
+Future<void> _showBaseUrlDialog(
+    BuildContext context, WidgetRef ref, MyLibraryDb dataBase) async {
+  final TextEditingController controller = TextEditingController();
+  String currentBaseUrl = ref.read(baseUrlProvider);
+  controller.text = currentBaseUrl;
+
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text('Configure Base URL'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: controller,
+                decoration: const InputDecoration(
+                  hintText: 'https://annas-archive.li',
+                  labelText: 'Base URL',
+                ),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('Cancel',
+                style: TextStyle(color: Theme.of(context).colorScheme.error)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () async {
+              String newUrl = controller.text.trim();
+              // Remove trailing slash if present
+              if (newUrl.endsWith('/')) {
+                newUrl = newUrl.substring(0, newUrl.length - 1);
+              }
+              // Validate URL format
+              if (newUrl.isNotEmpty &&
+                  (newUrl.startsWith('http://') ||
+                      newUrl.startsWith('https://'))) {
+                ref.read(baseUrlProvider.notifier).state = newUrl;
+                await dataBase.savePreference('annasArchiveBaseUrl', newUrl);
+                Navigator.of(context).pop();
+                // Show confirmation
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Base URL updated to: $newUrl'),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              } else {
+                // Show error
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                        'Invalid URL. Must start with http:// or https://'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              }
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      );
+    },
+  );
 }
 
 class SettingsPage extends ConsumerWidget {
@@ -164,6 +242,21 @@ class SettingsPage extends ConsumerWidget {
                     ),
                   ),
                   Icon(Icons.folder),
+                ]),
+            _PaddedContainer(
+                onClick: () async {
+                  await _showBaseUrlDialog(context, ref, dataBase);
+                },
+                children: [
+                  Text(
+                    "Anna's Archive Base URL",
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.tertiary,
+                    ),
+                  ),
+                  Icon(Icons.link),
                 ]),
             _PaddedContainer(
               onClick: () {
