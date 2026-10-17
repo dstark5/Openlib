@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:open_file/open_file.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:openlib/ui/components/snack_bar_widget.dart';
+
 // Project imports:
-import 'package:openlib/services/files.dart' show getFilePath;
 
 import 'package:openlib/state/state.dart'
     show
@@ -19,24 +19,36 @@ import 'package:openlib/state/state.dart'
         pdfCurrentPage,
         totalPdfPage,
         savePdfState,
-        openPdfWithExternalAppProvider,
+        readerPreferenceProvider,
+        readerAppsProvider,
         getBookPosition;
 
-Future<void> launchPdfViewer(
-    {required String fileName,
-    required BuildContext context,
-    required WidgetRef ref}) async {
-  bool openWithExternalApp = ref.watch(openPdfWithExternalAppProvider);
-  if (openWithExternalApp) {
-    String path = await getFilePath(fileName);
-    await OpenFile.open(path, linuxByProcess: true, type: "application/pdf");
-  } else {
-    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
-      return PdfView(
-        fileName: fileName,
-      );
-    }));
+Future<void> launchPdfViewer({
+  required String fileName,
+  required BuildContext context,
+  required WidgetRef ref,
+  String? title,
+}) async {
+  final reader = ref.read(readerPreferenceProvider('pdf'));
+  if (reader != 'internal') {
+    try {
+      final path = await ref.read(filePathProvider(fileName).future);
+      await ref
+          .read(readerAppsProvider)
+          .openBook(path: path, format: 'pdf', reader: reader, title: title);
+    } catch (_) {
+      if (context.mounted) {
+        showSnackBar(
+            context: context,
+            message:
+                'Could not open the reader. Choose another app in Settings.');
+      }
+    }
+    return;
   }
+  if (!context.mounted) return;
+  Navigator.push(
+      context, MaterialPageRoute(builder: (_) => PdfView(fileName: fileName)));
 }
 
 class PdfView extends ConsumerStatefulWidget {

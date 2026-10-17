@@ -4,19 +4,21 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:async'; // For Timer/Debounce
-import 'package:http/http.dart' as http; // Required for the API calls (ensure package is installed)
+import 'package:http/http.dart'
+    as http; // Required for the API calls (ensure package is installed)
 
 // Project imports:
 import 'package:openlib/ui/components/page_title_widget.dart';
 import 'package:openlib/ui/results_page.dart';
 import 'components/snack_bar_widget.dart';
 // Import the new API Service (adjust path as necessary)
-import 'package:openlib/services/google_suggest_api.dart'; 
+import 'package:openlib/services/google_suggest_api.dart';
 
 import 'package:openlib/state/state.dart'
     show
         searchQueryProvider,
         selectedTypeState,
+        selectedLanguageState,
         selectedSortState,
         selectedFileTypeState,
         typeValues,
@@ -33,12 +35,12 @@ final searchSuggestionProvider = StateProvider<List<String>>((ref) => []);
 // Provider to show/hide the loading indicator
 final suggestionsLoadingProvider = StateProvider<bool>((ref) => false);
 
-
 // ====================================================================
 // SearchPage Implementation (Stateful Conversion for API & Debounce)
 // ====================================================================
 
-class SearchPage extends ConsumerStatefulWidget { // <--- CONVERTED TO STATEFUL
+class SearchPage extends ConsumerStatefulWidget {
+  // <--- CONVERTED TO STATEFUL
   const SearchPage({super.key});
 
   @override
@@ -47,21 +49,24 @@ class SearchPage extends ConsumerStatefulWidget { // <--- CONVERTED TO STATEFUL
 
 class _SearchPageState extends ConsumerState<SearchPage> {
   Timer? _debounce;
-  late final TextEditingController _searchController; 
-  final GoogleSuggestApi _apiService = GoogleSuggestApi(); // Instantiate API service
+  late final TextEditingController _searchController;
+  final GoogleSuggestApi _apiService =
+      GoogleSuggestApi(); // Instantiate API service
 
   @override
   void initState() {
     super.initState();
     // Initialize controller with current state value
-    _searchController = TextEditingController(text: ref.read(searchQueryProvider));
-    
+    _searchController =
+        TextEditingController(text: ref.read(searchQueryProvider));
+
     // Listener to update the TextField when state changes (e.g., when a suggestion is tapped)
     ref.listenManual(searchQueryProvider, (previous, next) {
       if (_searchController.text != next) {
         _searchController.text = next;
         // Move cursor to the end
-        _searchController.selection = TextSelection.fromPosition(TextPosition(offset: next.length));
+        _searchController.selection =
+            TextSelection.fromPosition(TextPosition(offset: next.length));
       }
     });
   }
@@ -72,7 +77,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     _searchController.dispose();
     super.dispose();
   }
-  
+
   // *** API LOGIC ***
   Future<void> _fetchSuggestions(String query) async {
     final cleanQuery = query.trim();
@@ -82,7 +87,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     }
 
     ref.read(suggestionsLoadingProvider.notifier).state = true;
-    
+
     // Call the Google Suggest API function
     final realSuggestions = await _apiService.fetchSuggestions(cleanQuery);
 
@@ -118,14 +123,17 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   }
 
   @override
-  Widget build(BuildContext context) { // WidgetRef is available via ConsumerState
+  Widget build(BuildContext context) {
+    // WidgetRef is available via ConsumerState
     final dropdownTypeValue = ref.watch(selectedTypeState);
     final dropdownSortValue = ref.watch(selectedSortState);
     final dropDownFileTypeValue = ref.watch(selectedFileTypeState);
-    
+
     // Watch suggestion states
-    final suggestions = ref.watch(searchSuggestionProvider); // The list of titles
-    final isLoadingSuggestions = ref.watch(suggestionsLoadingProvider); // Loading state
+    final suggestions =
+        ref.watch(searchSuggestionProvider); // The list of titles
+    final isLoadingSuggestions =
+        ref.watch(suggestionsLoadingProvider); // Loading state
 
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
@@ -157,19 +165,21 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                   suffixIcon: IconButton(
                     padding: const EdgeInsets.only(right: 5),
                     color: Theme.of(context).colorScheme.secondary,
-                    icon: isLoadingSuggestions // Show loading spinner if fetching suggestions
-                        ? SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2.0,
-                              color: Theme.of(context).colorScheme.secondary,
-                            ),
-                          )
-                        : const Icon(
-                            Icons.search,
-                            size: 23,
-                          ),
+                    icon:
+                        isLoadingSuggestions // Show loading spinner if fetching suggestions
+                            ? SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.0,
+                                  color:
+                                      Theme.of(context).colorScheme.secondary,
+                                ),
+                              )
+                            : const Icon(
+                                Icons.search,
+                                size: 23,
+                              ),
                     onPressed: () => onSubmit(context), // <--- Simplified call
                   ),
                   filled: true,
@@ -184,10 +194,11 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                   fontWeight: FontWeight.bold,
                   fontSize: 12,
                 ),
-                onChanged: _onSearchQueryChanged, // <--- Calls the debounced function
+                onChanged:
+                    _onSearchQueryChanged, // <--- Calls the debounced function
               ),
             ),
-            
+
             // --- Suggestions List (NEW) ---
             if (suggestions.isNotEmpty && _searchController.text.isNotEmpty)
               Padding(
@@ -221,11 +232,13 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                         leading: const Icon(Icons.book, size: 18),
                         onTap: () {
                           // 1. Update the state with the selected suggestion
-                          ref.read(searchQueryProvider.notifier).state = suggestion;
-                          
+                          ref.read(searchQueryProvider.notifier).state =
+                              suggestion;
+
                           // 2. Clear the suggestion list
-                          ref.read(searchSuggestionProvider.notifier).state = [];
-                          
+                          ref.read(searchSuggestionProvider.notifier).state =
+                              [];
+
                           // 3. Immediately perform search
                           onSubmit(context);
                         },
@@ -236,12 +249,41 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               ),
             // -----------------------------
 
+            Padding(
+              padding: const EdgeInsets.only(left: 7, right: 7, top: 19),
+              child: SizedBox(
+                  width: 250,
+                  child: DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      labelText: 'Language',
+                      labelStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary),
+                      border: const OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(50))),
+                    ),
+                    isExpanded: true,
+                    value: ref.watch(selectedLanguageState),
+                    items: languageOptions.entries
+                        .map((entry) => DropdownMenuItem(
+                              value: entry.key,
+                              child: Text(entry.value,
+                                  style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold)),
+                            ))
+                        .toList(),
+                    onChanged: (value) => ref
+                        .read(selectedLanguageState.notifier)
+                        .state = value ?? '',
+                  )),
+            ),
             // Dropdown Filters (Unchanged)
             Padding(
               padding: const EdgeInsets.only(left: 7, right: 7, top: 19),
               child: SizedBox(
                 width: 250,
                 child: DropdownButtonFormField(
+                  isExpanded: true,
                   decoration: InputDecoration(
                     labelText: 'Type',
                     labelStyle: TextStyle(
@@ -285,6 +327,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               child: SizedBox(
                 width: 210,
                 child: DropdownButtonFormField(
+                  isExpanded: true,
                   decoration: InputDecoration(
                     labelText: 'Sort by',
                     labelStyle: TextStyle(
@@ -327,6 +370,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               child: SizedBox(
                 width: 165,
                 child: DropdownButtonFormField(
+                  isExpanded: true,
                   decoration: InputDecoration(
                     labelText: 'File type',
                     labelStyle: TextStyle(
@@ -369,3 +413,50 @@ class _SearchPageState extends ConsumerState<SearchPage> {
     );
   }
 }
+
+const languageOptions = <String, String>{
+  '': 'All languages',
+  'en': 'English',
+  'de': 'German',
+  'fr': 'French',
+  'es': 'Spanish',
+  'it': 'Italian',
+  'nl': 'Dutch',
+  'pt': 'Portuguese',
+  'ar': 'Arabic',
+  'bg': 'Bulgarian',
+  'ca': 'Catalan',
+  'zh': 'Chinese',
+  'hr': 'Croatian',
+  'cs': 'Czech',
+  'da': 'Danish',
+  'eo': 'Esperanto',
+  'et': 'Estonian',
+  'fi': 'Finnish',
+  'el': 'Greek',
+  'he': 'Hebrew',
+  'hi': 'Hindi',
+  'hu': 'Hungarian',
+  'id': 'Indonesian',
+  'ja': 'Japanese',
+  'ko': 'Korean',
+  'la': 'Latin',
+  'lv': 'Latvian',
+  'lt': 'Lithuanian',
+  'ms': 'Malay',
+  'no': 'Norwegian',
+  'fa': 'Persian',
+  'pl': 'Polish',
+  'ro': 'Romanian',
+  'ru': 'Russian',
+  'sr': 'Serbian',
+  'sk': 'Slovak',
+  'sl': 'Slovenian',
+  'sv': 'Swedish',
+  'ta': 'Tamil',
+  'th': 'Thai',
+  'tr': 'Turkish',
+  'uk': 'Ukrainian',
+  'ur': 'Urdu',
+  'vi': 'Vietnamese',
+};

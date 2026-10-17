@@ -8,10 +8,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 // Project imports:
 import 'package:openlib/state/state.dart' as app_state;
 import 'package:openlib/ui/book_info_page.dart';
+import 'package:openlib/ui/components/download_status.dart';
 import 'package:openlib/ui/components/book_card_widget.dart';
 import 'package:openlib/ui/components/error_widget.dart';
 // NOTE: Assuming the class INSIDE this file is named TitleText.
-import 'package:openlib/ui/components/page_title_widget.dart'; 
+import 'package:openlib/ui/components/page_title_widget.dart';
 import 'package:openlib/ui/extensions.dart';
 
 // A constant for the 'No Results Found' text color for better theming/readability.
@@ -38,10 +39,13 @@ class ResultPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Results for '$capitalizedQuery'"),
-        titleTextStyle:
-            Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+        titleTextStyle: Theme.of(context)
+            .textTheme
+            .titleLarge
+            ?.copyWith(fontWeight: FontWeight.bold),
         backgroundColor: Theme.of(context).colorScheme.surface,
       ),
+      bottomNavigationBar: const DownloadStatusBar(),
       body: searchBooks.when(
         // ====================================================================
         // DATA STATE
@@ -56,7 +60,7 @@ class ResultPage extends ConsumerWidget {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 10),
                       // FIX 1: Changed PageTitleWidget back to TitleText
-                      child: TitleText("Results"), 
+                      child: TitleText("Results"),
                     ),
                   ),
                   SliverList.builder(
@@ -148,7 +152,8 @@ class ResultPage extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+                padding: const EdgeInsets.only(
+                    left: 10, right: 10, top: 10, bottom: 10),
                 // FIX 2: Changed PageTitleWidget back to TitleText
                 child: TitleText("Results"),
               ),

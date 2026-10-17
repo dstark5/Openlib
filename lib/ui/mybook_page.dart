@@ -59,6 +59,7 @@ class BookPage extends StatelessWidget {
                       data: snapshot.data,
                       child: FileOpenAndDeleteButtons(
                         id: snapshot.data!.id,
+                        title: snapshot.data!.title,
                         format: snapshot.data!.format!,
                         onDelete: () {
                           Navigator.of(context).pop();

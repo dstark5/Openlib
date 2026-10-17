@@ -1,34 +1,107 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-// Flutter imports:
 import 'package:flutter/material.dart';
-
-// Package imports:
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-// Project imports:
-import 'package:openlib/main.dart';
+import 'package:openlib/services/annas_archieve.dart';
+import 'package:openlib/state/state.dart';
+import 'package:openlib/ui/components/archive_source_setting.dart';
+import 'package:openlib/ui/components/error_widget.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('website setting validates, saves, and updates the active source',
+      (tester) async {
+    String? saved;
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(home: Scaffold(body: ArchiveSourceSetting(
+        savePreference: (value) async {
+          saved = value;
+        },
+      ))),
+    ));
+    await tester.tap(find.text("Anna's Archive website"));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+        find.byType(TextFormField), 'http://bad.example/search');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    expect(find.text('Enter an HTTPS website address without a path.'),
+        findsOneWidget);
+    expect(saved, isNull);
+    await tester.enterText(
+        find.byType(TextFormField), ' https://mirror.example/ ');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    expect(saved, 'https://mirror.example');
+    expect(container.read(archiveBaseUrlProvider), saved);
+    expect(find.text('mirror.example'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  testWidgets('failed save keeps the previous website and allows retry',
+      (tester) async {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    await tester.pumpWidget(UncontrolledProviderScope(
+      container: container,
+      child: MaterialApp(
+          home: Scaffold(
+              body: ArchiveSourceSetting(
+        savePreference: (_) async => throw Exception('disk full'),
+      ))),
+    ));
+    await tester.tap(find.text("Anna's Archive website"));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+        find.byType(TextFormField), 'https://mirror.example');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+    expect(
+        container.read(archiveBaseUrlProvider), AnnasArchieve.defaultBaseUrl);
+    expect(find.text('Could not save the website. Try again.'), findsOneWidget);
+    expect(find.text('Save'), findsOneWidget);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  testWidgets('connection failure shows host and website setting action',
+      (tester) async {
+    await tester.pumpWidget(ProviderScope(
+        child: MaterialApp(
+            home: Scaffold(
+      body: CustomErrorWidget(
+        error: ArchiveRequestException(
+            url: 'https://mirror.example/search?q=Alice'),
+        stackTrace: StackTrace.current,
+        onRefresh: () {},
+      ),
+    ))));
+    await tester.pumpAndSettle();
+    expect(find.text('Cannot reach mirror.example'), findsOneWidget);
+    expect(find.text('Change website'), findsOneWidget);
+    expect(find.text('Stack Trace'), findsNothing);
+    await tester.tap(find.text('Change website'));
+    await tester.pumpAndSettle();
+    expect(find.text("Anna's Archive website"), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  testWidgets('browser check offers in-app completion and retry',
+      (tester) async {
+    await tester.pumpWidget(ProviderScope(
+        child: MaterialApp(
+            home: Scaffold(
+      body: CustomErrorWidget(
+        error: ArchiveRequestException(
+            url: 'https://mirror.example/search?q=Alice', needsBrowser: true),
+        stackTrace: StackTrace.current,
+        onRefresh: () {},
+      ),
+    ))));
+    await tester.pumpAndSettle();
+    expect(find.text('Complete the website check'), findsOneWidget);
+    expect(find.text('Open page in app'), findsOneWidget);
+    expect(find.text('Try again'), findsOneWidget);
+    expect(find.text('Stack Trace'), findsNothing);
+    expect(tester.takeException(), isNull);
   });
 }

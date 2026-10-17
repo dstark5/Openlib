@@ -3,12 +3,17 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:openlib/ui/extensions.dart';
+import 'package:openlib/services/annas_archieve.dart';
+import 'package:openlib/state/state.dart';
+import 'package:openlib/ui/archive_browser_page.dart';
+import 'package:openlib/ui/settings_page.dart';
 
 // ignore: must_be_immutable
-class CustomErrorWidget extends StatelessWidget {
+class CustomErrorWidget extends ConsumerWidget {
   final Object error;
   final StackTrace stackTrace;
   VoidCallback? onRefresh;
@@ -20,7 +25,55 @@ class CustomErrorWidget extends StatelessWidget {
       this.onRefresh});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final archiveError = error;
+    if (archiveError is ArchiveRequestException) {
+      return Center(child: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          Icon(archiveError.needsBrowser ? Icons.public : Icons.wifi_off,
+              size: 48, color: Theme.of(context).colorScheme.secondary),
+          const SizedBox(height: 20),
+          Text(archiveError.needsBrowser ? 'Complete the website check'
+              : 'Cannot reach ${Uri.parse(archiveError.url).host}',
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: 12),
+          Text(archiveError.needsBrowser
+              ? 'Open the page below, complete any check, then return the loaded page to Openlib.'
+              : 'Try again, or choose an Anna\'s Archive website that opens on your phone.',
+              textAlign: TextAlign.center),
+          const SizedBox(height: 20),
+          if (archiveError.needsBrowser) FilledButton(
+            style: FilledButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.secondary,
+                foregroundColor: Theme.of(context).colorScheme.onSecondary),
+            onPressed: () async {
+              final html = await Navigator.push<String>(context, MaterialPageRoute(
+                builder: (_) => ArchiveBrowserPage(url: archiveError.url)));
+              if (!context.mounted || html == null) return;
+              ref.read(archiveBrowserPagesProvider.notifier).state = {
+                ...ref.read(archiveBrowserPagesProvider), archiveError.url: html,
+              };
+            },
+            child: const Text('Open page in app'),
+          ),
+          if (onRefresh != null) TextButton(
+            style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.secondary),
+            onPressed: () {
+            final pages = {...ref.read(archiveBrowserPagesProvider)};
+            pages.remove(archiveError.url);
+            ref.read(archiveBrowserPagesProvider.notifier).state = pages;
+            onRefresh?.call();
+          }, child: const Text('Try again')),
+          TextButton(
+            style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.secondary),
+            onPressed: () => Navigator.push(context, MaterialPageRoute(
+            builder: (_) => Scaffold(appBar: AppBar(title: const Text('Settings')),
+                body: const SettingsPage()))), child: const Text('Change website')),
+        ]),
+      ));
+    }
     if (error.toString().contains("socketException")) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,

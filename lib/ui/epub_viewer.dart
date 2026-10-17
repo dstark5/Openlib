@@ -7,50 +7,43 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:epub_view/epub_view.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:open_file/open_file.dart';
-import 'package:openlib/services/database.dart';
 
 // Project imports:
-import 'package:openlib/services/files.dart' show getFilePath;
 import 'package:openlib/ui/components/snack_bar_widget.dart';
 import 'package:openlib/state/state.dart'
     show
         filePathProvider,
         saveEpubState,
         getBookPosition,
-        openEpubWithExternalAppProvider;
+        readerPreferenceProvider,
+        readerAppsProvider;
 
 Future<void> launchEpubViewer({
   required String fileName,
   required BuildContext context,
   required WidgetRef ref,
+  String? title,
 }) async {
-  if (Platform.isAndroid || Platform.isIOS) {
-    MyLibraryDb dataBase = MyLibraryDb.instance;
-    String path = await getFilePath(fileName);
-    bool openWithExternalApp = ref.watch(openEpubWithExternalAppProvider);
-
-    if (openWithExternalApp) {
-      await OpenFile.open(path,
-          linuxByProcess: true, type: "application/epub+zip");
-    } else {
-      try {
-        // Push to internal Epub Viewer
-        // ignore: use_build_context_synchronously
-        Navigator.push(context,
-            MaterialPageRoute(builder: (BuildContext context) {
-          return EpubViewerWidget(fileName: fileName);
-        }));
-      } catch (e) {
-        // ignore: use_build_context_synchronously
-        showSnackBar(context: context, message: 'Unable to open epub!');
+  final reader = ref.read(readerPreferenceProvider('epub'));
+  if (reader != 'internal') {
+    try {
+      final path = await ref.read(filePathProvider(fileName).future);
+      await ref
+          .read(readerAppsProvider)
+          .openBook(path: path, format: 'epub', reader: reader, title: title);
+    } catch (_) {
+      if (context.mounted) {
+        showSnackBar(
+            context: context,
+            message:
+                'Could not open the reader. Choose another app in Settings.');
       }
     }
-  } else {
-    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
-      return EpubViewerWidget(fileName: fileName);
-    }));
+    return;
   }
+  if (!context.mounted) return;
+  Navigator.push(context,
+      MaterialPageRoute(builder: (_) => EpubViewerWidget(fileName: fileName)));
 }
 
 class EpubViewerWidget extends ConsumerStatefulWidget {

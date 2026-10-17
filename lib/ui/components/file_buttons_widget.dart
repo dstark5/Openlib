@@ -15,12 +15,14 @@ import 'package:openlib/ui/pdf_viewer.dart' show launchPdfViewer;
 class FileOpenAndDeleteButtons extends ConsumerWidget {
   final String id;
   final String format;
+  final String? title;
   final Function onDelete;
 
   const FileOpenAndDeleteButtons(
       {super.key,
       required this.id,
       required this.format,
+      this.title,
       required this.onDelete});
 
   @override
@@ -42,10 +44,16 @@ class FileOpenAndDeleteButtons extends ConsumerWidget {
             onPressed: () async {
               if (format == 'pdf') {
                 await launchPdfViewer(
-                    fileName: '$id.$format', context: context, ref: ref);
+                    fileName: '$id.$format',
+                    context: context,
+                    ref: ref,
+                    title: title);
               } else if (format == 'epub') {
                 await launchEpubViewer(
-                    fileName: '$id.$format', context: context, ref: ref);
+                    fileName: '$id.$format',
+                    context: context,
+                    ref: ref,
+                    title: title);
               } else {
                 await openCbrAndCbz(fileName: '$id.$format', context: context);
               }

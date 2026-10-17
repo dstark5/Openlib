@@ -1,5 +1,6 @@
 // Dart imports:
 import 'dart:io';
+import 'dart:async';
 
 // Package imports:
 import 'package:crypto/crypto.dart';
@@ -7,6 +8,7 @@ import 'package:dio/dio.dart';
 
 // Project imports:
 import 'package:openlib/services/database.dart' show MyLibraryDb;
+import 'package:openlib/services/annas_archieve.dart';
 
 MyLibraryDb dataBase = MyLibraryDb.instance;
 
@@ -16,7 +18,8 @@ Future<String> _getFilePath(String fileName) async {
   return '$bookStorageDirectory/$fileName';
 }
 
-List<String> _reorderMirrors(List<String> mirrors) {
+List<String> orderDownloadMirrors(List<String> mirrors,
+    {String archiveBaseUrl = AnnasArchieve.defaultBaseUrl}) {
   List<String> ipfsMirrors = [];
   List<String> httpsMirrors = [];
 
@@ -24,8 +27,10 @@ List<String> _reorderMirrors(List<String> mirrors) {
     if (element.contains('ipfs') == true) {
       ipfsMirrors.add(element);
     } else {
-      if (element.startsWith('https://annas-archive.se') != true &&
-          element.startsWith('https://1lib.sk') != true) {
+      final host = Uri.tryParse(element)?.host;
+      if (host != Uri.parse(archiveBaseUrl).host &&
+          host != '1lib.sk' &&
+          !(host?.startsWith('annas-archive.') ?? false)) {
         httpsMirrors.add(element);
       }
     }
@@ -33,86 +38,69 @@ List<String> _reorderMirrors(List<String> mirrors) {
   return [...ipfsMirrors, ...httpsMirrors];
 }
 
-Future<String?> _getAliveMirror(List<String> mirrors) async {
-  Dio dio = Dio();
-  const timeOut = 15;
-  if (mirrors.length == 1) {
-    await Future.delayed(const Duration(seconds: 2));
-    return mirrors[0];
-  }
-  for (var url in mirrors) {
-    try {
-      final response = await dio.head(url,
-          options: Options(receiveTimeout: const Duration(seconds: timeOut)));
-      if (response.statusCode == 200) {
-        dio.close();
-        return url;
+Future<String?> selectDownloadMirror(List<String> mirrors, {Dio? dio}) async {
+  if (mirrors.isEmpty) return null;
+  if (mirrors.length == 1) return mirrors.single;
+  final client = dio ??
+      Dio(BaseOptions(
+          connectTimeout: const Duration(seconds: 5),
+          receiveTimeout: const Duration(seconds: 5)));
+  final result = Completer<String?>();
+  var remaining = mirrors.length;
+  for (final url in mirrors) {
+    () async {
+      try {
+        final response = await client.head(url);
+        if (response.statusCode == 200 && !result.isCompleted)
+          result.complete(url);
+      } catch (_) {
+        // Other mirrors can still succeed.
+      } finally {
+        if (--remaining == 0 && !result.isCompleted) result.complete(null);
       }
-    } catch (_) {}
+    }();
   }
-  return null;
+  try {
+    return await result.future;
+  } finally {
+    if (dio == null) client.close(force: true);
+  }
 }
 
 Future<void> downloadFile(
     {required List<String> mirrors,
+    String archiveBaseUrl = AnnasArchieve.defaultBaseUrl,
     required String md5,
     required String format,
-    required Function onStart,
-    required Function onProgress,
-    required Function cancelDownlaod,
-    required Function mirrorStatus,
-    required Function onDownlaodFailed}) async {
-  if (mirrors.isEmpty) {
-    onDownlaodFailed('No mirrors available!');
-  } else {
-    Dio dio = Dio();
-
-    String path = await _getFilePath('$md5.$format');
-    List<String> orderedMirrors = _reorderMirrors(mirrors);
-
-    String? workingMirror = await _getAliveMirror(orderedMirrors);
-
-    // print(workingMirror);
-    // print(path);
-    // print(orderedMirrors);
-    // print(orderedMirrors[0]);
-
-    if (workingMirror != null) {
-      onStart();
+    required void Function(int, int) onProgress,
+    required CancelToken cancelToken}) async {
+  final ordered = orderDownloadMirrors(mirrors, archiveBaseUrl: archiveBaseUrl);
+  if (ordered.isEmpty) throw StateError('No download mirrors available.');
+  final preferred = await selectDownloadMirror(ordered);
+  if (cancelToken.isCancelled) throw cancelToken.cancelError!;
+  final candidates = [
+    if (preferred != null) preferred,
+    ...ordered.where((url) => url != preferred)
+  ];
+  final path = await _getFilePath('$md5.$format');
+  final client = Dio(BaseOptions(
+      connectTimeout: const Duration(seconds: 8),
+      receiveTimeout: const Duration(seconds: 25)));
+  try {
+    for (final url in candidates) {
       try {
-        CancelToken cancelToken = CancelToken();
-        dio.download(
-          workingMirror,
-          path,
-          options: Options(headers: {
-            'Connection': 'Keep-Alive',
-            'User-Agent':
-                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'
-          }),
-          onReceiveProgress: (rcv, total) {
-            if (!(rcv.isNaN || rcv.isInfinite) &&
-                !(total.isNaN || total.isInfinite)) {
-              onProgress(rcv, total);
-            }
-          },
-          deleteOnError: true,
-          cancelToken: cancelToken,
-        ).catchError((err) {
-          if (err.type != DioExceptionType.cancel) {
-            onDownlaodFailed('downloaded Failed! try again...');
-          }
-          throw err;
-        });
-
-        mirrorStatus(true);
-
-        cancelDownlaod(cancelToken);
-      } catch (_) {
-        onDownlaodFailed('downloaded Failed! try again...');
+        await client.download(url, path,
+            cancelToken: cancelToken,
+            deleteOnError: true,
+            onReceiveProgress: onProgress);
+        return;
+      } on DioException catch (e) {
+        if (CancelToken.isCancel(e)) rethrow;
       }
-    } else {
-      onDownlaodFailed('No working mirrors available to download book!');
     }
+    throw StateError('No working download mirrors.');
+  } finally {
+    client.close(force: true);
   }
 }
 
